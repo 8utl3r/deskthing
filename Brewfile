@@ -62,7 +62,6 @@
 
 # media
  cask "iina"                        # Modern video player (mpv-based)
- cask "jellyfin-media-player"       # Native client for Jellyfin server
 
 # fonts
  cask "font-jetbrains-mono-nerd-font"  # Dev font with symbols for terminals
