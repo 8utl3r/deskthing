@@ -57,6 +57,8 @@
 
 # writing/notes/productivity
  cask "itsycal"                     # Lightweight menu bar calendar
+ brew "task"                      # Taskwarrior CLI task manager (OSS, highly scriptable)
+ cask "super-productivity"       # OSS task manager with Kanban/time tracking
 
 # media
  cask "iina"                        # Modern video player (mpv-based)
