@@ -1,8 +1,11 @@
-# Global runtime prefs for mise (rtx)
-[settings]
-experimental = true
+# Global runtime preferences for mise (rtx)
+# Encodes default language/toolchain versions for reproducibility.
 
 [tools]
-# node = "lts"
-# python = "3.12"
-# java = "temurin-21"
+node = "lts"           # Stable Node.js for broad compatibility
+python = "3.12"        # Current stable Python
+java = "temurin-21"    # LTS Java from Eclipse Temurin
+rust = "stable"        # Stable Rust toolchain
+
+# Note: After installing Node via mise, enable Corepack to use pnpm by default:
+#   corepack enable pnpm
