@@ -61,9 +61,19 @@
  cask "super-productivity"       # OSS task manager with Kanban/time tracking
 
 # media
+ brew "mpv"                        # OSS media player (scriptable, minimal UI)
  cask "iina"                        # Modern video player (mpv-based)
 
 # fonts
+ cask "font-ibm-plex-mono"  # Minimal, readable IBM Plex Mono
+ cask "font-fira-code"  # Monospace with coding ligatures
+ cask "font-source-code-pro"  # Adobe monospace, excellent legibility
+ cask "font-cascadia-code"  # Modern monospace from Microsoft, ligatures
+ cask "font-inter"  # Clean modern UI text font
+ cask "font-ubuntu-mono"  # Readable monospace with soft curves
+ cask "font-roboto-mono"  # Google monospace, modern minimal
+ cask "font-iosevka"  # Narrow, highly configurable monospace
+ cask "font-hack-nerd-font"  # Hack monospace with Nerd symbols
  cask "font-jetbrains-mono-nerd-font"  # Dev font with symbols for terminals
 
 # browsers
