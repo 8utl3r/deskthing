@@ -52,7 +52,6 @@
 
 # launcher & window management
  cask "raycast"                     # Fast launcher/automation (free)
- cask "rectangle"                   # OSS window snapping/tiling with shortcuts
  cask "nikitabobko/tap/aerospace"   # Keyboard-first tiling window manager
  # Lasso (manual install): https://thelasso.app/  # Mouse-driven arrange tool
 
