@@ -77,6 +77,7 @@
  cask "font-jetbrains-mono-nerd-font"  # Dev font with symbols for terminals
 
 # browsers
+ cask "mullvad-browser"        # Privacy-hardened browser (anti-fingerprinting profile)
  # Zen Browser: not in core taps yet; install manually or custom tap.
  # cask "vivaldi"                    # Chromium-based browser (privacy-friendly)
  # cask "eloston-chromium"          # Ungoogled Chromium variant
