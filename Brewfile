@@ -2,74 +2,74 @@
 # Philosophy: OSS or one-time purchase where possible; avoid Google; quality first.
 
 # taps
-tap "homebrew/cask"
-tap "homebrew/cask-fonts"
-tap "nikitabobko/tap"        # AeroSpace (tiling WM, OSS)
-tap "jdx/mise"               # mise runtime manager
+ tap "homebrew/cask"                 # Official casks for macOS GUI apps
+ tap "homebrew/cask-fonts"          # Fonts including Nerd Fonts for terminals
+ tap "nikitabobko/tap"              # AeroSpace tiling window manager cask
+ tap "jdx/mise"                     # mise (rtx) runtime/version manager
 
 # core CLI
-brew "git"
-brew "gh"                     # GitHub CLI
-brew "gnupg"
-brew "pinentry-mac"
-brew "age"                    # modern encryption
-brew "sops"
-brew "jq"
-brew "yq"
-brew "ripgrep"
-brew "fd"
-brew "fzf"
-brew "bat"
-brew "eza"
-brew "tree"
-brew "htop"
-brew "entr"
-brew "wget"
-# brew "mas"                  # Mac App Store CLI (optional)
+ brew "git"                         # Distributed version control
+ brew "gh"                          # GitHub CLI for auth/repos/issues/PRs
+ brew "gnupg"                       # OpenPGP for signing and encryption
+ brew "pinentry-mac"                # macOS passphrase dialog for GPG
+ brew "age"                         # Simple, modern file encryption tool
+ brew "sops"                        # Encrypted config management using age/GPG
+ brew "jq"                          # JSON processor for scripts and CLI
+ brew "yq"                          # YAML processor (jq‑like interface)
+ brew "ripgrep"                     # Fast recursive code/text search
+ brew "fd"                          # User-friendly find (fzf companion)
+ brew "fzf"                         # Fuzzy finder for files/commands/history
+ brew "bat"                         # cat with syntax highlighting and paging
+ brew "eza"                         # Modern ls replacement with icons
+ brew "tree"                        # Directory tree listing utility
+ brew "htop"                        # Interactive process viewer/monitor
+ brew "entr"                        # Run commands when files change
+ brew "wget"                        # Robust network downloader
+ brew "mas"                         # Mac App Store CLI for pinned installs
 
 # prompt & shell helpers
-brew "starship"
-brew "direnv"                 # optional; good with mise
+ brew "starship"                    # Cross-shell prompt (fast, customizable)
+ brew "direnv"                      # Per-directory envs; pairs well with mise
 
 # runtimes (managed via mise)
-brew "mise"
+ brew "mise"                        # Unified runtime manager (Node/Python/Java)
 
-# containers (lighter than Docker Desktop)
-brew "colima"
-brew "docker"
-brew "docker-buildx"
-brew "docker-compose"
+# containers (lighter host footprint than Docker Desktop)
+ brew "colima"                      # Container runtime on macOS via Lima
+ brew "docker"                      # Docker CLI client
+ brew "docker-buildx"               # Extended multi-platform image builds
+ brew "docker-compose"              # Define/run multi-container apps
 
 # networking/dev tools
-brew "nmap"
-brew "httpie"
+ brew "nmap"                        # Network scanner and discovery
+ brew "httpie"                      # Friendly HTTP client for APIs
 
 # GUI apps (casks)
-cask "cursor"
-cask "wezterm"
-cask "bitwarden"
-cask "tailscale"
+ cask "cursor"                      # IDE (VS Code-compatible) – your primary
+ cask "wezterm"                     # GPU-accelerated, configurable terminal
+ cask "bitwarden"                   # Open-source password manager
+ cask "tailscale"                   # Mesh VPN for devices and services
 
-# launcher & window mgmt
-cask "raycast"                # free; consider "alfred" (one-time) if preferred
-cask "rectangle"              # OSS tiling
-# Lasso (manual install): https://thelasso.app/
-cask "nikitabobko/tap/aerospace"   # advanced tiling (manual config)
+# launcher & window management
+ cask "raycast"                     # Fast launcher/automation (free)
+ cask "rectangle"                   # OSS window snapping/tiling with shortcuts
+ cask "nikitabobko/tap/aerospace"   # Keyboard-first tiling window manager
+ # Lasso (manual install): https://thelasso.app/  # Mouse-driven arrange tool
 
 # writing/notes/productivity
-cask "obsidian"
-cask "itsycal"
+ cask "obsidian"                    # Markdown knowledge base / notes
+ cask "itsycal"                     # Lightweight menu bar calendar
 
 # media
-cask "iina"
-cask "jellyfin-media-player"
+ cask "iina"                        # Modern video player (mpv-based)
+ cask "jellyfin-media-player"       # Native client for Jellyfin server
 
 # fonts
-cask "font-jetbrains-mono-nerd-font"
+ cask "font-jetbrains-mono-nerd-font"  # Dev font with symbols for terminals
 
 # browsers
-# Zen Browser: not in core taps yet; install manually or custom tap.
-# cask "vivaldi"
-# cask "eloston-chromium"      # ungoogled chromium variant
+ # Zen Browser: not in core taps yet; install manually or custom tap.
+ # cask "vivaldi"                    # Chromium-based browser (privacy-friendly)
+ # cask "eloston-chromium"          # Ungoogled Chromium variant
 
 # End of curated list
