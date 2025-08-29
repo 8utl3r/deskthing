@@ -24,7 +24,13 @@ mac_user_dir="$HOME"
 # Keyboard / typing
 run "defaults write -g KeyRepeat -int 1"                      # fast repeat
 run "defaults write -g InitialKeyRepeat -int 15"              # delay until repeat
-run "defaults write -g ApplePressAndHoldEnabled -bool false"  # enable key repeat over press-and-hold
+run "defaults write -g ApplePressAndHoldEnabled -bool false"  # key repeat over press-and-hold
+run "defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false"
+run "defaults write -g NSAutomaticCapitalizationEnabled -bool false"
+run "defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false"
+run "defaults write -g NSAutomaticDashSubstitutionEnabled -bool false"
+run "defaults write -g NSAutomaticQuoteSubstitutionEnabled -bool false"
+run "defaults write -g AppleKeyboardUIMode -int 3"            # full keyboard access
 
 # Trackpad
 run "defaults write com.apple.AppleMultitouchTrackpad Clicking -int 1"
@@ -33,6 +39,8 @@ run "defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1"   # tap t
 
 # Finder
 run "defaults write NSGlobalDomain AppleShowAllExtensions -bool true"
+run "defaults write com.apple.finder AppleShowAllFiles -bool true"
+run "defaults write com.apple.finder _FXSortFoldersFirst -bool true"
 run "defaults write com.apple.finder ShowPathbar -bool true"
 run "defaults write com.apple.finder ShowStatusBar -bool true"
 run "defaults write com.apple.finder FXDefaultSearchScope -string SCcf"  # search current folder by default
@@ -47,18 +55,26 @@ run "defaults write com.apple.dock autohide -bool true"
 run "defaults write com.apple.dock show-recents -bool false"
 run "defaults write com.apple.dock mru-spaces -bool false"
 run "defaults write com.apple.dock tilesize -int 48"
+# Optional: clear pinned apps to start clean (commented by default)
+# run "defaults delete com.apple.dock persistent-apps 2>/dev/null || true"
 
 # Screenshots
 run "mkdir -p \"$HOME/Screenshots\""
 run "defaults write com.apple.screencapture location -string \"$HOME/Screenshots\""
 run "defaults write com.apple.screencapture type -string png"
-# run "defaults write com.apple.screencapture disable-shadow -bool true"  # uncomment if desired
+run "defaults write com.apple.screencapture disable-shadow -bool true"
 
-# Privacy/telemetry
-run "defaults write com.apple.applicationaccess NewUserNotificationCenterEnabled -bool false || true"
-run "defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true"   # keep security updates checked
+# Privacy/telemetry (user-level; avoids sudo)
+run "defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false"     # personalized ads off
+run "defaults -currentHost write com.apple.AdLib allowApplePersonalizedAdvertising -bool false"
+run "defaults write com.apple.SubmitDiagInfo AutoSubmit -bool false"                   # analytics off (user)
+run "defaults write com.apple.applicationaccess AllowDiagnosticSubmission -bool false" # no diag submission
+run "defaults write com.apple.CrashReporter DialogType -string none"                   # no crash dialog
+run "defaults write com.apple.assistant.support \"Assistant Enabled\" -bool false"        # Siri disabled UI
+run "defaults write com.apple.Siri StatusMenuVisible -bool false"
+run "defaults write com.apple.Siri UserHasDeclinedEnable -bool true"
 
-# Menu bar clock: show date and seconds (Sonoma+ uses plist)
+# Menu bar clock: show seconds (Sonoma+ plist may be rewritten by UI)
 run "/usr/libexec/PlistBuddy -c \"Set :MenuBarClock.ShowSeconds true\" \"$HOME/Library/Preferences/com.apple.menuextra.clock.plist\" 2>/dev/null || true"
 
 # Apply: restart affected services
