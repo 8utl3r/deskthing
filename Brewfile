@@ -56,7 +56,6 @@
  # Lasso (manual install): https://thelasso.app/  # Mouse-driven arrange tool
 
 # writing/notes/productivity
- cask "obsidian"                    # Markdown knowledge base / notes
  cask "itsycal"                     # Lightweight menu bar calendar
 
 # media
