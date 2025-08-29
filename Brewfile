@@ -51,7 +51,7 @@
  cask "tailscale"                   # Mesh VPN for devices and services
 
 # launcher & window management
- cask "raycast"                     # Fast launcher/automation (free)
+ cask "alfred"                   # One-time license launcher; file-based workflows, offline-first
  cask "nikitabobko/tap/aerospace"   # Keyboard-first tiling window manager
  # Lasso (manual install): https://thelasso.app/  # Mouse-driven arrange tool
 
