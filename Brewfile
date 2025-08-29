@@ -53,7 +53,8 @@ cask "tailscale"
 # launcher & window mgmt
 cask "raycast"                # free; consider "alfred" (one-time) if preferred
 cask "rectangle"              # OSS tiling
-# cask "nikitabobko/tap/aerospace"   # advanced tiling (manual config)
+# Lasso (manual install): https://thelasso.app/
+cask "nikitabobko/tap/aerospace"   # advanced tiling (manual config)
 
 # writing/notes/productivity
 cask "obsidian"
