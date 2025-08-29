@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APPLY=0
+BACKUP_DIR="$HOME/.dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
+
+for arg in "$@"; do
+  case "$arg" in
+    --apply) APPLY=1 ;;
+    --dry-run) APPLY=0 ;;
+    *) echo "Unknown arg: $arg" >&2; exit 2 ;;
+  esac
+done
+
+# Map: source (in repo) -> destination (absolute)
+# Add new mappings below
+declare -A LINKS=(
+  ["shell/.zshrc"]="$HOME/.zshrc"
+  ["shell/starship.toml"]="$HOME/.config/starship.toml"
+  ["git/.gitconfig"]="$HOME/.gitconfig"
+  ["git/.gitignore_global"]="$HOME/.gitignore_global"
+  ["runtimes/mise.toml"]="$HOME/.config/mise/config.toml"
+  ["terminal/wezterm.lua"]="$HOME/.wezterm.lua"
+  ["cursor/settings.json"]="$HOME/Library/Application Support/Cursor/User/settings.json"
+)
+
+repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+
+link_one() {
+  local src_rel="$1"
+  local dest="$2"
+  local src="$repo_root/$src_rel"
+
+  if [[ ! -f "$src" && ! -d "$src" ]]; then
+    echo "SKIP: missing source $src_rel"; return
+  fi
+
+  local dest_dir
+  dest_dir="$(dirname "$dest")"
+  if [[ $APPLY -eq 1 ]]; then
+    mkdir -p "$dest_dir"
+  fi
+
+  if [[ -e "$dest" && ! -L "$dest" ]]; then
+    echo "BACKUP: $dest -> $BACKUP_DIR";
+    if [[ $APPLY -eq 1 ]]; then
+      mkdir -p "$BACKUP_DIR"
+      mv "$dest" "$BACKUP_DIR/" 2>/dev/null || true
+    fi
+  fi
+
+  echo "LINK: $dest -> $src_rel"
+  if [[ $APPLY -eq 1 ]]; then
+    ln -snf "$src" "$dest"
+  fi
+}
+
+for key in "${!LINKS[@]}"; do
+  link_one "$key" "${LINKS[$key]}"
+done
+
+echo "Done. Mode: $([[ $APPLY -eq 1 ]] && echo APPLY || echo DRY-RUN)"

@@ -1,0 +1,8 @@
+# Global runtime prefs for mise (rtx)
+[settings]
+experimental = true
+
+[tools]
+# node = "lts"
+# python = "3.12"
+# java = "temurin-21"

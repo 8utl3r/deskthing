@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# 1) Symlink configs
+"$REPO_ROOT/bin/link" --apply
+
+# 2) macOS defaults (disabled by default)
+# "$REPO_ROOT/macos/defaults.sh" --apply || true
+
+# 3) Brew installs (intentionally omitted here)
+# See Brewfile in repo root; run manually later with: brew bundle --file "$REPO_ROOT/Brewfile"
+
+echo "Bootstrap complete (no installs performed)."

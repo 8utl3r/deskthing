@@ -1,0 +1,3 @@
+# Minimal prompt; customize freely
+add_newline = true
+format = "$all"
