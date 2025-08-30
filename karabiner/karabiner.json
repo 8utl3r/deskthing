@@ -15,12 +15,12 @@
         },
         "rules": [
           {
-            "description": "Caps Lock: Control when held, Escape when tapped",
+            "description": "Caps Lock: Hyper (cmd+opt+ctrl+shift) when held, Escape when tapped",
             "manipulators": [
               {
                 "type": "basic",
                 "from": { "key_code": "caps_lock", "modifiers": { "optional": ["any"] } },
-                "to": [ { "key_code": "left_control" } ],
+                "to": [ { "key_code": "left_shift", "modifiers": ["left_command", "left_control", "left_option"] } ],
                 "to_if_alone": [ { "key_code": "escape" } ]
               }
             ]
