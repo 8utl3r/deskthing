@@ -1,15 +1,37 @@
 # dotfiles
 
-A reproducible, non-destructive setup. No installs by default.
+Reproducible, non-destructive macOS setup. Installs are manual by design.
 
-- bin/link: creates symlinks to home directory (dry-run by default)
-- bin/bootstrap: convenience wrapper (does not install apps)
-- macos/defaults.sh: optional macOS settings (not executed automatically)
+Contents:
+- `bin/link`: symlink repo configs into `$HOME` (dry-run by default)
+- `bin/bootstrap`: run symlinks; leaves installs to you
+- `macos/defaults.sh`: optional macOS defaults (DRY-RUN unless `--apply`)
+- `Brewfile`: curated apps/tools (run with `brew bundle` manually)
 
-Usage:
-  # preview symlinks
-  ~/dotfiles/bin/link --dry-run
+Quick start:
+```bash
+# Preview what will be linked
+~/dotfiles/bin/link --dry-run
 
-  # apply symlinks
-  ~/dotfiles/bin/link --apply
+# Create/overwrite symlinks (backs up real files to ~/.dotfiles_backup_*)
+~/dotfiles/bin/link --apply
+```
 
+Optional:
+```bash
+# Apply macOS defaults (idempotent)
+~/dotfiles/macos/defaults.sh --apply
+
+# Update Brewfile and inventory snapshot
+~/dotfiles/bin/snapshot
+```
+
+Manual installs:
+```bash
+# Inspect, then install from curated list
+brew bundle --file ~/dotfiles/Brewfile
+```
+
+Notes:
+- Git identity in `git/.gitconfig` is a placeholder; set your name/email.
+- Cursor settings live at `cursor/settings.json` and are linked by `bin/link`.

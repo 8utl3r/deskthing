@@ -12,16 +12,15 @@ for arg in "$@"; do
   esac
 done
 
-# Map: source (in repo) -> destination (absolute)
-# Add new mappings below
-declare -A LINKS=(
-  ["shell/.zshrc"]="$HOME/.zshrc"
-  ["shell/starship.toml"]="$HOME/.config/starship.toml"
-  ["git/.gitconfig"]="$HOME/.gitconfig"
-  ["git/.gitignore_global"]="$HOME/.gitignore_global"
-  ["runtimes/mise.toml"]="$HOME/.config/mise/config.toml"
-  ["terminal/wezterm.lua"]="$HOME/.wezterm.lua"
-  ["cursor/settings.json"]="$HOME/Library/Application Support/Cursor/User/settings.json"
+# Mappings (space-separated src|dest pairs; portable for bash 3.x)
+LINK_PAIRS=(
+  "shell/.zshrc|$HOME/.zshrc"
+  "shell/starship.toml|$HOME/.config/starship.toml"
+  "git/.gitconfig|$HOME/.gitconfig"
+  "git/.gitignore_global|$HOME/.gitignore_global"
+  "runtimes/mise.toml|$HOME/.config/mise/config.toml"
+  "terminal/wezterm.lua|$HOME/.wezterm.lua"
+  "cursor/settings.json|$HOME/Library/Application Support/Cursor/User/settings.json"
 )
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -55,8 +54,10 @@ link_one() {
   fi
 }
 
-for key in "${!LINKS[@]}"; do
-  link_one "$key" "${LINKS[$key]}"
+for pair in "${LINK_PAIRS[@]}"; do
+  src_rel="${pair%%|*}"
+  dest="${pair#*|}"
+  link_one "$src_rel" "$dest"
 done
 
 echo "Done. Mode: $([[ $APPLY -eq 1 ]] && echo APPLY || echo DRY-RUN)"

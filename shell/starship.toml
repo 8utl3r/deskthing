@@ -1,3 +1,33 @@
-# Minimal prompt; customize freely
+# Fast, minimal prompt tuned for reproducibility
 add_newline = true
-format = "$all"
+command_timeout = 800
+format = "$directory$git_branch$git_status$nodejs$python$rust$cmd_duration$line_break$character"
+
+[directory]
+style = "bold blue"
+truncate_to_repo = true
+truncation_length = 3
+
+[character]
+success_symbol = "❯ "
+error_symbol = "✖ "
+
+[git_branch]
+format = "on [$symbol$branch]($style) "
+style = "purple"
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+style = "yellow"
+
+[nodejs]
+format = "via [$symbol$version]($style) "
+style = "green"
+
+[python]
+format = "via [$symbol$version]($style) "
+style = "yellow"
+
+[rust]
+format = "via [$symbol$version]($style) "
+style = "red"

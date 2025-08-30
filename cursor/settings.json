@@ -1,0 +1,14 @@
+{
+  "telemetry.telemetryLevel": "off",
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "boundary",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorBlinking": "phase",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.fontFamily": "JetBrains Mono, Menlo, Monaco, Courier New, monospace",
+  "editor.fontLigatures": true,
+  "window.titleBarStyle": "custom",
+  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+  "workbench.startupEditor": "none"
+}
