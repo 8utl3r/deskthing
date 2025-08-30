@@ -24,6 +24,8 @@ LINK_PAIRS=(
   "cursor/settings.json|$HOME/Library/Application Support/Cursor/User/settings.json"
   "cursor/keybindings.json|$HOME/Library/Application Support/Cursor/User/keybindings.json"
   "cursor/snippets|$HOME/Library/Application Support/Cursor/User/snippets"
+  "cursor/argv.json|$HOME/Library/Application Support/Cursor/argv.json"
+  "cursor/locale.json|$HOME/Library/Application Support/Cursor/User/locale.json"
   "aerospace/aerospace.toml|$HOME/.aerospace.toml"
   "karabiner/karabiner.json|$HOME/.config/karabiner/karabiner.json"
   "hammerspoon/init.lua|$HOME/.hammerspoon/init.lua"
