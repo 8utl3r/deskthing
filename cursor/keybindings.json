@@ -1,0 +1,5 @@
+[
+  { "key": "ctrl+cmd+t", "command": "workbench.action.terminal.toggleTerminal" },
+  { "key": "ctrl+cmd+b", "command": "workbench.action.toggleSidebarVisibility" },
+  { "key": "ctrl+cmd+e", "command": "workbench.view.explorer" }
+]

@@ -8,6 +8,7 @@ Contents:
 - `macos/defaults.sh`: optional macOS defaults (DRY-RUN unless `--apply`)
 - `Brewfile`: curated apps/tools (run with `brew bundle` manually)
  - `aerospace/aerospace.toml`: tiling window manager config (linked to `~/.aerospace.toml`)
+ - `cursor/keybindings.json`: extra Cursor keybindings (linked to Cursor User dir)
 
 Quick start:
 ```bash
@@ -46,3 +47,4 @@ open -a AeroSpace
 Notes:
 - Git identity in `git/.gitconfig` is a placeholder; set your name/email.
 - Cursor settings live at `cursor/settings.json` and are linked by `bin/link`.
+  Keybindings live at `cursor/keybindings.json`.
