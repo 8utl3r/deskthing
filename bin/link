@@ -27,6 +27,7 @@ LINK_PAIRS=(
   "karabiner/karabiner.json|$HOME/.config/karabiner/karabiner.json"
   "hammerspoon/init.lua|$HOME/.hammerspoon/init.lua"
   "gh/config.yml|$HOME/.config/gh/config.yml"
+  "alfred/Alfred.alfredpreferences|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences"
 )
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"

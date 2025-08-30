@@ -1,0 +1,9 @@
+AeroSpace.app
+Cursor.app
+Hammerspoon.app
+Karabiner-Elements.app
+Karabiner-EventViewer.app
+Safari.app
+Utilities
+WezTerm.app
+Zen.app

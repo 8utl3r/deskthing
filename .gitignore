@@ -1,2 +1,10 @@
-state/
-.DS_Store
+# Alfred preferences (exclude non-portable bits if present)
+alfred/Alfred.alfredpreferences/*
+!alfred/Alfred.alfredpreferences/workflows/
+!alfred/Alfred.alfredpreferences/preferences/
+alfred/Alfred.alfredpreferences/*/cache/**
+alfred/Alfred.alfredpreferences/*/databases/**
+alfred/Alfred.alfredpreferences/*/updates/**
+alfred/Alfred.alfredpreferences/*/usage/**
+alfred/Alfred.alfredpreferences/*/prefs.json
+alfred/Alfred.alfredpreferences/*/license.plist

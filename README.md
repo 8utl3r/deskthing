@@ -12,6 +12,7 @@ Contents:
  - `git/.gitmessage`: commit template (linked to `~/.gitmessage`)
  - `karabiner/karabiner.json`: Karabiner-Elements config (linked to `~/.config/karabiner/karabiner.json`)
  - `hammerspoon/init.lua`: Hammerspoon config (linked to `~/.hammerspoon/init.lua`)
+ - `alfred/Alfred.alfredpreferences`: optional Alfred prefs (linked to Alfred support dir)
 
 Quick start:
 ```bash
@@ -58,6 +59,13 @@ brew install --cask karabiner-elements hammerspoon
 # After linking config
 open -a "Karabiner-Elements"
 open -a Hammerspoon
+```
+
+Optional (Alfred Sync):
+```bash
+# After linking, in Alfred Preferences → Advanced → Set preferences folder
+# choose: ~/dotfiles/alfred/Alfred.alfredpreferences
+# Note: license and caches are gitignored; do not commit your license.
 ```
 
 Notes:
