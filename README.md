@@ -28,6 +28,7 @@ Optional:
 # Update Brewfile and inventory snapshot
 ~/dotfiles/bin/snapshot
 ```
+New defaults include: Finder cleanliness (no warnings, text selection), Dock hot corners off, screenshot folder and PNG, expanded save/print panels, local-save default, battery percent, natural scroll, prevent Photos auto-open. All are user-level and reversible by UI.
 
 Manual installs:
 ```bash

@@ -49,6 +49,10 @@ run "defaults write com.apple.finder NewWindowTarget -string PfLo"
 run "defaults write com.apple.finder NewWindowTargetPath -string file://$mac_user_dir/"
 run "defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true"
 run "defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true"
+run "defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false" # no extension change warning
+run "defaults write com.apple.finder WarnOnEmptyTrash -bool false"              # no empty trash warning
+run "defaults write com.apple.finder QuitMenuItem -bool true"                   # allow Finder to Quit
+run "defaults write com.apple.finder QLEnableTextSelection -bool true"         # text selection in Quick Look
 
 # Dock
 run "defaults write com.apple.dock autohide -bool true"
@@ -57,12 +61,37 @@ run "defaults write com.apple.dock mru-spaces -bool false"
 run "defaults write com.apple.dock tilesize -int 48"
 # Optional: clear pinned apps to start clean (commented by default)
 # run "defaults delete com.apple.dock persistent-apps 2>/dev/null || true"
+run "defaults write com.apple.dock wvous-tl-corner -int 0"
+run "defaults write com.apple.dock wvous-tr-corner -int 0"
+run "defaults write com.apple.dock wvous-bl-corner -int 0"
+run "defaults write com.apple.dock wvous-br-corner -int 0"
+run "defaults write com.apple.dock wvous-tl-modifier -int 0"
+run "defaults write com.apple.dock wvous-tr-modifier -int 0"
+run "defaults write com.apple.dock wvous-bl-modifier -int 0"
+run "defaults write com.apple.dock wvous-br-modifier -int 0"
 
 # Screenshots
 run "mkdir -p \"$HOME/Screenshots\""
 run "defaults write com.apple.screencapture location -string \"$HOME/Screenshots\""
 run "defaults write com.apple.screencapture type -string png"
 run "defaults write com.apple.screencapture disable-shadow -bool true"
+
+# Save/print panels and document behavior
+run "defaults write -g NSNavPanelExpandedStateForSaveMode -bool true"
+run "defaults write -g NSNavPanelExpandedStateForSaveMode2 -bool true"
+run "defaults write -g PMPrintingExpandedStateForPrint -bool true"
+run "defaults write -g PMPrintingExpandedStateForPrint2 -bool true"
+run "defaults write -g NSDocumentSaveNewDocumentsToCloud -bool false"   # default to local, not iCloud
+
+# Battery percentage (new and legacy locations)
+run "defaults write com.apple.controlcenter BatteryShowPercentage -bool true"
+run "defaults write com.apple.menuextra.battery ShowPercent -string YES"
+
+# Natural scroll (explicitly true)
+run "defaults write -g com.apple.swipescrolldirection -bool true"
+
+# Prevent Photos from auto-opening on device plug-in
+run "defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true"
 
 # Privacy/telemetry (user-level; avoids sudo)
 run "defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false"     # personalized ads off
