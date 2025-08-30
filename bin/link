@@ -26,6 +26,7 @@ LINK_PAIRS=(
   "aerospace/aerospace.toml|$HOME/.aerospace.toml"
   "karabiner/karabiner.json|$HOME/.config/karabiner/karabiner.json"
   "hammerspoon/init.lua|$HOME/.hammerspoon/init.lua"
+  "gh/config.yml|$HOME/.config/gh/config.yml"
 )
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"

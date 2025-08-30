@@ -47,11 +47,7 @@ alt-f = 'fullscreen'
 alt-q = 'close'
 alt-r = 'reload-config'
 alt-semicolon = 'mode resize'
-alt-; = 'mode resize'
-alt-\' = 'toggle-floating'
-alt-\\ = 'toggle-tiling'
-alt-shift-\' = 'move-to-floating'
-alt-shift-\\ = 'move-to-tiling'
+alt-shift-backslash = 'balance-sizes'
 
 [mode.resize.binding]
 h = 'resize width +50'
