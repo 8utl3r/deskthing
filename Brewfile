@@ -26,6 +26,7 @@
  brew "entr"                        # Run commands when files change
  brew "wget"                        # Robust network downloader
  brew "mas"                         # Mac App Store CLI for pinned installs
+ brew "git-delta"                   # Syntax-highlighting pager for git diffs
 
 # prompt & shell helpers
  brew "starship"                    # Cross-shell prompt (fast, customizable)

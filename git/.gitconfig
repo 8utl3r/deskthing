@@ -14,3 +14,44 @@
     default = current
 [credential]
     helper = osxkeychain
+
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[commit]
+    verbose = true
+    template = ~/.gitmessage
+
+[rebase]
+    autosquash = true
+    autostash = true
+
+[diff]
+    colorMoved = default
+
+[alias]
+    st = status -sb
+    br = branch -vv
+    co = checkout
+    sw = switch
+    ci = commit
+    ds = diff --staged
+    l = log --oneline --graph --decorate --all
+    amend = commit --amend --no-edit
+    pf = push --force-with-lease
+    unstage = restore --staged -- .
+    fix = commit --fixup

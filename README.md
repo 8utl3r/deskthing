@@ -9,6 +9,7 @@ Contents:
 - `Brewfile`: curated apps/tools (run with `brew bundle` manually)
  - `aerospace/aerospace.toml`: tiling window manager config (linked to `~/.aerospace.toml`)
  - `cursor/keybindings.json`: extra Cursor keybindings (linked to Cursor User dir)
+ - `git/.gitmessage`: commit template (linked to `~/.gitmessage`)
 
 Quick start:
 ```bash
@@ -33,6 +34,8 @@ Manual installs:
 # Inspect, then install from curated list
 brew bundle --file ~/dotfiles/Brewfile
 ```
+
+Tip: `git-delta` is included; run `brew bundle` to enable the improved pager.
 
 Optional (AeroSpace):
 ```bash

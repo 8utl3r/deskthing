@@ -1,0 +1,8 @@
+# <type>(scope): short summary
+#
+# Body: explain what and why (wrap at ~72 chars)
+# - bullet points welcome
+#
+# Footer: references, BREAKING CHANGE, closes #123
+#
+# Types: feat, fix, chore, docs, style, refactor, perf, test, build, ci

@@ -18,6 +18,7 @@ LINK_PAIRS=(
   "shell/starship.toml|$HOME/.config/starship.toml"
   "git/.gitconfig|$HOME/.gitconfig"
   "git/.gitignore_global|$HOME/.gitignore_global"
+  "git/.gitmessage|$HOME/.gitmessage"
   "runtimes/mise.toml|$HOME/.config/mise/config.toml"
   "terminal/wezterm.lua|$HOME/.wezterm.lua"
   "cursor/settings.json|$HOME/Library/Application Support/Cursor/User/settings.json"
