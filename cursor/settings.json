@@ -10,5 +10,8 @@
   "editor.fontLigatures": true,
   "window.titleBarStyle": "custom",
   "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
-  "workbench.startupEditor": "none"
+  "workbench.startupEditor": "none",
+  "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
+  "cursor.composer.shouldAllowCustomModes": true,
+  "cursor.composer.usageSummaryDisplay": "always"
 }

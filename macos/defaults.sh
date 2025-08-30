@@ -53,6 +53,10 @@ run "defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false"
 run "defaults write com.apple.finder WarnOnEmptyTrash -bool false"              # no empty trash warning
 run "defaults write com.apple.finder QuitMenuItem -bool true"                   # allow Finder to Quit
 run "defaults write com.apple.finder QLEnableTextSelection -bool true"         # text selection in Quick Look
+run "defaults write com.apple.finder _FXShowPosixPathInTitle -bool true"       # show full POSIX path in title
+run "defaults write com.apple.finder DisableAllAnimations -bool true"          # faster Finder
+run "defaults write com.apple.finder FXInfoPanesExpanded -dict General -bool true OpenWith -bool true Privileges -bool true"
+run "chflags nohidden \"$HOME/Library\""                                      # reveal ~/Library
 
 # Dock
 run "defaults write com.apple.dock autohide -bool true"
@@ -69,6 +73,10 @@ run "defaults write com.apple.dock wvous-tl-modifier -int 0"
 run "defaults write com.apple.dock wvous-tr-modifier -int 0"
 run "defaults write com.apple.dock wvous-bl-modifier -int 0"
 run "defaults write com.apple.dock wvous-br-modifier -int 0"
+run "defaults write com.apple.dock autohide-delay -float 0"                     # no dock delay
+run "defaults write com.apple.dock autohide-time-modifier -float 0.12"         # faster dock animation
+run "defaults write com.apple.dock mineffect -string scale"                    # minimize effect
+run "defaults write com.apple.dock showhidden -bool true"                      # translucent icons for hidden apps
 
 # Screenshots
 run "mkdir -p \"$HOME/Screenshots\""
@@ -89,9 +97,13 @@ run "defaults write com.apple.menuextra.battery ShowPercent -string YES"
 
 # Natural scroll (explicitly true)
 run "defaults write -g com.apple.swipescrolldirection -bool true"
+run "defaults write -g AppleShowScrollBars -string WhenScrolling"              # show scroll bars when scrolling
 
 # Prevent Photos from auto-opening on device plug-in
 run "defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true"
+
+# Networking / AirDrop
+run "defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true"   # AirDrop on all interfaces
 
 # Privacy/telemetry (user-level; avoids sudo)
 run "defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false"     # personalized ads off
