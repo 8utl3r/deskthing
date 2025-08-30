@@ -7,6 +7,7 @@ Contents:
 - `bin/bootstrap`: run symlinks; leaves installs to you
 - `macos/defaults.sh`: optional macOS defaults (DRY-RUN unless `--apply`)
 - `Brewfile`: curated apps/tools (run with `brew bundle` manually)
+ - `aerospace/aerospace.toml`: tiling window manager config (linked to `~/.aerospace.toml`)
 
 Quick start:
 ```bash
@@ -30,6 +31,16 @@ Manual installs:
 ```bash
 # Inspect, then install from curated list
 brew bundle --file ~/dotfiles/Brewfile
+```
+
+Optional (AeroSpace):
+```bash
+# Install AeroSpace (from tap in Brewfile)
+brew install --cask nikitabobko/tap/aerospace
+
+# Reload AeroSpace after linking config
+osascript -e 'tell application "AeroSpace" to quit' 2>/dev/null || true
+open -a AeroSpace
 ```
 
 Notes:
