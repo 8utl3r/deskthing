@@ -9,6 +9,7 @@ Contents:
 - `Brewfile`: curated apps/tools (run with `brew bundle` manually)
  - `aerospace/aerospace.toml`: tiling window manager config (linked to `~/.aerospace.toml`)
  - `cursor/keybindings.json`: extra Cursor keybindings (linked to Cursor User dir)
+ - `cursor/snippets/`: user snippets (linked to Cursor User dir)
  - `git/.gitmessage`: commit template (linked to `~/.gitmessage`)
  - `karabiner/karabiner.json`: Karabiner-Elements config (linked to `~/.config/karabiner/karabiner.json`)
  - `hammerspoon/init.lua`: Hammerspoon config (linked to `~/.hammerspoon/init.lua`)
