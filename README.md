@@ -10,6 +10,8 @@ Contents:
  - `aerospace/aerospace.toml`: tiling window manager config (linked to `~/.aerospace.toml`)
  - `cursor/keybindings.json`: extra Cursor keybindings (linked to Cursor User dir)
  - `git/.gitmessage`: commit template (linked to `~/.gitmessage`)
+ - `karabiner/karabiner.json`: Karabiner-Elements config (linked to `~/.config/karabiner/karabiner.json`)
+ - `hammerspoon/init.lua`: Hammerspoon config (linked to `~/.hammerspoon/init.lua`)
 
 Quick start:
 ```bash
@@ -46,6 +48,16 @@ brew install --cask nikitabobko/tap/aerospace
 # Reload AeroSpace after linking config
 osascript -e 'tell application "AeroSpace" to quit' 2>/dev/null || true
 open -a AeroSpace
+```
+
+Optional (Karabiner/Hammerspoon):
+```bash
+# Install
+brew install --cask karabiner-elements hammerspoon
+
+# After linking config
+open -a "Karabiner-Elements"
+open -a Hammerspoon
 ```
 
 Notes:

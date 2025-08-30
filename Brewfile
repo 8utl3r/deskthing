@@ -48,6 +48,8 @@
 # GUI apps (casks)
  cask "cursor"                      # IDE (VS Code-compatible) – your primary
  cask "wezterm"                     # GPU-accelerated, configurable terminal
+ cask "karabiner-elements"          # Low-level keyboard remapping
+ cask "hammerspoon"                 # Lua-powered macOS automation
  cask "bitwarden"                   # Open-source password manager
  cask "tailscale"                   # Mesh VPN for devices and services
 
