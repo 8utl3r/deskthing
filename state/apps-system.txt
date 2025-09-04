@@ -1,6 +1,9 @@
 AeroSpace.app
 Alfred 5.app
+Bitwarden.app
 Cursor.app
+Discord.app
+Docker.app
 Hammerspoon.app
 Karabiner-Elements.app
 Karabiner-EventViewer.app

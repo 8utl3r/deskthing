@@ -1,5 +1,8 @@
 aerospace
 alfred
+bitwarden
+discord
+docker-desktop
 hammerspoon
 karabiner-elements
 wezterm

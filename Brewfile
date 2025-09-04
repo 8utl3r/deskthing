@@ -29,6 +29,12 @@ brew "yq"
 cask "aerospace"
 # Application launcher and productivity software
 cask "alfred"
+# Desktop password and login vault
+cask "bitwarden"
+# Voice and text chat software
+cask "discord"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
 # Desktop automation application
 cask "hammerspoon"
 # Keyboard customiser
