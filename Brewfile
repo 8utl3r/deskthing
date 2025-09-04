@@ -53,6 +53,24 @@ cask "lm-studio"
 cask "logi-options+"
 # WiFi site survey software and WiFi scanner
 cask "netspot"
+# Imaging utility to install operating systems to a microSD card
+cask "raspberry-pi-imager"
+# Replacement for the volume, brightness and keyboard backlight HUDs
+cask "slimhud"
+# Application to control your PlayStation 4 or PlayStation 5
+cask "sony-ps-remote-play"
+# Music streaming service
+cask "spotify"
+# Video game digital distribution service
+cask "steam"
+# Open-source media center
+cask "stremio"
+# Mesh VPN based on WireGuard
+cask "tailscale-app"
+# Messaging app with a focus on speed and security
+cask "telegram"
+# SSH client
+cask "termius"
 # Virtual machines UI using QEMU
 cask "utm"
 # GPU-accelerated cross-platform terminal emulator and multiplexer

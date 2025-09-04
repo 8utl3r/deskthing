@@ -50,6 +50,15 @@ brew bundle --file ./Brewfile
 - **Logi Options+** Logitech device management
 - **Home Assistant** smart home automation
 - **NetSpot** Wi-Fi analysis
+- **PS Remote Play** PlayStation remote play
+- **Raspberry Pi Imager** SD card imaging
+- **Spotify** music streaming
+- **Steam** gaming platform
+- **Stremio** media streaming
+- **Tailscale** VPN/network tool
+- **Telegram** messaging
+- **SlimHUD** volume/brightness HUD
+- **Termius** SSH client
 
 ### System Configuration
 - **macOS defaults** for power-user experience
@@ -131,6 +140,13 @@ Optional (iStatistica Pro):
 # Download from App Store or Bjango website
 # Install manually - not available via Homebrew
 # Note: Already purchased, better than iStat Menus
+```
+
+Optional (Manual Installs):
+```bash
+# TestFlight - Download from App Store (Apple's beta testing app)
+# Pokit - Download from developer website (network testing tool)
+# Note: SlimHUD is deprecated and will be disabled on 2026-09-01
 ```
 
 ## Notes

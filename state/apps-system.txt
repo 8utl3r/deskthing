@@ -8,7 +8,6 @@ Hammerspoon.app
 Hidden Bar.app
 Home Assistant.app
 IINA.app
-iStat Menus.app
 Itsycal.app
 Karabiner-Elements.app
 Karabiner-EventViewer.app
