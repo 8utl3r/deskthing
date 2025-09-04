@@ -6,45 +6,78 @@ Reproducible, non-destructive macOS setup. Installs are manual by design.
 
 All components installed, configured, and linked. Ready for development!
 
-Contents:
+## Quick Start
+
+```bash
+# Link configuration files (dry-run by default)
+./bin/link --apply
+
+# Apply macOS system defaults (dry-run by default)  
+./macos/defaults.sh --apply
+
+# Install Homebrew packages manually
+brew bundle --file ./Brewfile
+```
+
+## What's Included
+
+### Shell & Terminal
+- **Zsh** with aliases (`cat` → `bat`, `ls` → `eza`)
+- **Starship** prompt with runtime detection
+- **WezTerm** GPU-accelerated terminal
+- **mise** runtime manager (Node.js, Python, Java, Rust)
+
+### Development Tools
+- **Git** with delta pager, aliases, and commit template
+- **GitHub CLI** with vim editor and useful aliases
+- **CLI tools**: fzf, direnv, ripgrep, fd, bat, eza, jq, yq, httpie
+
+### Window Management & Automation
+- **AeroSpace** tiling window manager
+- **Karabiner-Elements** (Caps Lock → Hyper key)
+- **Hammerspoon** Lua automation (app launchers, window management)
+
+### Applications
+- **Alfred 5** application launcher (⌘+Space)
+- **Cursor** IDE with custom settings and keybindings
+
+### System Configuration
+- **macOS defaults** for power-user experience
+- **EditorConfig** for consistent coding styles
+
+## Configuration Files
+
+### Scripts
 - `bin/link`: symlink repo configs into `$HOME` (dry-run by default)
 - `bin/bootstrap`: run symlinks; leaves installs to you
-- `macos/defaults.sh`: optional macOS defaults (DRY-RUN unless `--apply`)
+- `bin/cursor-extensions`: manage Cursor extensions
+- `bin/snapshot`: update Brewfile and inventory
+- `bin/hide-apple-apps`: hide/unhide Apple apps
+
+### Core Configuration
 - `Brewfile`: curated apps/tools (run with `brew bundle` manually)
- - `aerospace/aerospace.toml`: tiling window manager config (linked to `~/.aerospace.toml`)
- - `cursor/keybindings.json`: extra Cursor keybindings (linked to Cursor User dir)
- - `cursor/snippets/`: user snippets (linked to Cursor User dir)
- - `git/.gitmessage`: commit template (linked to `~/.gitmessage`)
- - `karabiner/karabiner.json`: Karabiner-Elements config (linked to `~/.config/karabiner/karabiner.json`)
- - `hammerspoon/init.lua`: Hammerspoon config (linked to `~/.hammerspoon/init.lua`)
- - `alfred/Alfred.alfredpreferences`: optional Alfred prefs (linked to Alfred support dir)
+- `runtimes/mise.toml`: runtime manager configuration
+- `shell/.zshrc`: shell configuration with aliases
+- `shell/starship.toml`: prompt configuration
+- `git/.gitconfig`: Git settings and aliases
+- `git/.gitignore_global`: global Git ignore rules
+- `git/.gitmessage`: commit message template
+- `gh/config.yml`: GitHub CLI configuration
 
-Quick start:
-```bash
-# Preview what will be linked
-~/dotfiles/bin/link --dry-run
+### Application Configs
+- `cursor/settings.json`: Cursor IDE settings
+- `cursor/keybindings.json`: Cursor keybindings
+- `cursor/snippets/`: Cursor user snippets
+- `cursor/argv.json`: Cursor command-line arguments
+- `cursor/locale.json`: Cursor locale settings
+- `cursor/tasks.json`: Cursor task configuration
+- `aerospace/aerospace.toml`: tiling window manager config
+- `karabiner/karabiner.json`: Karabiner-Elements config
+- `hammerspoon/init.lua`: Hammerspoon automation
+- `alfred/Alfred.alfredpreferences`: Alfred preferences
+- `.editorconfig`: editor configuration
 
-# Create/overwrite symlinks (backs up real files to ~/.dotfiles_backup_*)
-~/dotfiles/bin/link --apply
-```
-
-Optional:
-```bash
-# Apply macOS defaults (idempotent)
-~/dotfiles/macos/defaults.sh --apply
-
-# Update Brewfile and inventory snapshot
-~/dotfiles/bin/snapshot
-```
-New defaults include: Finder cleanliness (no warnings, text selection), Dock hot corners off, screenshot folder and PNG, expanded save/print panels, local-save default, battery percent, natural scroll, prevent Photos auto-open. All are user-level and reversible by UI.
-
-Manual installs:
-```bash
-# Inspect, then install from curated list
-brew bundle --file ~/dotfiles/Brewfile
-```
-
-Tip: `git-delta` is included; run `brew bundle` to enable the improved pager.
+## Manual Setup Steps
 
 Optional (AeroSpace):
 ```bash
@@ -73,7 +106,11 @@ Optional (Alfred Sync):
 # Note: license and caches are gitignored; do not commit your license.
 ```
 
-Notes:
-- Git identity in `git/.gitconfig` is a placeholder; set your name/email.
-- Cursor settings live at `cursor/settings.json` and are linked by `bin/link`.
-  Keybindings live at `cursor/keybindings.json`.
+## Notes
+
+- Git identity in `git/.gitconfig` is configured for pete/petersag3+commits@gmail.com
+- Cursor settings live at `cursor/settings.json` and are linked by `bin/link`
+- Keybindings live at `cursor/keybindings.json`
+- Use `bin/cursor-extensions snapshot` to save current extensions
+- Use `bin/cursor-extensions install` to install extensions from list
+- macOS defaults include: Finder cleanliness, Dock hot corners off, screenshot folder and PNG, expanded save/print panels, local-save default, battery percent, natural scroll, prevent Photos auto-open. All are user-level and reversible by UI.
