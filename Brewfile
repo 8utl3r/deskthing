@@ -37,8 +37,24 @@ cask "discord"
 cask "docker-desktop"
 # Desktop automation application
 cask "hammerspoon"
+# Utility to hide menu bar items
+cask "hiddenbar"
+# Companion app for Home Assistant home automation software
+cask "home-assistant"
+# Free and open-source media player
+cask "iina"
+# System monitoring for Apple Silicon
+cask "istatistica-core"
+# Menu bar calendar
+cask "itsycal"
 # Keyboard customiser
 cask "karabiner-elements"
+# Discover, download, and run local LLMs
+cask "lm-studio"
+# Software for Logitech devices
+cask "logi-options+"
+# WiFi site survey software and WiFi scanner
+cask "netspot"
 # Virtual machines UI using QEMU
 cask "utm"
 # GPU-accelerated cross-platform terminal emulator and multiplexer

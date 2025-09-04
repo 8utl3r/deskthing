@@ -9,5 +9,6 @@ Karabiner-Elements.app
 Karabiner-EventViewer.app
 Safari.app
 Utilities
+UTM.app
 WezTerm.app
 Zen.app

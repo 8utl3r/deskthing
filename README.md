@@ -43,6 +43,14 @@ brew bundle --file ./Brewfile
 - **Cursor** IDE with custom settings and keybindings
 - **Docker** with CLI and Desktop configuration
 - **UTM** virtualization for Windows apps and games
+- **Hidden Bar** menu bar management
+- **IINA** media player
+- **iStatistica** system monitoring
+- **Itsycal** calendar widget
+- **LM Studio** AI/ML development
+- **Logi Options+** Logitech device management
+- **Home Assistant** smart home automation
+- **NetSpot** Wi-Fi analysis
 
 ### System Configuration
 - **macOS defaults** for power-user experience

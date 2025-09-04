@@ -5,4 +5,5 @@ discord
 docker-desktop
 hammerspoon
 karabiner-elements
+utm
 wezterm
