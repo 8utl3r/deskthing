@@ -7,7 +7,7 @@ hammerspoon
 hiddenbar
 home-assistant
 iina
-istatistica-core
+istat-menus
 itsycal
 karabiner-elements
 lm-studio

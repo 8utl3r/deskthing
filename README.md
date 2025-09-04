@@ -45,7 +45,6 @@ brew bundle --file ./Brewfile
 - **UTM** virtualization for Windows apps and games
 - **Hidden Bar** menu bar management
 - **IINA** media player
-- **iStat Menus** system monitoring
 - **Itsycal** calendar widget
 - **LM Studio** AI/ML development
 - **Logi Options+** Logitech device management
@@ -125,6 +124,13 @@ Optional (Game Porting Toolkit):
 # Download from Apple Developer: https://developer.apple.com/games/
 # Install manually - not available via Homebrew
 # Note: Requires Apple Developer account
+```
+
+Optional (iStatistica Pro):
+```bash
+# Download from App Store or Bjango website
+# Install manually - not available via Homebrew
+# Note: Already purchased, better than iStat Menus
 ```
 
 ## Notes
