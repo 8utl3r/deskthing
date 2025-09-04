@@ -12,5 +12,14 @@ karabiner-elements
 lm-studio
 logi-options+
 netspot
+raspberry-pi-imager
+slimhud
+sony-ps-remote-play
+spotify
+steam
+stremio
+tailscale-app
+telegram
+termius
 utm
 wezterm

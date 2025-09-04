@@ -144,6 +144,9 @@ Optional (iStatistica Pro):
 
 Optional (Manual Installs):
 ```bash
+# Xcode - Download from App Store (iOS/macOS development IDE)
+# WiiM Home - Download from App Store or developer website (WiiM speaker control)
+# XCloud - Download from Microsoft website (Xbox cloud gaming)
 # TestFlight - Download from App Store (Apple's beta testing app)
 # Pokit - Download from developer website (network testing tool)
 # Note: SlimHUD is deprecated and will be disabled on 2026-09-01

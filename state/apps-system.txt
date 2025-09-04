@@ -8,13 +8,25 @@ Hammerspoon.app
 Hidden Bar.app
 Home Assistant.app
 IINA.app
+iStatistica Pro.app
+iStatistica Sensors.app
 Itsycal.app
 Karabiner-Elements.app
 Karabiner-EventViewer.app
+Lasso.app
 LM Studio.app
 logioptionsplus.app
 NetSpot.app
+Raspberry Pi Imager.app
+RemotePlay.app
 Safari.app
+SlimHUD.app
+Spotify.app
+Steam.app
+Stremio.app
+Tailscale.app
+Telegram.app
+Termius.app
 Utilities
 UTM.app
 WezTerm.app

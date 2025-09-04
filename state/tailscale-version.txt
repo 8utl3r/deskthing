@@ -1,0 +1,1 @@
+Error: CLI credentials are not available BadResponse
