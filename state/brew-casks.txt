@@ -1,6 +1,7 @@
 aerospace
 alfred
 bitwarden
+crossover
 discord
 docker-desktop
 hammerspoon

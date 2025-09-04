@@ -42,6 +42,7 @@ brew bundle --file ./Brewfile
 - **Alfred 5** application launcher (⌘+Space)
 - **Cursor** IDE with custom settings and keybindings
 - **Docker** with CLI and Desktop configuration
+- **CrossOver** Windows compatibility for running Windows games and apps
 - **UTM** virtualization for Windows apps and games
 - **Hidden Bar** menu bar management
 - **IINA** media player
@@ -62,7 +63,6 @@ brew bundle --file ./Brewfile
 
 ### System Configuration
 - **macOS defaults** for power-user experience
-- **EditorConfig** for consistent coding styles
 
 ## Configuration Files
 

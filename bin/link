@@ -35,6 +35,7 @@ LINK_PAIRS=(
   "docker/config.json|$HOME/.docker/config.json"
   "docker/daemon.json|$HOME/.docker/daemon.json"
   "docker/persisted-state.json|$HOME/Library/Application Support/Docker Desktop/persisted-state.json"
+  ".editorconfig|$HOME/.editorconfig"
 )
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"

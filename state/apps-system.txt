@@ -1,6 +1,7 @@
 AeroSpace.app
 Alfred 5.app
 Bitwarden.app
+CrossOver.app
 Cursor.app
 Discord.app
 Docker.app
@@ -17,6 +18,7 @@ Lasso.app
 LM Studio.app
 logioptionsplus.app
 NetSpot.app
+Pokit.app
 Raspberry Pi Imager.app
 RemotePlay.app
 Safari.app
@@ -27,7 +29,10 @@ Stremio.app
 Tailscale.app
 Telegram.app
 Termius.app
+TestFlight.app
 Utilities
 UTM.app
 WezTerm.app
+WiiM Home.app
+Xcode.app
 Zen.app
