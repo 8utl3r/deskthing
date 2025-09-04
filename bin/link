@@ -32,6 +32,9 @@ LINK_PAIRS=(
   "hammerspoon/init.lua|$HOME/.hammerspoon/init.lua"
   "gh/config.yml|$HOME/.config/gh/config.yml"
   "alfred/Alfred.alfredpreferences|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences"
+  "docker/config.json|$HOME/.docker/config.json"
+  "docker/daemon.json|$HOME/.docker/daemon.json"
+  "docker/persisted-state.json|$HOME/Library/Application Support/Docker Desktop/persisted-state.json"
 )
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"

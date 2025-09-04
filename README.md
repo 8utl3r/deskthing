@@ -30,6 +30,7 @@ brew bundle --file ./Brewfile
 ### Development Tools
 - **Git** with delta pager, aliases, and commit template
 - **GitHub CLI** with vim editor and useful aliases
+- **Docker** with CLI and Desktop configuration
 - **CLI tools**: fzf, direnv, ripgrep, fd, bat, eza, jq, yq, httpie
 
 ### Window Management & Automation
@@ -71,6 +72,9 @@ brew bundle --file ./Brewfile
 - `cursor/argv.json`: Cursor command-line arguments
 - `cursor/locale.json`: Cursor locale settings
 - `cursor/tasks.json`: Cursor task configuration
+- `docker/config.json`: Docker CLI configuration
+- `docker/daemon.json`: Docker daemon settings
+- `docker/persisted-state.json`: Docker Desktop UI preferences
 - `aerospace/aerospace.toml`: tiling window manager config
 - `karabiner/karabiner.json`: Karabiner-Elements config
 - `hammerspoon/init.lua`: Hammerspoon automation
