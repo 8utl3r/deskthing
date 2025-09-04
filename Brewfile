@@ -43,8 +43,8 @@ cask "hiddenbar"
 cask "home-assistant"
 # Free and open-source media player
 cask "iina"
-# System monitoring for Apple Silicon
-cask "istatistica-core"
+# System monitoring app
+cask "istat-menus"
 # Menu bar calendar
 cask "itsycal"
 # Keyboard customiser

@@ -45,7 +45,7 @@ brew bundle --file ./Brewfile
 - **UTM** virtualization for Windows apps and games
 - **Hidden Bar** menu bar management
 - **IINA** media player
-- **iStatistica** system monitoring
+- **iStat Menus** system monitoring
 - **Itsycal** calendar widget
 - **LM Studio** AI/ML development
 - **Logi Options+** Logitech device management

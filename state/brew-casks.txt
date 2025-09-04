@@ -4,6 +4,14 @@ bitwarden
 discord
 docker-desktop
 hammerspoon
+hiddenbar
+home-assistant
+iina
+istatistica-core
+itsycal
 karabiner-elements
+lm-studio
+logi-options+
+netspot
 utm
 wezterm

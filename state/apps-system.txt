@@ -5,8 +5,16 @@ Cursor.app
 Discord.app
 Docker.app
 Hammerspoon.app
+Hidden Bar.app
+Home Assistant.app
+IINA.app
+iStatistica Core.app
+Itsycal.app
 Karabiner-Elements.app
 Karabiner-EventViewer.app
+LM Studio.app
+logioptionsplus.app
+NetSpot.app
 Safari.app
 Utilities
 UTM.app
