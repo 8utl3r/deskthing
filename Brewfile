@@ -1,88 +1,38 @@
-# Curated fresh-start stack (no installs executed automatically)
-# Philosophy: OSS or one-time purchase where possible; avoid Google; quality first.
-
-# taps
- tap "homebrew/cask"                 # Official casks for macOS GUI apps
- tap "homebrew/cask-fonts"          # Fonts including Nerd Fonts for terminals
- tap "nikitabobko/tap"              # AeroSpace tiling window manager cask
- tap "jdx/mise"                     # mise (rtx) runtime/version manager
-
-# core CLI
- brew "git"                         # Distributed version control
- brew "gh"                          # GitHub CLI for auth/repos/issues/PRs
- brew "gnupg"                       # OpenPGP for signing and encryption
- brew "pinentry-mac"                # macOS passphrase dialog for GPG
- brew "age"                         # Simple, modern file encryption tool
- brew "sops"                        # Encrypted config management using age/GPG
- brew "jq"                          # JSON processor for scripts and CLI
- brew "yq"                          # YAML processor (jq‑like interface)
- brew "ripgrep"                     # Fast recursive code/text search
- brew "fd"                          # User-friendly find (fzf companion)
- brew "fzf"                         # Fuzzy finder for files/commands/history
- brew "bat"                         # cat with syntax highlighting and paging
- brew "eza"                         # Modern ls replacement with icons
- brew "tree"                        # Directory tree listing utility
- brew "htop"                        # Interactive process viewer/monitor
- brew "entr"                        # Run commands when files change
- brew "wget"                        # Robust network downloader
- brew "mas"                         # Mac App Store CLI for pinned installs
- brew "git-delta"                   # Syntax-highlighting pager for git diffs
-
-# prompt & shell helpers
- brew "starship"                    # Cross-shell prompt (fast, customizable)
- brew "direnv"                      # Per-directory envs; pairs well with mise
-
-# runtimes (managed via mise)
- brew "mise"                        # Unified runtime manager (Node/Python/Java)
-
-# containers (lighter host footprint than Docker Desktop)
- brew "colima"                      # Container runtime on macOS via Lima
- brew "docker"                      # Docker CLI client
- brew "docker-buildx"               # Extended multi-platform image builds
- brew "docker-compose"              # Define/run multi-container apps
-
-# networking/dev tools
- brew "nmap"                        # Network scanner and discovery
- brew "httpie"                      # Friendly HTTP client for APIs
-
-# GUI apps (casks)
- cask "cursor"                      # IDE (VS Code-compatible) – your primary
- cask "wezterm"                     # GPU-accelerated, configurable terminal
- cask "karabiner-elements"          # Low-level keyboard remapping
- cask "hammerspoon"                 # Lua-powered macOS automation
- cask "bitwarden"                   # Open-source password manager
- cask "tailscale"                   # Mesh VPN for devices and services
-
-# launcher & window management
- cask "alfred"                   # One-time license launcher; file-based workflows, offline-first
- cask "nikitabobko/tap/aerospace"   # Keyboard-first tiling window manager
- # Lasso (manual install): https://thelasso.app/  # Mouse-driven arrange tool
-
-# writing/notes/productivity
- cask "itsycal"                     # Lightweight menu bar calendar
- brew "task"                      # Taskwarrior CLI task manager (OSS, highly scriptable)
- cask "super-productivity"       # OSS task manager with Kanban/time tracking
-
-# media
- brew "mpv"                        # OSS media player (scriptable, minimal UI)
- cask "iina"                        # Modern video player (mpv-based)
-
-# fonts
- cask "font-ibm-plex-mono"  # Minimal, readable IBM Plex Mono
- cask "font-fira-code"  # Monospace with coding ligatures
- cask "font-source-code-pro"  # Adobe monospace, excellent legibility
- cask "font-cascadia-code"  # Modern monospace from Microsoft, ligatures
- cask "font-inter"  # Clean modern UI text font
- cask "font-ubuntu-mono"  # Readable monospace with soft curves
- cask "font-roboto-mono"  # Google monospace, modern minimal
- cask "font-iosevka"  # Narrow, highly configurable monospace
- cask "font-hack-nerd-font"  # Hack monospace with Nerd symbols
- cask "font-jetbrains-mono-nerd-font"  # Dev font with symbols for terminals
-
-# browsers
- cask "mullvad-browser"        # Privacy-hardened browser (anti-fingerprinting profile)
- # Zen Browser: not in core taps yet; install manually or custom tap.
- # cask "vivaldi"                    # Chromium-based browser (privacy-friendly)
- # cask "eloston-chromium"          # Ungoogled Chromium variant
-
-# End of curated list
+tap "nikitabobko/tap"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Load/unload environment variables based on $PWD
+brew "direnv"
+# Modern, maintained replacement for ls
+brew "eza"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# GitHub command-line tool
+brew "gh"
+# Syntax-highlighting pager for git and diff output
+brew "git-delta"
+# User-friendly cURL replacement (command-line HTTP client)
+brew "httpie"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# Cross-shell prompt for astronauts
+brew "starship"
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
+brew "yq"
+# AeroSpace is an i3-like tiling window manager for macOS
+cask "aerospace"
+# Application launcher and productivity software
+cask "alfred"
+# Desktop automation application
+cask "hammerspoon"
+# Keyboard customiser
+cask "karabiner-elements"
+# GPU-accelerated cross-platform terminal emulator and multiplexer
+cask "wezterm"
+vscode "vscodevim.vim"

@@ -1,0 +1,5 @@
+aerospace
+alfred
+hammerspoon
+karabiner-elements
+wezterm
