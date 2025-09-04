@@ -130,9 +130,9 @@ Optional (Alfred Sync):
 
 Optional (Game Porting Toolkit):
 ```bash
-# Download from Apple Developer: https://developer.apple.com/games/
-# Install manually - not available via Homebrew
-# Note: Requires Apple Developer account
+# Using CrossOver instead - already purchased and installed
+# CrossOver provides Windows compatibility for running Windows games
+# More user-friendly than Game Porting Toolkit
 ```
 
 Optional (iStatistica Pro):
@@ -144,11 +144,11 @@ Optional (iStatistica Pro):
 
 Optional (Manual Installs):
 ```bash
-# Xcode - Download from App Store (iOS/macOS development IDE)
-# WiiM Home - Download from App Store or developer website (WiiM speaker control)
-# XCloud - Download from Microsoft website (Xbox cloud gaming)
-# TestFlight - Download from App Store (Apple's beta testing app)
-# Pokit - Download from developer website (network testing tool)
+# Xcode - Download from App Store (iOS/macOS development IDE) ✅ INSTALLED
+# WiiM Home - Download from App Store or developer website (WiiM speaker control) ✅ INSTALLED
+# XCloud - Download from Microsoft website (Xbox cloud gaming) ✅ INSTALLED
+# TestFlight - Download from App Store (Apple's beta testing app) ✅ INSTALLED
+# Pokit - Download from App Store (iOS version) ✅ INSTALLED
 # Note: SlimHUD is deprecated and will be disabled on 2026-09-01
 ```
 

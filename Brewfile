@@ -31,6 +31,8 @@ cask "aerospace"
 cask "alfred"
 # Desktop password and login vault
 cask "bitwarden"
+# Tool to run Windows software
+cask "crossover"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
