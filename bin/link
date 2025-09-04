@@ -35,6 +35,7 @@ LINK_PAIRS=(
   "docker/config.json|$HOME/.docker/config.json"
   "docker/daemon.json|$HOME/.docker/daemon.json"
   "docker/persisted-state.json|$HOME/Library/Application Support/Docker Desktop/persisted-state.json"
+  "docker/window-management.json|$HOME/Library/Application Support/Docker Desktop/window-management.json"
   ".editorconfig|$HOME/.editorconfig"
 )
 

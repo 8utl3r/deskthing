@@ -93,6 +93,7 @@ brew bundle --file ./Brewfile
 - `docker/config.json`: Docker CLI configuration
 - `docker/daemon.json`: Docker daemon settings
 - `docker/persisted-state.json`: Docker Desktop UI preferences
+- `docker/window-management.json`: Docker Desktop window positions
 - `aerospace/aerospace.toml`: tiling window manager config
 - `karabiner/karabiner.json`: Karabiner-Elements config
 - `hammerspoon/init.lua`: Hammerspoon automation
