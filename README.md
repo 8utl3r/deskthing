@@ -2,6 +2,10 @@
 
 Reproducible, non-destructive macOS setup. Installs are manual by design.
 
+## Status: ✅ Complete
+
+All components installed, configured, and linked. Ready for development!
+
 Contents:
 - `bin/link`: symlink repo configs into `$HOME` (dry-run by default)
 - `bin/bootstrap`: run symlinks; leaves installs to you
