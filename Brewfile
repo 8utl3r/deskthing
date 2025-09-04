@@ -39,6 +39,8 @@ cask "docker-desktop"
 cask "hammerspoon"
 # Keyboard customiser
 cask "karabiner-elements"
+# Virtual machines UI using QEMU
+cask "utm"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
 vscode "vscodevim.vim"

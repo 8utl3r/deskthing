@@ -41,6 +41,8 @@ brew bundle --file ./Brewfile
 ### Applications
 - **Alfred 5** application launcher (⌘+Space)
 - **Cursor** IDE with custom settings and keybindings
+- **Docker** with CLI and Desktop configuration
+- **UTM** virtualization for Windows apps and games
 
 ### System Configuration
 - **macOS defaults** for power-user experience
@@ -108,6 +110,13 @@ Optional (Alfred Sync):
 # After linking, in Alfred Preferences → Advanced → Set preferences folder
 # choose: ~/dotfiles/alfred/Alfred.alfredpreferences
 # Note: license and caches are gitignored; do not commit your license.
+```
+
+Optional (Game Porting Toolkit):
+```bash
+# Download from Apple Developer: https://developer.apple.com/games/
+# Install manually - not available via Homebrew
+# Note: Requires Apple Developer account
 ```
 
 ## Notes
