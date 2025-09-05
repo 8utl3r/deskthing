@@ -1,5 +1,6 @@
 aerospace
 alfred
+android-platform-tools
 bitwarden
 crossover
 discord

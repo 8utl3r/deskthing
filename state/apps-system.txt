@@ -5,6 +5,7 @@ CrossOver.app
 Cursor.app
 Discord.app
 Docker.app
+FreeTube.app
 Hammerspoon.app
 Hidden Bar.app
 Home Assistant.app

@@ -156,6 +156,7 @@ Optional (Manual Installs):
 
 ## Notes
 
+- **Dotfiles Location**: `/Users/pete/dotfiles` (absolute path)
 - Git identity in `git/.gitconfig` is configured for pete/petersag3+commits@gmail.com
 - Cursor settings live at `cursor/settings.json` and are linked by `bin/link`
 - Keybindings live at `cursor/keybindings.json`

@@ -48,6 +48,10 @@ This dotfiles setup follows these principles:
 - **Git UX**: Delta pager, aliases, commit templates
 - **macOS Tweaks**: Power-user defaults for Finder, Dock, keyboard, etc.
 
+## 📁 Project Location
+
+**Absolute Path**: `/Users/pete/dotfiles`
+
 ## 📁 Project Structure
 
 ```
