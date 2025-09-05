@@ -274,6 +274,7 @@ Ctrl+Cmd+E                # focus explorer
 - **jq**: JSON processor
 - **yq**: YAML/XML/CSV processor
 - **httpie**: HTTP client
+- **adb**: Android Debug Bridge
 
 ### Usage Examples
 
@@ -292,6 +293,118 @@ http GET https://api.github.com/user
 # Fuzzy finding
 fzf                       # interactive file finder
 history | fzf             # search command history
+```
+
+## Android Debug Bridge (ADB)
+
+**Installation**: `brew install android-platform-tools`  
+**Purpose**: Android development and device management
+
+### Features
+
+- **Device Management**: Connect to Android devices
+- **App Installation**: Install APK files
+- **File Transfer**: Transfer files to/from devices
+- **Debugging**: Debug Android applications
+- **Shell Access**: Access device shell
+- **Logcat**: View device logs
+
+### Usage
+
+```bash
+# Check ADB version
+adb --version
+
+# List connected devices
+adb devices
+
+# Connect to device
+adb connect <device-ip>
+
+# Install APK
+adb install app.apk
+
+# Uninstall app
+adb uninstall com.package.name
+
+# Transfer files
+adb push local-file /sdcard/remote-file
+adb pull /sdcard/remote-file local-file
+
+# Access device shell
+adb shell
+
+# View logs
+adb logcat
+
+# Clear logs
+adb logcat -c
+
+# Filter logs
+adb logcat | grep "MyApp"
+
+# Reboot device
+adb reboot
+
+# Enable USB debugging (on device)
+# Settings → Developer Options → USB Debugging
+```
+
+### Common Commands
+
+```bash
+# Device management
+adb devices                    # list devices
+adb connect 192.168.1.100     # connect via WiFi
+adb disconnect                # disconnect device
+
+# App management
+adb install app.apk           # install APK
+adb uninstall com.package     # uninstall app
+adb shell pm list packages    # list installed packages
+
+# File operations
+adb push file.txt /sdcard/    # upload file
+adb pull /sdcard/file.txt .   # download file
+adb shell ls /sdcard/         # list files
+
+# Debugging
+adb logcat                    # view logs
+adb shell dumpsys activity    # dump activity info
+adb shell getprop             # get system properties
+```
+
+### Setup Requirements
+
+1. **Enable Developer Options** on Android device:
+   - Settings → About Phone → Tap "Build Number" 7 times
+   
+2. **Enable USB Debugging**:
+   - Settings → Developer Options → USB Debugging
+
+3. **Connect Device**:
+   - USB cable or WiFi ADB
+   - Accept debugging prompt on device
+
+### Troubleshooting
+
+```bash
+# Check if ADB server is running
+adb start-server
+
+# Kill ADB server
+adb kill-server
+
+# Restart ADB server
+adb kill-server && adb start-server
+
+# Check device authorization
+adb devices -l
+
+# Reset device authorization
+adb kill-server
+rm ~/.android/adbkey*
+adb start-server
 ```
 
 ## EditorConfig

@@ -32,6 +32,7 @@ brew bundle --file ./Brewfile
 - **GitHub CLI** with vim editor and useful aliases
 - **Docker** with CLI and Desktop configuration
 - **CLI tools**: fzf, direnv, ripgrep, fd, bat, eza, jq, yq, httpie
+- **Android tools**: ADB (Android Debug Bridge)
 
 ### Window Management & Automation
 - **AeroSpace** tiling window manager

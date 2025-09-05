@@ -29,6 +29,8 @@ brew "yq"
 cask "aerospace"
 # Application launcher and productivity software
 cask "alfred"
+# Android SDK component
+cask "android-platform-tools"
 # Desktop password and login vault
 cask "bitwarden"
 # Tool to run Windows software
