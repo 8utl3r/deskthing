@@ -5,6 +5,7 @@ bitwarden
 crossover
 discord
 docker-desktop
+font-jetbrains-mono-nerd-font
 hammerspoon
 hiddenbar
 home-assistant

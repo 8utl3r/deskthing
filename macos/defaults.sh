@@ -105,6 +105,10 @@ run "defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool tru
 # Networking / AirDrop
 run "defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true"   # AirDrop on all interfaces
 
+# Prevent sleep (optional - uncomment to enable)
+# run "sudo pmset -a sleep 0 displaysleep 0" # Prevent all sleep
+# run "sudo pmset -a displaysleep 0" # Prevent display sleep only
+
 # Privacy/telemetry (user-level; avoids sudo)
 run "defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false"     # personalized ads off
 run "defaults -currentHost write com.apple.AdLib allowApplePersonalizedAdvertising -bool false"
