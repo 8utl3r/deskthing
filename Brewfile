@@ -39,6 +39,7 @@ cask "crossover"
 cask "discord"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
+cask "font-jetbrains-mono-nerd-font"
 # Desktop automation application
 cask "hammerspoon"
 # Utility to hide menu bar items
