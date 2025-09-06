@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "sand-graphics": {
+      "command": "cargo",
+      "args": ["run", "--bin", "sand-mcp"],
+      "cwd": "/Users/pete/sand",
+      "env": {
+        "RUST_LOG": "info"
+      }
+    }
+  }
+}
