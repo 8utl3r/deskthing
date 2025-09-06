@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "sand-graphics": {
-      "command": "cargo",
-      "args": ["run", "--bin", "sand-mcp"],
+      "command": "python3",
+      "args": ["/Users/pete/sand/sand_mcp_server.py"],
       "cwd": "/Users/pete/sand",
       "env": {
         "RUST_LOG": "info"
