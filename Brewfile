@@ -80,4 +80,7 @@ cask "termius"
 cask "utm"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
+vscode "anysphere.cursorpyright"
+vscode "ms-python.debugpy"
+vscode "ms-python.python"
 vscode "vscodevim.vim"

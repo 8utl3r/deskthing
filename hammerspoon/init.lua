@@ -36,6 +36,11 @@ hs.hotkey.bind(hyper, "space", function()
   win:setFrame({x = x, y = y, w = w, h = h})
 end)
 
+-- Screenshot (area selection)
+hs.hotkey.bind(hyper, "s", function()
+  hs.eventtap.keyStroke({"cmd", "shift"}, "4")
+end)
+
 -- Prevent sleep toggle (menubar)
 local caffeine = hs.menubar.new()
 local function setCaffeine(state)
