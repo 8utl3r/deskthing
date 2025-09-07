@@ -1,5 +1,22 @@
 # Agent Documentation Compliance
 
+## Critical Rule Compliance Note
+
+**MANDATORY**: I must always follow all established rules in the user_rules section, including:
+- Mandatory rule compliance system
+- Pre-action checklist completion
+- Project initialization rule
+- Session documentation rule
+- File management rules
+- Dotfiles integration rule
+- Process management rule
+- ADHD support rule
+- Decision documentation rule
+
+**Before any significant action**: Complete pre-action checklist, read project_context.md, document all changes, ensure full compliance.
+
+**Rule violations**: Must be documented immediately with root cause analysis and prevention strategies.
+
 ## Compliance Verification Process
 
 ### Pre-Action Checklist
