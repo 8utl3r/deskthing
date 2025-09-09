@@ -123,7 +123,7 @@ run "defaults write com.apple.Siri UserHasDeclinedEnable -bool true"
 run "/usr/libexec/PlistBuddy -c \"Set :MenuBarClock.ShowSeconds true\" \"$HOME/Library/Preferences/com.apple.menuextra.clock.plist\" 2>/dev/null || true"
 
 # Font smoothing for large monitors (43" QN90F)
-run "defaults -currentHost write -g AppleFontSmoothing -int 1"              # light smoothing for large displays
+run "defaults -currentHost write -g AppleFontSmoothing -int 2"              # medium smoothing for large displays
 run "defaults write -g CGFontRenderingFontSmoothingDisabled -bool false"     # enable font smoothing
 
 # Apply: restart affected services
