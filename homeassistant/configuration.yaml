@@ -1,0 +1,128 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# Home Assistant configuration for macOS dotfiles
+# Includes LG C5 monitor integration and macOS-specific automations
+# Server running at 192.168.0.105
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   use_x_forwarded_for: true
+#   trusted_proxies:
+#     - 127.0.0.1
+#     - ::1
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# LG C5 Monitor Integration (192.168.0.39)
+webostv:
+  - host: 192.168.0.39
+    name: LG C5 Monitor
+    turn_on_action:
+      - service: wake_on_lan.send_magic_packet
+        data:
+          mac: "58:96:0a:c3:1g:5b"
+    turn_off_action:
+      - service: webostv.turn_off
+        target:
+          entity_id: media_player.lg_c5_monitor
+
+# macOS Integration
+# Note: Requires Home Assistant Companion app for macOS
+ios:
+  push:
+    categories:
+      - name: LG Monitor Control
+        identifier: lg_monitor_control
+        actions:
+          - identifier: POWER_ON
+            title: Power On
+          - identifier: POWER_OFF  
+            title: Power Off
+          - identifier: VOLUME_UP
+            title: Volume Up
+          - identifier: VOLUME_DOWN
+            title: Volume Down
+          - identifier: MUTE_TOGGLE
+            title: Mute Toggle
+
+# Automation and script includes
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+group: !include groups.yaml
+
+# Recorder configuration
+recorder:
+  purge_keep_days: 7
+  commit_interval: 1
+  db_url: sqlite:///homeassistant.db
+
+# Logging
+logger:
+  default: info
+  logs:
+    homeassistant.components.webostv: debug
+    custom_components.lg_c5_monitor: debug
+
+# Notify platform for macOS notifications
+notify:
+  - platform: ios
+    name: macos_notifications
+
+# Input selectors for LG C5
+input_select:
+  lg_c5_input:
+    name: LG C5 Input Source
+    options:
+      - HDMI 1
+      - HDMI 2
+      - HDMI 3
+      - HDMI 4
+      - USB
+      - Component
+      - AV
+      - PC
+    initial: HDMI 1
+    icon: mdi:monitor
+
+# Input number for volume control
+input_number:
+  lg_c5_volume:
+    name: LG C5 Volume
+    min: 0
+    max: 100
+    step: 1
+    initial: 50
+    icon: mdi:volume-high
+
+# Binary sensor for dock status
+binary_sensor:
+  - platform: template
+    sensors:
+      mac_docked:
+        friendly_name: "Mac Docked"
+        value_template: "{{ is_state('sensor.mac_dock_status', 'docked') }}"
+        icon_template: "mdi:laptop-dock"
+
+# Sensor for dock status
+sensor:
+  - platform: template
+    sensors:
+      mac_dock_status:
+        friendly_name: "Mac Dock Status"
+        value_template: "{{ 'docked' if states('binary_sensor.mac_docked') == 'on' else 'undocked' }}"
+        icon_template: "mdi:laptop-dock"

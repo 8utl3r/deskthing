@@ -1,0 +1,55 @@
+# Home Assistant Groups for macOS Dotfiles
+# Organize devices and entities into logical groups
+
+# LG C5 Monitor Group
+lg_c5_monitor:
+  name: "LG C5 Monitor"
+  entities:
+    - media_player.lg_c5_monitor
+    - input_select.lg_c5_input
+    - input_number.lg_c5_volume
+    - binary_sensor.mac_docked
+    - sensor.mac_dock_status
+  icon: mdi:monitor
+
+# macOS System Group
+macos_system:
+  name: "macOS System"
+  entities:
+    - binary_sensor.mac_docked
+    - sensor.mac_dock_status
+    - sensor.mac_sleep_status
+  icon: mdi:laptop-mac
+
+# LG C5 Controls Group
+lg_c5_controls:
+  name: "LG C5 Controls"
+  entities:
+    - script.lg_c5_power_toggle
+    - script.lg_c5_volume_up
+    - script.lg_c5_volume_down
+    - script.lg_c5_mute_toggle
+    - script.lg_c5_input_hdmi1
+    - script.lg_c5_input_hdmi2
+    - script.lg_c5_input_hdmi3
+    - script.lg_c5_input_hdmi4
+  icon: mdi:remote
+
+# macOS Integration Group
+macos_integration:
+  name: "macOS Integration"
+  entities:
+    - script.mac_dock_status_check
+    - script.mac_sleep_status_check
+    - notify.macos_notifications
+  icon: mdi:apple
+
+# All Groups
+all_groups:
+  name: "All Groups"
+  entities:
+    - group.lg_c5_monitor
+    - group.macos_system
+    - group.lg_c5_controls
+    - group.macos_integration
+  icon: mdi:view-dashboard

@@ -1,0 +1,69 @@
+# Home Assistant Scenes for macOS Dotfiles
+# Predefined scenes for common LG C5 monitor configurations
+
+# LG C5 Monitor Scenes
+lg_c5_work_mode:
+  name: "LG C5 Work Mode"
+  entities:
+    media_player.lg_c5_monitor:
+      state: "on"
+      source: "HDMI 1"
+    input_number.lg_c5_volume:
+      value: 30
+  icon: mdi:monitor
+
+lg_c5_media_mode:
+  name: "LG C5 Media Mode"
+  entities:
+    media_player.lg_c5_monitor:
+      state: "on"
+      source: "HDMI 2"
+    input_number.lg_c5_volume:
+      value: 60
+  icon: mdi:television
+
+lg_c5_gaming_mode:
+  name: "LG C5 Gaming Mode"
+  entities:
+    media_player.lg_c5_monitor:
+      state: "on"
+      source: "HDMI 3"
+    input_number.lg_c5_volume:
+      value: 50
+  icon: mdi:gamepad-variant
+
+lg_c5_presentation_mode:
+  name: "LG C5 Presentation Mode"
+  entities:
+    media_player.lg_c5_monitor:
+      state: "on"
+      source: "HDMI 4"
+    input_number.lg_c5_volume:
+      value: 40
+  icon: mdi:presentation
+
+lg_c5_sleep_mode:
+  name: "LG C5 Sleep Mode"
+  entities:
+    media_player.lg_c5_monitor:
+      state: "off"
+  icon: mdi:power-sleep
+
+# macOS System Scenes
+macos_docked:
+  name: "macOS Docked"
+  entities:
+    binary_sensor.mac_docked:
+      state: "on"
+    media_player.lg_c5_monitor:
+      state: "on"
+  icon: mdi:laptop-dock
+
+macos_undocked:
+  name: "macOS Undocked"
+  entities:
+    binary_sensor.mac_docked:
+      state: "off"
+    media_player.lg_c5_monitor:
+      state: "off"
+  icon: mdi:laptop

@@ -13,5 +13,6 @@
   "workbench.startupEditor": "none",
   "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
   "cursor.composer.shouldAllowCustomModes": true,
-  "cursor.composer.usageSummaryDisplay": "always"
+  "cursor.composer.usageSummaryDisplay": "always",
+  "workbench.colorTheme": "Solarized Dark"
 }

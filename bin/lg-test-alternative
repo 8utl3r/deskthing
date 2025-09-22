@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""
+LG C5 Test - Alternative Protocol Approaches
+Based on working library research
+"""
+
+import socket
+import sys
+import time
+import json
+from datetime import datetime
+
+def log(message, level="INFO"):
+    timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{timestamp}] {level}: {message}")
+
+def log_raw(data, direction):
+    """Log raw bytes being sent/received"""
+    if isinstance(data, bytes):
+        hex_str = data.hex()
+        ascii_str = ''.join([chr(b) if 32 <= b <= 126 else f'\\x{b:02x}' for b in data])
+        print(f"[RAW {direction}] {hex_str} | {ascii_str}")
+    else:
+        print(f"[RAW {direction}] {data}")
+
+def test_webos_api(tv_ip, tv_port=3000):
+    """Test WebOS API approach"""
+    log(f"Testing WebOS API on {tv_ip}:{tv_port}")
+    
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        sock.connect((tv_ip, tv_port))
+        log("Connected to WebOS API")
+        
+        # Try WebOS API handshake
+        handshake = {
+            "type": "request",
+            "id": 1,
+            "uri": "ssap://system/getSystemInfo"
+        }
+        
+        message = json.dumps(handshake) + "\n"
+        log_raw(message.encode(), "SEND")
+        sock.send(message.encode())
+        
+        # Wait for response
+        sock.settimeout(3)
+        try:
+            response = sock.recv(1024)
+            if response:
+                log_raw(response, "RECV")
+                log(f"WebOS API response: {response.decode('utf-8', errors='ignore')}")
+                return True
+            else:
+                log("No WebOS API response")
+        except socket.timeout:
+            log("WebOS API timeout")
+        
+        sock.close()
+        return False
+        
+    except Exception as e:
+        log(f"WebOS API failed: {e}", "ERROR")
+        return False
+
+def test_simple_tcp(tv_ip, tv_port=9761):
+    """Test simple TCP with different approaches"""
+    log(f"Testing simple TCP on {tv_ip}:{tv_port}")
+    
+    # Different command formats to try
+    test_formats = [
+        # Format 1: Just command
+        b"CURRENT_VOL",
+        # Format 2: Command + CR
+        b"CURRENT_VOL\r",
+        # Format 3: Command + LF
+        b"CURRENT_VOL\n",
+        # Format 4: Command + CRLF
+        b"CURRENT_VOL\r\n",
+        # Format 5: JSON format
+        b'{"command": "CURRENT_VOL"}',
+        # Format 6: Simple protocol
+        b"VOL?",
+        # Format 7: Different command format
+        b"VOLUME_QUERY",
+    ]
+    
+    for i, command in enumerate(test_formats):
+        log(f"\n--- Test Format {i+1} ---")
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(3)
+            sock.connect((tv_ip, tv_port))
+            log("Connected")
+            
+            log_raw(command, "SEND")
+            sock.send(command)
+            
+            # Wait for response
+            sock.settimeout(2)
+            try:
+                response = sock.recv(1024)
+                if response:
+                    log_raw(response, "RECV")
+                    log(f"🎉 SUCCESS! Response: {response.decode('utf-8', errors='ignore')}")
+                    sock.close()
+                    return True
+                else:
+                    log("No response")
+            except socket.timeout:
+                log("Response timeout")
+            
+            sock.close()
+            time.sleep(0.5)
+            
+        except Exception as e:
+            log(f"Test format {i+1} failed: {e}", "ERROR")
+    
+    return False
+
+def test_different_ports(tv_ip):
+    """Test different ports"""
+    ports_to_test = [3000, 3001, 8080, 9761, 9999, 8081, 8082]
+    
+    for port in ports_to_test:
+        log(f"\n=== Testing Port {port} ===")
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(2)
+            sock.connect((tv_ip, port))
+            log(f"Port {port} is open")
+            
+            # Try a simple command
+            sock.send(b"CURRENT_VOL\r")
+            
+            sock.settimeout(1)
+            try:
+                response = sock.recv(1024)
+                if response:
+                    log_raw(response, "RECV")
+                    log(f"🎉 Port {port} responded!")
+                    sock.close()
+                    return port
+            except socket.timeout:
+                log(f"Port {port} no response")
+            
+            sock.close()
+            
+        except Exception as e:
+            log(f"Port {port} failed: {e}")
+    
+    return None
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 lg-test-alternative <tv_ip>")
+        sys.exit(1)
+    
+    tv_ip = sys.argv[1]
+    
+    log(f"Testing alternative approaches for {tv_ip}")
+    
+    # Test 1: WebOS API
+    if test_webos_api(tv_ip):
+        log("✅ WebOS API is working!")
+        return
+    
+    # Test 2: Different ports
+    working_port = test_different_ports(tv_ip)
+    if working_port:
+        log(f"✅ Found working port: {working_port}")
+        return
+    
+    # Test 3: Different command formats
+    if test_simple_tcp(tv_ip):
+        log("✅ Found working command format!")
+        return
+    
+    log("❌ No working approach found")
+
+if __name__ == "__main__":
+    main()

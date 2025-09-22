@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+"""
+LG C5 AES128 Encryption Test
+Tests proper encryption with the keycode
+"""
+
+import socket
+import sys
+from datetime import datetime
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+
+def log(message, level="INFO"):
+    timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{timestamp}] {level}: {message}")
+
+def log_raw(data, direction):
+    """Log raw bytes being sent/received"""
+    if isinstance(data, bytes):
+        hex_str = data.hex()
+        ascii_str = ''.join([chr(b) if 32 <= b <= 126 else f'\\x{b:02x}' for b in data])
+        print(f"[RAW {direction}] {hex_str} | {ascii_str}")
+    else:
+        print(f"[RAW {direction}] {data}")
+
+def encrypt_command(command, keycode):
+    """Encrypt command using AES128 ECB mode"""
+    try:
+        # Pad keycode to 16 bytes for AES128
+        key = keycode.encode('utf-8').ljust(16, b'\x00')[:16]
+        log(f"Using key: {key.hex()}")
+        
+        # Pad command to 16-byte boundary (PKCS7 padding)
+        command_bytes = command.encode('utf-8')
+        padding_length = 16 - (len(command_bytes) % 16)
+        padded_command = command_bytes + bytes([padding_length] * padding_length)
+        
+        log(f"Padded command: {padded_command.hex()}")
+        
+        # Encrypt using AES128 ECB
+        cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
+        encryptor = cipher.encryptor()
+        encrypted = encryptor.update(padded_command) + encryptor.finalize()
+        
+        log(f"Encrypted: {encrypted.hex()}")
+        return encrypted
+        
+    except Exception as e:
+        log(f"Encryption failed: {e}", "ERROR")
+        return command.encode('utf-8')
+
+def decrypt_response(encrypted_data, keycode):
+    """Decrypt response using AES128"""
+    try:
+        key = keycode.encode('utf-8').ljust(16, b'\x00')[:16]
+        cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
+        decryptor = cipher.decryptor()
+        decrypted = decryptor.update(encrypted_data) + decryptor.finalize()
+        
+        # Remove PKCS7 padding
+        padding_length = decrypted[-1]
+        if padding_length <= 16:
+            decrypted = decrypted[:-padding_length]
+        
+        log(f"Decrypted: {decrypted.hex()} -> '{decrypted.decode('utf-8', errors='ignore')}'")
+        return decrypted
+        
+    except Exception as e:
+        log(f"Decryption failed: {e}", "ERROR")
+        return encrypted_data
+
+def test_encrypted_connection(tv_ip, tv_port=9761, keycode="QDF6T3HV"):
+    """Test encrypted connection to TV"""
+    log(f"Testing encrypted connection to {tv_ip}:{tv_port}")
+    log(f"Using keycode: {keycode}")
+    
+    try:
+        # Connect
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        sock.connect((tv_ip, tv_port))
+        log("Connected successfully")
+        
+        # Test encrypted command
+        log("=== Testing Encrypted Command ===")
+        command = "CURRENT_VOL"
+        encrypted_command = encrypt_command(command, keycode)
+        
+        log_raw(encrypted_command, "SEND")
+        sock.send(encrypted_command)
+        sock.send(b'\x0D')  # Carriage return
+        
+        # Try to receive response (responses end with 0A)
+        sock.settimeout(5)
+        try:
+            response = b""
+            while True:
+                chunk = sock.recv(1024)
+                if not chunk:
+                    break
+                response += chunk
+                # Check if response ends with 0A (line feed)
+                if response.endswith(b'\x0A'):
+                    break
+            
+            if response:
+                log_raw(response, "RECV")
+                # Remove the 0A delimiter before decrypting
+                encrypted_data = response.rstrip(b'\x0A')
+                if encrypted_data:
+                    decrypted_response = decrypt_response(encrypted_data, keycode)
+                    log(f"Final response: {decrypted_response.decode('utf-8', errors='ignore')}")
+                else:
+                    log("Empty response after removing delimiter")
+            else:
+                log("No response received")
+        except socket.timeout:
+            log("Response timeout")
+        
+        # Test another command
+        log("\n=== Testing Volume Up Command ===")
+        command = "KEY_ACTION volumeup"
+        encrypted_command = encrypt_command(command, keycode)
+        
+        log_raw(encrypted_command, "SEND")
+        sock.send(encrypted_command)
+        sock.send(b'\x0D')
+        
+        try:
+            response = b""
+            while True:
+                chunk = sock.recv(1024)
+                if not chunk:
+                    break
+                response += chunk
+                # Check if response ends with 0A (line feed)
+                if response.endswith(b'\x0A'):
+                    break
+            
+            if response:
+                log_raw(response, "RECV")
+                # Remove the 0A delimiter before decrypting
+                encrypted_data = response.rstrip(b'\x0A')
+                if encrypted_data:
+                    decrypted_response = decrypt_response(encrypted_data, keycode)
+                    log(f"Final response: {decrypted_response.decode('utf-8', errors='ignore')}")
+                else:
+                    log("Empty response after removing delimiter")
+            else:
+                log("No response received")
+        except socket.timeout:
+            log("Response timeout")
+        
+        sock.close()
+        log("Connection closed")
+        
+    except Exception as e:
+        log(f"Connection failed: {e}", "ERROR")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python3 lg-test-encrypted <tv_ip> [keycode]")
+        sys.exit(1)
+    
+    tv_ip = sys.argv[1]
+    keycode = sys.argv[2] if len(sys.argv) > 2 else "QDF6T3HV"
+    
+    test_encrypted_connection(tv_ip, keycode=keycode)

@@ -27,6 +27,7 @@ LINK_PAIRS=(
   "cursor/argv.json|$HOME/Library/Application Support/Cursor/argv.json"
   "cursor/locale.json|$HOME/Library/Application Support/Cursor/User/locale.json"
   "cursor/tasks.json|$HOME/Library/Application Support/Cursor/User/tasks.json"
+  "cursor/mcp.json|$HOME/.cursor/mcp.json"
   "aerospace/aerospace.toml|$HOME/.aerospace.toml"
   "karabiner/karabiner.json|$HOME/.config/karabiner/karabiner.json"
   "hammerspoon/init.lua|$HOME/.hammerspoon/init.lua"
@@ -36,6 +37,11 @@ LINK_PAIRS=(
   "docker/daemon.json|$HOME/.docker/daemon.json"
   "docker/persisted-state.json|$HOME/Library/Application Support/Docker Desktop/persisted-state.json"
   "docker/window-management.json|$HOME/Library/Application Support/Docker Desktop/window-management.json"
+  "homeassistant/configuration.yaml|$HOME/.homeassistant/configuration.yaml"
+  "homeassistant/automations.yaml|$HOME/.homeassistant/automations.yaml"
+  "homeassistant/scripts.yaml|$HOME/.homeassistant/scripts.yaml"
+  "homeassistant/groups.yaml|$HOME/.homeassistant/groups.yaml"
+  "homeassistant/scenes.yaml|$HOME/.homeassistant/scenes.yaml"
   ".editorconfig|$HOME/.editorconfig"
 )
 

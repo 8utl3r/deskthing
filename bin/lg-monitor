@@ -1,0 +1,356 @@
+#!/usr/bin/env python3
+"""
+LG C5 Monitor Control
+Clean, robust control script for LG C5 monitor via Network IP Control protocol
+"""
+
+import argparse
+import socket
+import time
+import sys
+import subprocess
+import os
+from typing import Optional, Tuple
+
+class LGMonitorController:
+    def __init__(self, ip_address: str, port: int = 9761, require_dock: bool = True):
+        self.ip_address = ip_address
+        self.port = port
+        self.require_dock = require_dock
+        self.socket = None
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.connected = False
+        self.last_activity = 0
+        self.CONNECTION_TIMEOUT = 30  # Keep connection alive for 30 seconds
+        
+    def log(self, message: str, level: str = "INFO"):
+        """Log message with timestamp"""
+        timestamp = time.strftime("%H:%M:%S")
+        print(f"[{timestamp}] {level}: {message}")
+        
+    def check_dock_connection(self) -> bool:
+        """Check if dock is connected (if required)"""
+        if not self.require_dock:
+            return True
+        
+        try:
+            dock_script = os.path.join(self.script_dir, "dock-detector-simple")
+            if not os.path.exists(dock_script):
+                self.log(f"Dock detector script not found: {dock_script}", "ERROR")
+                return False
+                
+            result = subprocess.run(
+                [dock_script],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=5
+            )
+            
+            if result.returncode == 0:
+                self.log("Dock detected - LG C5 control enabled")
+                return True
+            else:
+                self.log("No dock detected - LG C5 control disabled")
+                return False
+                
+        except subprocess.TimeoutExpired:
+            self.log("Dock detection timed out", "ERROR")
+            return False
+        except Exception as e:
+            self.log(f"Dock detection failed: {e}", "ERROR")
+            return False
+    
+    def connect(self) -> bool:
+        """Establish connection to LG TV"""
+        # Check dock connection first
+        if not self.check_dock_connection():
+            return False
+        
+        try:
+            self.log(f"Connecting to {self.ip_address}:{self.port}")
+            
+            # Create socket connection
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.settimeout(5)  # Shorter timeout for faster failure
+            self.socket.connect((self.ip_address, self.port))
+            
+            self.connected = True
+            self.log("Connected successfully")
+            return True
+            
+        except socket.timeout:
+            self.log("Connection timed out", "ERROR")
+            return False
+        except ConnectionRefusedError:
+            self.log("Connection refused - TV may be off or port not open", "ERROR")
+            return False
+        except Exception as e:
+            self.log(f"Connection failed: {e}", "ERROR")
+            return False
+    
+    def disconnect(self):
+        """Close connection"""
+        if self.socket:
+            try:
+                self.socket.close()
+                self.log("Disconnected")
+            except:
+                pass
+            finally:
+                self.socket = None
+                self.connected = False
+    
+    def send_command(self, command: str, expect_response: bool = False) -> Tuple[bool, Optional[str]]:
+        """Send command to LG TV"""
+        if not self.socket:
+            self.log("Not connected to TV", "ERROR")
+            return False, None
+            
+        try:
+            self.log(f"Sending command: {command}")
+            
+            # Send command as plain text
+            command_bytes = command.encode('utf-8')
+            self.socket.send(command_bytes)
+            
+            # Add carriage return (0x0D) as postfix
+            self.socket.send(b'\x0D')
+            
+            if expect_response:
+                # Wait for response (terminated by 0x0A)
+                response = b""
+                start_time = time.time()
+                
+                while time.time() - start_time < 3:  # Shorter timeout
+                    try:
+                        data = self.socket.recv(1024)
+                        if not data:
+                            break
+                        response += data
+                        if b'\x0A' in response:
+                            break
+                    except socket.timeout:
+                        break
+                
+                if response:
+                    response_str = response.decode('utf-8', errors='ignore')
+                    self.log(f"Received response: {response_str}")
+                    return True, response_str
+                else:
+                    self.log("No response received", "WARNING")
+                    return True, None
+            
+            self.log("Command sent successfully")
+            return True, "OK"
+            
+        except Exception as e:
+            self.log(f"Command failed: {e}", "ERROR")
+            return False, None
+    
+    def power_on(self) -> bool:
+        """Turn TV on using Wake-on-LAN"""
+        self.log("Turning LG C5 on via Wake-on-LAN")
+        try:
+            wol_script = os.path.join(self.script_dir, "lg-monitor-wol")
+            if not os.path.exists(wol_script):
+                self.log("Wake-on-LAN script not found", "ERROR")
+                return False
+                
+            result = subprocess.run(
+                [wol_script, self.ip_address, "on", "--no-dock-check"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=10
+            )
+            
+            if result.returncode == 0:
+                self.log("Wake-on-LAN command sent successfully")
+                return True
+            else:
+                self.log(f"Wake-on-LAN failed: {result.stderr}", "ERROR")
+                return False
+                
+        except subprocess.TimeoutExpired:
+            self.log("Wake-on-LAN timed out", "ERROR")
+            return False
+        except Exception as e:
+            self.log(f"Wake-on-LAN failed: {e}", "ERROR")
+            return False
+    
+    def power_off(self) -> bool:
+        """Turn TV off"""
+        self.log("Turning LG C5 off")
+        success, _ = self.send_command("POWER off")
+        return success
+    
+    def volume_up(self) -> bool:
+        """Increase volume"""
+        self.log("Volume up")
+        success, _ = self.send_command("KEY_ACTION volumeup")
+        return success
+    
+    def volume_down(self) -> bool:
+        """Decrease volume"""
+        self.log("Volume down")
+        success, _ = self.send_command("KEY_ACTION volumedown")
+        return success
+    
+    def mute(self) -> bool:
+        """Mute TV"""
+        self.log("Muting")
+        success, _ = self.send_command("VOLUME_MUTE on")
+        return success
+    
+    def unmute(self) -> bool:
+        """Unmute TV"""
+        self.log("Unmuting")
+        success, _ = self.send_command("VOLUME_MUTE off")
+        return success
+    
+    def set_input(self, input_name: str) -> bool:
+        """Change input source"""
+        self.log(f"Switching to {input_name} input")
+        success, _ = self.send_command(f"KEY_ACTION {input_name}")
+        return success
+    
+    def get_volume(self) -> Optional[int]:
+        """Get current volume"""
+        self.log("Getting volume")
+        success, response = self.send_command("VOLUME", expect_response=True)
+        if success and response and "VOL:" in response:
+            try:
+                volume_str = response.split("VOL:")[1].strip()
+                volume = int(volume_str)
+                self.log(f"Current volume: {volume}")
+                return volume
+            except ValueError:
+                self.log(f"Invalid volume response: {response}", "ERROR")
+        return None
+    
+    def get_mute_status(self) -> Optional[bool]:
+        """Get mute status"""
+        self.log("Getting mute status")
+        success, response = self.send_command("MUTE", expect_response=True)
+        if success and response and "MUTE:" in response:
+            muted = "on" in response.lower()
+            self.log(f"Mute status: {'ON' if muted else 'OFF'}")
+            return muted
+        return None
+    
+    def get_info(self) -> Optional[dict]:
+        """Get TV information"""
+        self.log("Getting TV information")
+        volume = self.get_volume()
+        mute = self.get_mute_status()
+        info = {
+            "volume": volume,
+            "mute": mute,
+            "power": "ON" if self.socket else "OFF",
+            "ip": self.ip_address,
+            "port": self.port
+        }
+        self.log(f"TV Status: {info}")
+        return info
+
+def main():
+    parser = argparse.ArgumentParser(description="Control LG C5 Monitor")
+    parser.add_argument("ip", help="LG C5 IP address")
+    parser.add_argument("command", choices=[
+        "on", "off", "volumeup", "volumedown", "volume", "mute", "unmute", "input", "info", "test"
+    ], help="Command to execute")
+    parser.add_argument("--value", help="Value for input name")
+    parser.add_argument("--port", type=int, default=9761, help="IP Control port (default: 9761)")
+    parser.add_argument("--no-dock-check", action="store_true", 
+                       help="Skip dock detection (not recommended)")
+    parser.add_argument("--verbose", "-v", action="store_true", 
+                       help="Enable verbose logging")
+    
+    args = parser.parse_args()
+    
+    controller = LGMonitorController(args.ip, args.port, not args.no_dock_check)
+    
+    try:
+        if args.command == "test":
+            # Just test connection
+            if controller.connect():
+                controller.log("Connection test successful!")
+                controller.disconnect()
+                sys.exit(0)
+            else:
+                controller.log("Connection test failed!")
+                sys.exit(1)
+                
+        elif args.command == "on":
+            # Use Wake-on-LAN for power on
+            if controller.power_on():
+                controller.log("Power on command sent successfully")
+                sys.exit(0)
+            else:
+                controller.log("Power on command failed")
+                sys.exit(1)
+                
+        else:
+            # Connect for other commands
+            if not controller.connect():
+                controller.log("Failed to connect to TV")
+                sys.exit(1)
+            
+            try:
+                success = False
+                if args.command == "off":
+                    success = controller.power_off()
+                elif args.command == "volumeup":
+                    success = controller.volume_up()
+                elif args.command == "volumedown":
+                    success = controller.volume_down()
+                elif args.command == "volume":
+                    if args.value:
+                        # For now, just log that direct volume setting isn't supported
+                        controller.log("Direct volume setting not supported - use volumeup/volumedown")
+                        success = True
+                    else:
+                        volume = controller.get_volume()
+                        if volume is not None:
+                            controller.log(f"Current volume: {volume}")
+                            success = True
+                        else:
+                            success = False
+                elif args.command == "mute":
+                    success = controller.mute()
+                elif args.command == "unmute":
+                    success = controller.unmute()
+                elif args.command == "input":
+                    if not args.value:
+                        controller.log("Input name required (e.g., hdmi1, hdmi2)", "ERROR")
+                        success = False
+                    else:
+                        success = controller.set_input(args.value)
+                elif args.command == "info":
+                    info = controller.get_info()
+                    if info:
+                        controller.log(f"TV Status: {info}")
+                    success = info is not None
+                
+                if success:
+                    controller.log("Command executed successfully")
+                    sys.exit(0)
+                else:
+                    controller.log("Command failed")
+                    sys.exit(1)
+                    
+            finally:
+                controller.disconnect()
+                
+    except KeyboardInterrupt:
+        controller.log("Interrupted by user")
+        controller.disconnect()
+        sys.exit(1)
+    except Exception as e:
+        controller.log(f"Unexpected error: {e}", "ERROR")
+        controller.disconnect()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

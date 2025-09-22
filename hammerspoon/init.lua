@@ -52,3 +52,6 @@ if caffeine then
   end)
   setCaffeine(hs.caffeinate.get("displayIdle"))
 end
+
+-- Load LG Monitor Control (new menu bar system)
+require("lg-menu")

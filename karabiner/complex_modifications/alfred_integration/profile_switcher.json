@@ -1,0 +1,45 @@
+{
+  "title": "Alfred Karabiner Profile Switcher",
+  "rules": [
+    {
+      "description": "Hyper Key + P for Profile Switching (Alfred trigger)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "p",
+            "modifiers": {
+              "mandatory": ["left_command", "left_control", "left_option", "left_shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "p",
+              "modifiers": ["left_command", "left_control", "left_option", "left_shift"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Hyper Key + K for Karabiner Toggle",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "k",
+            "modifiers": {
+              "mandatory": ["left_command", "left_control", "left_option", "left_shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "k",
+              "modifiers": ["left_command", "left_control", "left_option", "left_shift"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

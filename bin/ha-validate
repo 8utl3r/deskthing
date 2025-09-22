@@ -1,0 +1,188 @@
+#!/usr/bin/env bash
+# Home Assistant Configuration Validator
+# Validates YAML syntax and Home Assistant configuration
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+usage() {
+    echo "Usage: $0 [OPTIONS] [FILE...]"
+    echo "Options:"
+    echo "  --all         Validate all Home Assistant configuration files"
+    echo "  --help        Show this help message"
+    echo ""
+    echo "If no files are specified, validates all HA config files"
+}
+
+validate_yaml_syntax() {
+    local file="$1"
+    echo -e "${BLUE}Validating YAML syntax: $file${NC}"
+    
+    if command -v yq >/dev/null 2>&1; then
+        if yq eval '.' "$file" >/dev/null 2>&1; then
+            echo -e "${GREEN}✓ YAML syntax is valid${NC}"
+            return 0
+        else
+            echo -e "${RED}✗ YAML syntax error${NC}"
+            yq eval '.' "$file" 2>&1 | head -5
+            return 1
+        fi
+    else
+        echo -e "${YELLOW}Warning: yq not found, using basic YAML check${NC}"
+        # Basic YAML validation using Python
+        if python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
+            echo -e "${GREEN}✓ YAML syntax is valid${NC}"
+            return 0
+        else
+            echo -e "${RED}✗ YAML syntax error${NC}"
+            return 1
+        fi
+    fi
+}
+
+validate_ha_config() {
+    local file="$1"
+    echo -e "${BLUE}Validating Home Assistant config: $file${NC}"
+    
+    # Check for common HA configuration issues
+    local issues=()
+    
+    # Check for proper indentation (should be 2 spaces)
+    if grep -q "^[[:space:]]*[^[:space:]]" "$file" && ! grep -q "^[[:space:]]*[^[:space:]]" "$file" | grep -q "^  "; then
+        issues+=("Inconsistent indentation detected")
+    fi
+    
+    # Check for common typos in HA config
+    if grep -qi "automation:" "$file" && ! grep -q "automation: !include" "$file"; then
+        issues+=("Consider using 'automation: !include automations.yaml'")
+    fi
+    
+    if grep -qi "script:" "$file" && ! grep -q "script: !include" "$file"; then
+        issues+=("Consider using 'script: !include scripts.yaml'")
+    fi
+    
+    # Check for secrets usage
+    if grep -q "!secret" "$file"; then
+        echo -e "${YELLOW}ℹ Contains secrets references${NC}"
+    fi
+    
+    if [[ ${#issues[@]} -eq 0 ]]; then
+        echo -e "${GREEN}✓ No obvious configuration issues${NC}"
+        return 0
+    else
+        for issue in "${issues[@]}"; do
+            echo -e "${YELLOW}⚠ $issue${NC}"
+        done
+        return 1
+    fi
+}
+
+validate_file() {
+    local file="$1"
+    local basename=$(basename "$file")
+    
+    echo -e "${BLUE}=== Validating $basename ===${NC}"
+    
+    local yaml_ok=false
+    local ha_ok=false
+    
+    if validate_yaml_syntax "$file"; then
+        yaml_ok=true
+    fi
+    
+    if validate_ha_config "$file"; then
+        ha_ok=true
+    fi
+    
+    if [[ "$yaml_ok" == "true" && "$ha_ok" == "true" ]]; then
+        echo -e "${GREEN}✓ $basename is valid${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ $basename has issues${NC}"
+        return 1
+    fi
+}
+
+main() {
+    local files=()
+    local validate_all=false
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --all)
+                validate_all=true
+                shift
+                ;;
+            --help)
+                usage
+                exit 0
+                ;;
+            -*)
+                echo "Unknown option: $1"
+                usage
+                exit 1
+                ;;
+            *)
+                files+=("$1")
+                shift
+                ;;
+        esac
+    done
+    
+    # Get script directory
+    script_dir="$(cd "$(dirname "$0")" && pwd)"
+    ha_dir="$script_dir/homeassistant"
+    
+    if [[ "$validate_all" == "true" || ${#files[@]} -eq 0 ]]; then
+        if [[ ! -d "$ha_dir" ]]; then
+            echo -e "${RED}Error: Home Assistant directory not found at $ha_dir${NC}"
+            exit 1
+        fi
+        
+        # Find all YAML files in homeassistant directory
+        while IFS= read -r -d '' file; do
+            files+=("$file")
+        done < <(find "$ha_dir" -name "*.yaml" -print0)
+    fi
+    
+    if [[ ${#files[@]} -eq 0 ]]; then
+        echo -e "${RED}Error: No files to validate${NC}"
+        exit 1
+    fi
+    
+    echo -e "${GREEN}Home Assistant Configuration Validator${NC}"
+    echo ""
+    
+    local failed_files=()
+    
+    for file in "${files[@]}"; do
+        if [[ ! -f "$file" ]]; then
+            echo -e "${RED}Error: File not found: $file${NC}"
+            failed_files+=("$file")
+            continue
+        fi
+        
+        if ! validate_file "$file"; then
+            failed_files+=("$file")
+        fi
+        
+        echo ""
+    done
+    
+    if [[ ${#failed_files[@]} -eq 0 ]]; then
+        echo -e "${GREEN}✓ All files validated successfully${NC}"
+        exit 0
+    else
+        echo -e "${RED}✗ Validation failed for: ${failed_files[*]}${NC}"
+        exit 1
+    fi
+}
+
+main "$@"

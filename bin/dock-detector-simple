@@ -1,0 +1,12 @@
+#!/bin/bash
+# Simple dock detection script for LG C5 monitor control
+# Detects ASIX Ethernet adapter (common in docks)
+
+# Check for ASIX Ethernet adapter
+if ioreg -p IOUSB -w0 -l | grep -q "AX88179A"; then
+    echo "✅ Dock connected - LG C5 control enabled"
+    exit 0
+else
+    echo "❌ No dock detected - LG C5 control disabled"
+    exit 1
+fi

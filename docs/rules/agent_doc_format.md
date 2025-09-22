@@ -71,3 +71,18 @@ High-level technical architecture and key components
 - **Update in Place**: Modify existing files
 - **Version History**: Include at top of files
 - **Cross-References**: Link between related files
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

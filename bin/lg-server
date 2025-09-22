@@ -1,0 +1,352 @@
+#!/usr/bin/env python3
+"""
+LG C5 Persistent Control Server
+Based on Savant Blueprint profile analysis
+
+Features:
+- Persistent TCP connection to LG C5 (port 9761)
+- Real-time state tracking (power, volume, mute, input)
+- Command queue with proper delays
+- Automatic reconnection on connection loss
+- Debug logging and monitoring
+- Hammerspoon integration via status file
+"""
+
+import socket
+import time
+import threading
+import json
+import os
+import sys
+import signal
+import argparse
+from typing import Optional, Dict, Any
+from queue import Queue, Empty
+from dataclasses import dataclass, asdict
+from datetime import datetime
+
+@dataclass
+class TVState:
+    """Current TV state tracking"""
+    power: str = "UNKNOWN"
+    volume: int = 0
+    mute: str = "UNKNOWN"
+    input_source: str = "UNKNOWN"
+    last_update: str = ""
+    connection_status: str = "DISCONNECTED"
+    last_command: str = ""
+    last_response: str = ""
+
+class LGServer:
+    def __init__(self, ip_address: str, port: int = 9761, keycode: str = "QDF6T3HV"):
+        self.ip_address = ip_address
+        self.port = port
+        self.keycode = keycode
+        self.socket: Optional[socket.socket] = None
+        self.connected = False
+        self.running = False
+        self.state = TVState()
+        self.command_queue = Queue()
+        self.status_file = "/tmp/lg-server-status.json"
+        self.log_file = "/tmp/lg-server.log"
+        
+        # Savant profile timing requirements
+        self.command_delays = {
+            "power_on": 14.0,    # Wake-on-LAN delay
+            "power_off": 15.0,   # Power off delay
+            "volume_query": 1.0, # Volume query delay
+            "key_action": 0.2,   # Key action delay
+            "input_switch": 0.5, # Input switch delay
+        }
+        
+        # Command mappings from Savant profile
+        self.commands = {
+            "power_on": "WakeOnLAN_Port_9",  # Special WoL command
+            "power_off": "POWER off",
+            "volume_up": "KEY_ACTION volumeup",
+            "volume_down": "KEY_ACTION volumedown", 
+            "mute": "KEY_ACTION mute",
+            "unmute": "KEY_ACTION mute",  # Toggle
+            "input_hdmi1": "KEY_ACTION hdmi1",
+            "input_hdmi2": "KEY_ACTION hdmi2",
+            "input_hdmi3": "KEY_ACTION hdmi3",
+            "input_hdmi4": "KEY_ACTION hdmi4",
+            "query_volume": "CURRENT_VOL",
+            "query_power": "POWER_STATUS",
+            "query_input": "CURRENT_INPUT",
+        }
+        
+        # Setup signal handlers
+        signal.signal(signal.SIGINT, self._signal_handler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
+        
+    def log(self, message: str, level: str = "INFO"):
+        """Log with timestamp"""
+        timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        log_entry = f"[{timestamp}] {level}: {message}"
+        print(log_entry)
+        
+        # Also write to log file
+        try:
+            with open(self.log_file, "a") as f:
+                f.write(log_entry + "\n")
+        except:
+            pass
+            
+    def _signal_handler(self, signum, frame):
+        """Handle shutdown signals"""
+        self.log(f"Received signal {signum}, shutting down...")
+        self.running = False
+        self.disconnect()
+        sys.exit(0)
+        
+    def connect(self) -> bool:
+        """Establish persistent connection to TV"""
+        try:
+            self.log(f"Connecting to {self.ip_address}:{self.port}")
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.settimeout(10)  # Connection timeout
+            
+            self.socket.connect((self.ip_address, self.port))
+            self.socket.settimeout(5)   # Command timeout
+            
+            self.connected = True
+            self.state.connection_status = "CONNECTED"
+            self.state.last_update = datetime.now().isoformat()
+            self.log("Connected successfully")
+            self._update_status_file()
+            return True
+            
+        except Exception as e:
+            self.log(f"Connection failed: {e}", "ERROR")
+            self.connected = False
+            self.state.connection_status = "DISCONNECTED"
+            self._update_status_file()
+            return False
+            
+    def disconnect(self):
+        """Close connection"""
+        if self.socket:
+            try:
+                self.socket.close()
+                self.log("Disconnected")
+            except:
+                pass
+            finally:
+                self.socket = None
+                self.connected = False
+                self.state.connection_status = "DISCONNECTED"
+                self._update_status_file()
+                
+    def send_command(self, command: str, expect_response: bool = False) -> tuple[bool, Optional[str]]:
+        """Send command with proper protocol"""
+        if not self.connected or not self.socket:
+            self.log("Not connected to TV", "ERROR")
+            return False, None
+            
+        try:
+            self.log(f"Sending command: {command}")
+            self.state.last_command = command
+            
+            # Send command with carriage return postfix (Savant profile requirement)
+            command_bytes = command.encode('utf-8')
+            self.socket.send(command_bytes)
+            self.socket.send(b'\x0D')  # Carriage return postfix
+            
+            if expect_response:
+                response = b""
+                start_time = time.time()
+                timeout = 5.0  # Savant profile: 5000ms for volume queries
+                
+                while time.time() - start_time < timeout:
+                    try:
+                        data = self.socket.recv(1024)
+                        if not data:
+                            break
+                        response += data
+                        # Savant profile: end on \x0A (line feed)
+                        if b'\x0A' in response:
+                            break
+                    except socket.timeout:
+                        break
+                        
+                if response:
+                    response_str = response.decode('utf-8', errors='ignore').strip()
+                    self.log(f"Received response: {response_str}")
+                    self.state.last_response = response_str
+                    self._parse_response(response_str)
+                    return True, response_str
+                else:
+                    self.log("No response received", "WARNING")
+                    return True, None
+            else:
+                self.log("Command sent successfully")
+                return True, "OK"
+                
+        except Exception as e:
+            self.log(f"Command failed: {e}", "ERROR")
+            self.connected = False
+            self.state.connection_status = "ERROR"
+            return False, None
+            
+    def _parse_response(self, response: str):
+        """Parse TV responses to update state"""
+        if response.startswith("VOL:"):
+            try:
+                volume = int(response.split(":")[1])
+                self.state.volume = volume
+                self.log(f"Volume updated: {volume}")
+            except:
+                pass
+        elif "POWER" in response.upper():
+            if "ON" in response.upper():
+                self.state.power = "ON"
+            elif "OFF" in response.upper():
+                self.state.power = "OFF"
+            self.log(f"Power status updated: {self.state.power}")
+        elif "HDMI" in response.upper():
+            self.state.input_source = response
+            self.log(f"Input updated: {response}")
+            
+        self.state.last_update = datetime.now().isoformat()
+        self._update_status_file()
+        
+    def _update_status_file(self):
+        """Update status file for Hammerspoon integration"""
+        try:
+            status_data = {
+                "state": asdict(self.state),
+                "timestamp": datetime.now().isoformat(),
+                "server_running": self.running
+            }
+            with open(self.status_file, "w") as f:
+                json.dump(status_data, f, indent=2)
+        except Exception as e:
+            self.log(f"Failed to update status file: {e}", "ERROR")
+            
+    def queue_command(self, command_name: str, delay: Optional[float] = None):
+        """Queue command for execution"""
+        if command_name not in self.commands:
+            self.log(f"Unknown command: {command_name}", "ERROR")
+            return
+            
+        command_data = {
+            "name": command_name,
+            "command": self.commands[command_name],
+            "delay": delay or self.command_delays.get(command_name, 0.2),
+            "timestamp": time.time()
+        }
+        
+        self.command_queue.put(command_data)
+        self.log(f"Queued command: {command_name}")
+        
+    def _command_worker(self):
+        """Background worker for command execution"""
+        while self.running:
+            try:
+                # Get command from queue with timeout
+                command_data = self.command_queue.get(timeout=1.0)
+                
+                # Execute command
+                success, response = self.send_command(
+                    command_data["command"], 
+                    expect_response=command_data["name"].startswith("query_")
+                )
+                
+                if success:
+                    self.log(f"Command '{command_data['name']}' executed successfully")
+                else:
+                    self.log(f"Command '{command_data['name']}' failed", "ERROR")
+                    
+                # Apply delay as per Savant profile
+                if command_data["delay"] > 0:
+                    time.sleep(command_data["delay"])
+                    
+                self.command_queue.task_done()
+                
+            except Empty:
+                continue
+            except Exception as e:
+                self.log(f"Command worker error: {e}", "ERROR")
+                
+    def _monitor_worker(self):
+        """Background worker for periodic monitoring"""
+        while self.running:
+            try:
+                if self.connected:
+                    # Query current state periodically
+                    self.queue_command("query_volume", delay=0.1)
+                    time.sleep(30)  # Query every 30 seconds
+                else:
+                    # Try to reconnect
+                    self.log("Attempting to reconnect...")
+                    if self.connect():
+                        self.log("Reconnected successfully")
+                    else:
+                        time.sleep(5)  # Wait before retry
+                        
+            except Exception as e:
+                self.log(f"Monitor worker error: {e}", "ERROR")
+                time.sleep(5)
+                
+    def start(self):
+        """Start the server"""
+        self.log("Starting LG C5 Control Server")
+        self.running = True
+        
+        # Connect to TV
+        if not self.connect():
+            self.log("Failed to connect to TV, server will retry in background", "WARNING")
+            
+        # Start background workers
+        command_thread = threading.Thread(target=self._command_worker, daemon=True)
+        monitor_thread = threading.Thread(target=self._monitor_worker, daemon=True)
+        
+        command_thread.start()
+        monitor_thread.start()
+        
+        self.log("Server started successfully")
+        
+        # Main loop
+        try:
+            while self.running:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            self.log("Received interrupt, shutting down...")
+        finally:
+            self.running = False
+            self.disconnect()
+            self.log("Server stopped")
+            
+    def get_status(self) -> Dict[str, Any]:
+        """Get current server status"""
+        return {
+            "state": asdict(self.state),
+            "running": self.running,
+            "connected": self.connected,
+            "queue_size": self.command_queue.qsize()
+        }
+
+def main():
+    parser = argparse.ArgumentParser(description="LG C5 Persistent Control Server")
+    parser.add_argument("ip", help="LG C5 IP address")
+    parser.add_argument("--port", type=int, default=9761, help="Control port (default: 9761)")
+    parser.add_argument("--keycode", default="QDF6T3HV", help="Network IP Control keycode")
+    parser.add_argument("--status-file", default="/tmp/lg-server-status.json", help="Status file path")
+    parser.add_argument("--log-file", default="/tmp/lg-server.log", help="Log file path")
+    
+    args = parser.parse_args()
+    
+    server = LGServer(args.ip, args.port, args.keycode)
+    server.status_file = args.status_file
+    server.log_file = args.log_file
+    
+    try:
+        server.start()
+    except Exception as e:
+        print(f"Server error: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+

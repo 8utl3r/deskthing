@@ -37,7 +37,7 @@ brew bundle --file ./Brewfile
 ### Window Management & Automation
 - **AeroSpace** tiling window manager
 - **Karabiner-Elements** (Caps Lock → Hyper key)
-- **Hammerspoon** Lua automation (app launchers, window management)
+- **Hammerspoon** Lua automation (app launchers, window management, LG C5 monitor control)
 
 ### Applications
 - **Alfred 5** application launcher (⌘+Space)
@@ -50,7 +50,7 @@ brew bundle --file ./Brewfile
 - **Itsycal** calendar widget
 - **LM Studio** AI/ML development
 - **Logi Options+** Logitech device management
-- **Home Assistant** smart home automation
+- **Home Assistant** smart home automation with LG C5 monitor integration
 - **NetSpot** Wi-Fi analysis
 - **PS Remote Play** PlayStation remote play
 - **Raspberry Pi Imager** SD card imaging
@@ -61,6 +61,15 @@ brew bundle --file ./Brewfile
 - **Telegram** messaging
 - **SlimHUD** volume/brightness HUD
 - **Termius** SSH client
+
+### Home Assistant Integration
+- **LG C5 Monitor Control** via webOS API (192.168.0.39)
+- **macOS Integration** with dock status and sleep/wake detection
+- **Automated Power Management** based on dock status
+- **Volume and Input Control** with predefined scenes
+- **macOS Notifications** for status updates
+- **Configuration Files** managed via dotfiles symlinks
+- **Remote Server** connection to Home Assistant at 192.168.0.105
 
 ### System Configuration
 - **macOS defaults** for power-user experience
@@ -73,6 +82,12 @@ brew bundle --file ./Brewfile
 - `bin/cursor-extensions`: manage Cursor extensions
 - `bin/snapshot`: update Brewfile and inventory
 - `bin/hide-apple-apps`: hide/unhide Apple apps
+- `bin/ha-sync`: sync Home Assistant configs to remote server
+- `bin/ha-validate`: validate Home Assistant YAML configurations
+- `bin/ha-pull`: pull existing configuration from Home Assistant server
+- `bin/ha-pull-api`: pull configuration via Home Assistant API
+- `bin/ha-export-guide`: guide for manually exporting configuration
+- `bin/ha-analyze`: analyze exported configuration and compare with dotfiles
 
 ### Core Configuration
 - `Brewfile`: curated apps/tools (run with `brew bundle` manually)
@@ -95,6 +110,12 @@ brew bundle --file ./Brewfile
 - `docker/daemon.json`: Docker daemon settings
 - `docker/persisted-state.json`: Docker Desktop UI preferences
 - `docker/window-management.json`: Docker Desktop window positions
+- `homeassistant/configuration.yaml`: Home Assistant main configuration
+- `homeassistant/automations.yaml`: Home automation rules
+- `homeassistant/scripts.yaml`: Reusable automation scripts
+- `homeassistant/groups.yaml`: Device grouping and organization
+- `homeassistant/scenes.yaml`: Predefined scenes for common configurations
+- `homeassistant/secrets.yaml.template`: Template for sensitive configuration data
 - `aerospace/aerospace.toml`: tiling window manager config
 - `karabiner/karabiner.json`: Karabiner-Elements config
 - `hammerspoon/init.lua`: Hammerspoon automation
@@ -122,6 +143,40 @@ brew install --cask karabiner-elements hammerspoon
 open -a "Karabiner-Elements"
 open -a Hammerspoon
 ```
+
+Optional (Home Assistant):
+```bash
+# Install Home Assistant Companion app
+brew install --cask home-assistant
+
+# Create secrets file from template
+cp homeassistant/secrets.yaml.template ~/.homeassistant/secrets.yaml
+# Edit ~/.homeassistant/secrets.yaml with your actual values
+
+# After linking config, configure Home Assistant Companion
+open -a "Home Assistant"
+# Set server URL to: http://192.168.0.105:8123
+```
+
+**LG C5 Monitor Integration:**
+- Enable "LG Connect Apps" in TV settings: `Settings > All Settings > Network > LG Connect Apps`
+- Update MAC address in `~/.homeassistant/secrets.yaml`
+- Configure LG webOS integration on Home Assistant server (192.168.0.105)
+- Test webOS API integration through Home Assistant Companion app
+
+**Home Assistant Development:**
+```bash
+# Validate configurations before deploying
+./bin/ha-validate --all
+
+# Sync configurations to remote server
+./bin/ha-sync --validate
+
+# Dry run to see what would be synced
+./bin/ha-sync --dry-run
+```
+
+See `homeassistant/DEVELOPMENT.md` for detailed development workflow.
 
 Optional (Alfred Sync):
 ```bash

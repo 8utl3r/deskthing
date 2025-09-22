@@ -1,0 +1,108 @@
+# Home Assistant Automations for macOS Dotfiles
+# Includes LG C5 monitor control and macOS-specific automations
+
+# LG C5 Monitor Power Management
+- id: lg_c5_power_on_when_docked
+  alias: "LG C5 Power On When Mac Docked"
+  description: "Automatically power on LG C5 monitor when Mac is docked"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.mac_docked
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: media_player.lg_c5_monitor
+      state: "off"
+  action:
+    - service: wake_on_lan.send_magic_packet
+      data:
+        mac: "58:96:0a:c3:1g:5b"
+    - service: notify.macos_notifications
+      data:
+        title: "LG C5 Monitor"
+        message: "Powering on monitor (docked)"
+
+- id: lg_c5_power_off_when_undocked
+  alias: "LG C5 Power Off When Mac Undocked"
+  description: "Automatically power off LG C5 monitor when Mac is undocked"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.mac_docked
+      to: "off"
+  condition:
+    - condition: state
+      entity_id: media_player.lg_c5_monitor
+      state: "on"
+  action:
+    - service: media_player.turn_off
+      target:
+        entity_id: media_player.lg_c5_monitor
+    - service: notify.macos_notifications
+      data:
+        title: "LG C5 Monitor"
+        message: "Powering off monitor (undocked)"
+
+# LG C5 Volume Control
+- id: lg_c5_volume_sync
+  alias: "LG C5 Volume Sync"
+  description: "Sync volume changes with input_number slider"
+  trigger:
+    - platform: state
+      entity_id: input_number.lg_c5_volume
+  action:
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lg_c5_monitor
+      data:
+        volume_level: "{{ (states('input_number.lg_c5_volume') | int) / 100 }}"
+
+# LG C5 Input Source Control
+- id: lg_c5_input_source_change
+  alias: "LG C5 Input Source Change"
+  description: "Change input source based on input_select"
+  trigger:
+    - platform: state
+      entity_id: input_select.lg_c5_input
+  action:
+    - service: media_player.select_source
+      target:
+        entity_id: media_player.lg_c5_monitor
+      data:
+        source: "{{ states('input_select.lg_c5_input') }}"
+
+# macOS Sleep/Wake Integration
+- id: mac_sleep_lg_c5_power_off
+  alias: "Mac Sleep - LG C5 Power Off"
+  description: "Power off LG C5 when Mac goes to sleep"
+  trigger:
+    - platform: state
+      entity_id: sensor.mac_sleep_status
+      to: "sleeping"
+  action:
+    - service: media_player.turn_off
+      target:
+        entity_id: media_player.lg_c5_monitor
+    - service: notify.macos_notifications
+      data:
+        title: "LG C5 Monitor"
+        message: "Powering off monitor (Mac sleeping)"
+
+- id: mac_wake_lg_c5_power_on
+  alias: "Mac Wake - LG C5 Power On"
+  description: "Power on LG C5 when Mac wakes up (if docked)"
+  trigger:
+    - platform: state
+      entity_id: sensor.mac_sleep_status
+      to: "awake"
+  condition:
+    - condition: state
+      entity_id: binary_sensor.mac_docked
+      state: "on"
+  action:
+    - service: wake_on_lan.send_magic_packet
+      data:
+        mac: "58:96:0a:c3:1g:5b"
+    - service: notify.macos_notifications
+      data:
+        title: "LG C5 Monitor"
+        message: "Powering on monitor (Mac awake, docked)"
