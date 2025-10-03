@@ -42,8 +42,8 @@ cask "docker-desktop"
 cask "font-jetbrains-mono-nerd-font"
 # Desktop automation application
 cask "hammerspoon"
-# Utility to hide menu bar items
-cask "hiddenbar"
+# Menu bar items manager
+cask "jordanbaird-ice"
 # Companion app for Home Assistant home automation software
 cask "home-assistant"
 # Free and open-source media player

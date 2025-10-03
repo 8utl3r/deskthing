@@ -13,10 +13,30 @@ Personal dotfiles repository for macOS system configuration and development envi
 ## Current State
 - Repository: `/Users/pete/dotfiles`
 - Git Status: 4 commits ahead of origin/main
-- Modified Files: `bin/link`, `cursor/mcp.json`
-- Key Scripts: `bin/link` (symlinks), `bin/bootstrap` (setup), `bin/snapshot` (inventory)
+- Modified Files: `scripts/system/link`, `cursor/mcp.json`
+- Key Scripts: `scripts/system/link` (symlinks), `scripts/system/bootstrap` (setup), `scripts/system/snapshot` (inventory)
 
 ## Session Records
+
+### 2025-01-06 - NuPhy Air75 Function Key Configuration
+- **Date/Time**: 2025-01-06
+- **Objective**: Resolve function key issues with NuPhy Air75 V2 keyboard on macOS
+- **Key Decisions**: 
+  - Enable function key state in macOS system preferences
+  - Configure Karabiner-Elements for proper function key mapping
+  - Use existing dotfiles infrastructure for configuration management
+- **Actions Taken**:
+  - Diagnosed NuPhy Air75 V2 keyboard recognition issue (keyboard detected but not properly identified)
+  - Enabled function key state: `defaults write -g com.apple.keyboard.fnState -bool true`
+  - Set full keyboard access: `defaults write -g AppleKeyboardUIMode -int 3`
+  - Updated Karabiner-Elements configuration with explicit F1-F12 function key mappings
+  - Applied configuration using existing dotfiles link system
+  - Created backup of previous Karabiner configuration
+- **Next 3 Specific Steps**:
+  1. Test function keys (F1-F12) to verify they work properly
+  2. Test special function key combinations (brightness, volume, etc.)
+  3. Consider installing NuPhy Console for advanced customization if needed
+- **Blockers/Concerns**: None - Configuration applied successfully
 
 ### 2025-01-06 - Home Assistant Integration
 - **Date/Time**: 2025-01-06
@@ -126,10 +146,108 @@ Personal dotfiles repository for macOS system configuration and development envi
   3. Commit documentation changes with appropriate message
 - **Blockers/Concerns**: None
 
+### 2025-01-06 - Bin Directory Cleanup
+- **Date/Time**: 2025-01-06
+- **Objective**: Clean up cluttered /bin directory by removing test and development files
+- **Key Decisions**: 
+  - Archive test files instead of deleting to preserve development history
+  - Keep all essential dotfiles management scripts and working utilities
+  - Maintain clear separation between production and development files
+- **Actions Taken**:
+  - Created `scripts/archive/` directory for test and development files
+  - Moved 20 test files to archive: all `lg-test-*` scripts, `lg-debug`, `lg-server*`, `lg-start`, `lg-terminal`, `investigate-9761`, and `lg_tv (2025).xml`
+  - Kept 25 essential files in main scripts directory: core dotfiles scripts (`bootstrap`, `link`, `snapshot`, `update`), utilities (`caffeine`, `cursor-extensions`, `hide-apple-apps`), dock detection scripts, LG monitor control scripts, and all Home Assistant integration scripts
+  - Reduced scripts directory from 45 files to 25 essential files (44% reduction)
+- **Next 3 Specific Steps**:
+  1. Commit cleanup changes with descriptive message
+  2. Update any documentation that references moved test files
+  3. Consider creating README in archive directory explaining file purposes
+- **Blockers/Concerns**: None - Cleanup completed successfully
+
+### 2025-01-06 - Project Reorganization
+- **Date/Time**: 2025-01-06
+- **Objective**: Organize dotfiles project with logical directory structure for better maintainability
+- **Key Decisions**: 
+  - Group related functionality into dedicated subdirectories
+  - Separate system management, utilities, and device-specific controls
+  - Maintain clear separation between different types of functionality
+  - Organize documentation and configuration files to match script organization
+- **Actions Taken**:
+  - Created organized scripts structure: `system/` (core dotfiles), `utilities/` (general tools), `lg-c5/` (monitor control), `home-assistant/` (HA integration)
+  - Moved core dotfiles scripts to `scripts/system/`: `bootstrap`, `link`, `snapshot`, `update`
+  - Moved utility scripts to `scripts/utilities/`: `caffeine`, `cursor-extensions`, `hide-apple-apps`
+  - Moved LG C5 control scripts to `scripts/lg-c5/`: `lg-monitor`, `lg-monitor-connection`, `dock-detector`, `dock-detector-simple`
+  - Moved Home Assistant scripts to `scripts/home-assistant/`: all `ha-*` scripts
+  - Organized documentation: `docs/lg-c5/` (monitor docs), `docs/home-assistant/` (HA docs)
+  - Organized Hammerspoon configs: `hammerspoon/lg-c5/` (monitor configs), `hammerspoon/home-assistant/` (HA configs)
+  - Maintained archive directory for test files
+- **Next 3 Specific Steps**:
+  1. Update any scripts that reference moved files with new paths
+  2. Create README files in each subdirectory explaining contents
+  3. Commit reorganization changes with descriptive message
+- **Blockers/Concerns**: None - Reorganization completed successfully
+
+### 2025-01-06 - Directory Rename for Clarity
+- **Date/Time**: 2025-01-06
+- **Objective**: Rename `bin/` directory to `scripts/` for better clarity and to avoid confusion with system `/bin`
+- **Key Decisions**: 
+  - Rename directory to `scripts/` to clearly indicate it contains personal scripts
+  - Update all documentation to reflect the new directory name
+  - Maintain all existing organization and functionality
+- **Actions Taken**:
+  - Renamed `bin/` directory to `scripts/` using `mv bin scripts`
+  - Updated `project_context.md` to reflect new directory paths
+  - All subdirectories and files remain in their organized structure
+  - No functional changes, only naming for clarity
+- **Next 3 Specific Steps**:
+  1. Update any remaining documentation that references old `bin/` paths
+  2. Commit directory rename changes
+  3. Verify all scripts still work with new paths
+- **Blockers/Concerns**: None - Rename completed successfully
+
+### 2025-01-06 - Disable AeroSpace Auto-Start
+- **Date/Time**: 2025-01-06
+- **Objective**: Disable AeroSpace window manager from starting automatically on system login
+- **Key Decisions**: 
+  - Disable AeroSpace auto-start to prevent conflicts while learning the system
+  - Remove from macOS login items to ensure it doesn't start
+  - Keep configuration file for future use when ready
+- **Actions Taken**:
+  - Updated `aerospace/aerospace.toml` to set `start-at-login = false`
+  - Removed AeroSpace from macOS login items using AppleScript
+  - Verified AeroSpace is no longer in login items list
+  - Confirmed AeroSpace is not currently running
+- **Next 3 Specific Steps**:
+  1. Test system startup to confirm AeroSpace doesn't auto-start
+  2. Learn AeroSpace functionality when ready to use it
+  3. Re-enable auto-start when comfortable with the window manager
+- **Blockers/Concerns**: None - AeroSpace auto-start successfully disabled
+
 ## Next Steps
-1. Commit documentation changes with appropriate message
+1. Test Ice menu bar configuration and functionality
 2. Verify all rule compliance mechanisms are working
 3. Continue with any pending dotfiles configuration tasks
+
+### 2025-01-06 - Ice Menu Bar Manager Implementation
+- **Date/Time**: 2025-01-06
+- **Objective**: Transition from Hidden Bar to Ice for menu bar management
+- **Key Decisions**: 
+  - Replace Hidden Bar with Ice for improved menu bar item management
+  - Follow dotfiles integration rule for all configuration changes
+  - Maintain existing configuration management workflow
+- **Actions Taken**:
+  - Uninstalled Hidden Bar (`brew uninstall --cask hiddenbar`)
+  - Installed Ice (`brew install --cask jordanbaird-ice`) - 391 bytes config file created
+  - Updated `Brewfile` from `cask "hiddenbar"` to `cask "jordanbaird-ice"`
+  - Updated `README.md` from "Hidden Bar menu bar management" to "Ice menu bar manager"
+  - Added Ice configuration file (`ice/com.jordanbaird.Ice.plist`) to dotfiles
+  - Updated `scripts/system/link` to include Ice preferences symlink
+  - Ice stores minimal configuration: window positions and migration flags only
+- **Next 3 Specific Steps**:
+  1. Configure Ice menu bar settings to hide/show desired icons
+  2. Test Ice functionality and document any needed configuration
+  3. Commit all Ice-related changes to dotfiles
+- **Blockers/Concerns**: None - Ice successfully installed and integrated
 
 ## Notes
 - Repository follows lowercase naming convention with underscores

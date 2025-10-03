@@ -45,7 +45,7 @@ brew bundle --file ./Brewfile
 - **Docker** with CLI and Desktop configuration
 - **CrossOver** Windows compatibility for running Windows games and apps
 - **UTM** virtualization for Windows apps and games
-- **Hidden Bar** menu bar management
+- **Ice** menu bar manager
 - **IINA** media player
 - **Itsycal** calendar widget
 - **LM Studio** AI/ML development
@@ -84,8 +84,10 @@ brew bundle --file ./Brewfile
 - `bin/hide-apple-apps`: hide/unhide Apple apps
 - `bin/ha-sync`: sync Home Assistant configs to remote server
 - `bin/ha-validate`: validate Home Assistant YAML configurations
-- `bin/ha-pull`: pull existing configuration from Home Assistant server
-- `bin/ha-pull-api`: pull configuration via Home Assistant API
+- `bin/ha-pull`: pull existing configuration from Home Assistant server (SSH)
+- `bin/ha-pull-api`: pull configuration via Home Assistant API (basic)
+- `bin/ha-pull-api-v2`: **RECOMMENDED** - comprehensive API-based configuration export
+- `bin/ha-get-token`: helper to get your Home Assistant API token
 - `bin/ha-export-guide`: guide for manually exporting configuration
 - `bin/ha-analyze`: analyze exported configuration and compare with dotfiles
 
@@ -166,6 +168,12 @@ open -a "Home Assistant"
 
 **Home Assistant Development:**
 ```bash
+# Get your API token (opens browser)
+./bin/ha-get-token --open-browser
+
+# Export your existing configuration via API
+./bin/ha-pull-api-v2 --token YOUR_TOKEN
+
 # Validate configurations before deploying
 ./bin/ha-validate --all
 
