@@ -1,8 +1,8 @@
-# Ice macOS Sequoia Compatibility Fix
+# Ice macOS Tahoe Compatibility Fix
 
 ## Problem Summary
 
-Ice v0.11.12 crashes on macOS Sequoia (v26.0) with Swift task continuation misuse errors:
+Ice v0.11.12 crashes on macOS Tahoe (v26.0) with Swift task continuation misuse errors:
 
 ```
 SWIFT TASK CONTINUATION MISUSE: waitForPermission() leaked its continuation without resuming it.
@@ -17,7 +17,7 @@ This causes:
 
 From GitHub Issue #720: **Swizzling incompatibility with macOS 26+**
 
-The Ice app uses runtime method swizzling (hooking into NSStatusBarWindow methods) that breaks in macOS Sequoia's new runtime system.
+The Ice app uses runtime method swizzling (hooking into NSStatusBarWindow methods) that breaks in macOS Tahoe's new runtime system.
 
 ## Solution
 
@@ -25,7 +25,7 @@ The Ice app uses runtime method swizzling (hooking into NSStatusBarWindow method
 
 This version includes:
 - ✅ **XPC Services** for better permission handling
-- ✅ **macOS Sequoia compatibility**  
+- ✅ **macOS Tahoe compatibility**  
 - ✅ **Fixed Swift concurrency** issues
 - ✅ **No crash reports**
 

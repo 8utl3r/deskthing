@@ -228,15 +228,15 @@ Personal dotfiles repository for macOS system configuration and development envi
 2. Verify all rule compliance mechanisms are working
 3. Continue with any pending dotfiles configuration tasks
 
-### 2025-01-06 - Ice Menu Bar Manager Implementation & macOS Sequoia Compatibility Fix
+### 2025-01-06 - Ice Menu Bar Manager Implementation & macOS Tahoe Compatibility Fix
 - **Date/Time**: 2025-01-06
-- **Objective**: Transition from Hidden Bar to Ice for menu bar management, resolve macOS Sequoia compatibility
+- **Objective**: Transition from Hidden Bar to Ice for menu bar management, resolve macOS Tahoe compatibility
 - **Key Decisions**: 
   - Replace Hidden Bar with Ice for improved menu bar item management
-  - Use Ice beta version (0.11.13-dev.2) for macOS Sequoia compatibility
+  - Use Ice beta version (0.11.13-dev.2) for macOS Tahoe compatibility
   - Follow dotfiles integration rule for all configuration changes
 - **Actions Taken**:
-  - Initial Homebrew cask install caused Swift concurrency crashes on macOS Sequoia
+  - Initial Homebrew cask install caused Swift concurrency crashes on macOS Tahoe
   - Diagnosed root cause: Swift swizzling incompatibility with macOS 26 (GitHub Issue #720)
   - Resolved by installing Ice beta v0.11.13-dev.2 directly from GitHub
   - Beta version includes XPC Services for better permission handling
@@ -245,7 +245,7 @@ Personal dotfiles repository for macOS system configuration and development envi
   - Swift task continuation misuse: `waitForPermission() leaked continuation`
   - Update dialog freeze on application startup
   - Video artifacts in Ice settings window 
-  - App crashes due to runtime swizzling in macOS Sequoia
+  - App crashes due to runtime swizzling in macOS Tahoe
 - **Next 3 Specific Steps**:
   1. Test Ice menu bar functionality and customization features
   2. Monitor GitHub for stable Ice release with macOS Sequoia support
