@@ -42,8 +42,9 @@ cask "docker-desktop"
 cask "font-jetbrains-mono-nerd-font"
 # Desktop automation application
 cask "hammerspoon"
-# Menu bar items manager
-cask "jordanbaird-ice"
+# Menu bar items manager (beta version for macOS Sequoia compatibility)
+# cask "jordanbaird-ice" # Using direct GitHub download v0.11.13-dev.2 
+# See GitHub Issue #720: "fix: Disable swizzling for macOS 26 and above"
 # Companion app for Home Assistant home automation software
 cask "home-assistant"
 # Free and open-source media player
