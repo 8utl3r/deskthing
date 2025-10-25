@@ -223,6 +223,32 @@ Personal dotfiles repository for macOS system configuration and development envi
   3. Re-enable auto-start when comfortable with the window manager
 - **Blockers/Concerns**: None - AeroSpace auto-start successfully disabled
 
+### 2025-01-06 - Bloom Finder Replacement Addition
+- **Date/Time**: 2025-01-06
+- **Objective**: Add Bloom advanced Finder replacement to dotfiles Brewfile
+- **Key Decisions**: 
+  - Add Bloom as a cask to the curated Brewfile
+  - Maintain alphabetical organization of casks
+  - Follow dotfiles integration rule for configuration management
+- **Actions Taken**:
+  - Researched Bloom application - confirmed it's an advanced Finder replacement with multi-pane layouts
+  - Added `cask "bloom"` to Brewfile in alphabetical position after Bitwarden
+  - Added descriptive comment "Advanced Finder replacement with multi-pane layouts and enhanced file management" following existing pattern
+  - Maintained existing Brewfile organization and formatting
+  - Successfully installed Bloom v1.5.1 using `brew install --cask bloom`
+- **Key Features of Bloom**:
+  - Multi-pane layouts for efficient file management
+  - Lightning-fast search through actual files (not just Spotlight index)
+  - Advanced renaming tools with regex support
+  - Cloud storage integration (iCloud, Dropbox, OneDrive)
+  - Customizable shortcuts and synchronized browsing
+  - SMB server support for network file access
+- **Next 3 Specific Steps**:
+  1. ✅ Install Bloom using `brew install --cask bloom` - COMPLETED
+  2. Test Bloom's multi-pane layouts and advanced file management features
+  3. Configure cloud storage integrations and customize shortcuts
+- **Blockers/Concerns**: None - Bloom successfully installed and added to Brewfile
+
 ## Next Steps
 1. Test Ice menu bar configuration and functionality
 2. Verify all rule compliance mechanisms are working

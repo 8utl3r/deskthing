@@ -33,6 +33,8 @@ cask "alfred"
 cask "android-platform-tools"
 # Desktop password and login vault
 cask "bitwarden"
+# Advanced Finder replacement with multi-pane layouts and enhanced file management
+cask "bloom"
 # Tool to run Windows software
 cask "crossover"
 # Voice and text chat software
