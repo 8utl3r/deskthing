@@ -24,6 +24,89 @@
                 "to_if_alone": [ { "key_code": "escape" } ]
               }
             ]
+          },
+          {
+            "description": "Caps Lock sends Escape in Planet Centauri",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "caps_lock", "modifiers": { "optional": ["any"] } },
+                "to": [ { "key_code": "escape" } ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "PlanetCentauri"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "NuPhy Air75 Function Keys: Map special function keys to raw F-keys",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "display_brightness_decrement" },
+                "to": [ { "key_code": "f1" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "display_brightness_increment" },
+                "to": [ { "key_code": "f2" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "mission_control" },
+                "to": [ { "key_code": "f3" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "launchpad" },
+                "to": [ { "key_code": "f4" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "illumination_decrement" },
+                "to": [ { "key_code": "f5" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "illumination_increment" },
+                "to": [ { "key_code": "f6" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "rewind" },
+                "to": [ { "key_code": "f7" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "play_or_pause" },
+                "to": [ { "key_code": "f8" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "fastforward" },
+                "to": [ { "key_code": "f9" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "mute" },
+                "to": [ { "key_code": "f10" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "volume_decrement" },
+                "to": [ { "key_code": "f11" } ]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "volume_increment" },
+                "to": [ { "key_code": "f12" } ]
+              }
+            ]
           }
         ]
       }

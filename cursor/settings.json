@@ -1,6 +1,6 @@
 {
   "telemetry.telemetryLevel": "off",
-  "editor.minimap.enabled": false,
+  "editor.minimap.enabled": true,
   "editor.renderWhitespace": "boundary",
   "editor.cursorSmoothCaretAnimation": "on",
   "editor.cursorBlinking": "phase",
@@ -14,5 +14,7 @@
   "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
   "cursor.composer.shouldAllowCustomModes": true,
   "cursor.composer.usageSummaryDisplay": "always",
-  "workbench.colorTheme": "Solarized Dark"
+  "workbench.colorTheme": "Solarized Dark",
+  "explorer.confirmDelete": false,
+  "git.autofetch": true
 }

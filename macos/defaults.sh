@@ -58,11 +58,12 @@ run "defaults write com.apple.finder DisableAllAnimations -bool true"          #
 run "defaults write com.apple.finder FXInfoPanesExpanded -dict General -bool true OpenWith -bool true Privileges -bool true"
 run "chflags nohidden \"$HOME/Library\""                                      # reveal ~/Library
 
-# Dock
+# Dock (completely hidden for ActiveDock 2 replacement)
 run "defaults write com.apple.dock autohide -bool true"
+run "defaults write com.apple.dock autohide-delay -float 999"        # 999 second delay - effectively never appears
+run "defaults write com.apple.dock tilesize -int 1"                 # 1 pixel size - nearly invisible
 run "defaults write com.apple.dock show-recents -bool false"
 run "defaults write com.apple.dock mru-spaces -bool false"
-run "defaults write com.apple.dock tilesize -int 48"
 # Optional: clear pinned apps to start clean (commented by default)
 # run "defaults delete com.apple.dock persistent-apps 2>/dev/null || true"
 run "defaults write com.apple.dock wvous-tl-corner -int 0"
@@ -73,8 +74,8 @@ run "defaults write com.apple.dock wvous-tl-modifier -int 0"
 run "defaults write com.apple.dock wvous-tr-modifier -int 0"
 run "defaults write com.apple.dock wvous-bl-modifier -int 0"
 run "defaults write com.apple.dock wvous-br-modifier -int 0"
-run "defaults write com.apple.dock autohide-delay -float 0"                     # no dock delay
-run "defaults write com.apple.dock autohide-time-modifier -float 0.12"         # faster dock animation
+# autohide-delay set above to 999 for ActiveDock 2
+run "defaults write com.apple.dock autohide-time-modifier -float 0"            # instant hide animation
 run "defaults write com.apple.dock mineffect -string scale"                    # minimize effect
 run "defaults write com.apple.dock showhidden -bool true"                      # translucent icons for hidden apps
 

@@ -1,7 +1,7 @@
 # Minimal AeroSpace config (safe defaults)
 
-# Start at login (optional)
-start-at-login = true
+# Start at login (optional) - DISABLED
+start-at-login = false
 
 [gaps]
 inner.horizontal = 8
