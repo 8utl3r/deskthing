@@ -27,6 +27,8 @@ brew "starship"
 brew "yq"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "aerospace"
+# Customizable dock replacement with enhanced features
+cask "activedock"
 # Application launcher and productivity software
 cask "alfred"
 # Android SDK component
@@ -35,6 +37,8 @@ cask "android-platform-tools"
 cask "bitwarden"
 # Advanced Finder replacement with multi-pane layouts and enhanced file management
 cask "bloom"
+# Shortcut viewer - shows keyboard shortcuts when holding Command key
+cask "cheatsheet"
 # Tool to run Windows software
 cask "crossover"
 # Voice and text chat software
