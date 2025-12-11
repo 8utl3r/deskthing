@@ -4030,7 +4030,7 @@
                         <delay ms_delay="1000"/>
                     </command>
                 </command_interface>
-                <command_interface interface="ip">
+                <command_interface interfaace="ip">
                     <command response_required="no" encrypt="aes128">
                         <command_string type="character">APP_LAUNCH com.webos.app.hdmi2</command_string>
                         <delay ms_delay="200"/>
