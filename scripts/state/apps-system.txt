@@ -1,0 +1,51 @@
+ActiveDock 2.app
+AeroSpace.app
+Alfred 5.app
+Bitwarden.app
+Bloom.app
+CrossOver.app
+Cursor.app
+DiracLive.app
+DiracLiveProcessor.app
+Discord.app
+Docker.app
+FlexiNet.app
+FreeTube.app
+Hammerspoon.app
+Home Assistant.app
+IINA.app
+Ice.app
+Itsycal.app
+Karabiner-Elements.app
+Karabiner-EventViewer.app
+LM Studio.app
+LanScan.app
+Lasso.app
+MiniDSP Device Console.app
+Monarch.app
+NetSpot.app
+Pokit.app
+REW
+Raspberry Pi Imager.app
+RemotePlay.app
+Safari.app
+Savant Application Manager.app
+SlimHUD.app
+Spotify.app
+Steam.app
+Stremio.app
+Tailscale.app
+Telegram.app
+Termius.app
+TestFlight.app
+Typinator.app
+UTM.app
+Utilities
+WezTerm.app
+WiiM Home.app
+Xcode.app
+Zen.app
+iStatistica Pro.app
+iStatistica Sensors.app
+kindaVim.app
+logioptionsplus.app

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Configure ActiveDock 2 to replace the default macOS dock
+set -euo pipefail
+
+echo "Configuring ActiveDock 2..."
+
+# Ensure ActiveDock 2 is running
+if ! pgrep -f "ActiveDock" > /dev/null; then
+    echo "Starting ActiveDock 2..."
+    open "/Applications/ActiveDock 2.app"
+    sleep 2
+fi
+
+# Completely hide the default dock (1 pixel size, 999 second delay = effectively never appears)
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 999
+defaults write com.apple.dock tilesize -int 1
+defaults write com.apple.dock autohide-time-modifier -float 0
+killall Dock 2>/dev/null || true
+
+echo ""
+echo "✓ Default macOS dock is now completely hidden (1px size, 999s delay)"
+echo ""
+echo "Next steps:"
+echo "1. Click the ActiveDock 2 icon in the menu bar"
+echo "2. Select 'Settings...'"
+echo "3. In the General tab, enable 'Hide system Dock' (if available)"
+echo "4. Configure your preferred ActiveDock 2 settings"
+echo ""
+echo "After configuring, run 'scripts/system/link --apply' to symlink"
+echo "the configuration files to your dotfiles repository."
+

@@ -1,0 +1,237 @@
+#!/usr/bin/env python3
+"""
+LG C5 Control Server with Raw Communication Logging
+Shows exactly what's being sent and received
+"""
+
+import socket
+import threading
+import time
+import json
+import sys
+import os
+from datetime import datetime
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+import base64
+
+class LGServerRaw:
+    def __init__(self, tv_ip, tv_port=9761, server_port=9999, keycode="QDF6T3HV"):
+        self.tv_ip = tv_ip
+        self.tv_port = tv_port
+        self.server_port = server_port
+        self.keycode = keycode
+        self.tv_socket = None
+        self.server_socket = None
+        self.running = False
+        
+    def log(self, message, level="INFO"):
+        timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        print(f"[{timestamp}] {level}: {message}")
+        
+    def log_raw(self, data, direction):
+        """Log raw bytes being sent/received"""
+        if isinstance(data, bytes):
+            hex_str = data.hex()
+            ascii_str = ''.join([chr(b) if 32 <= b <= 126 else f'\\x{b:02x}' for b in data])
+            self.log(f"RAW {direction}: {hex_str} | {ascii_str}")
+        else:
+            self.log(f"RAW {direction}: {data}")
+    
+    def encrypt_command(self, command):
+        """Encrypt command using AES128 with the keycode"""
+        try:
+            # Pad keycode to 16 bytes for AES128
+            key = self.keycode.encode('utf-8').ljust(16, b'\x00')[:16]
+            
+            # Pad command to 16-byte boundary
+            command_bytes = command.encode('utf-8')
+            padding_length = 16 - (len(command_bytes) % 16)
+            padded_command = command_bytes + bytes([padding_length] * padding_length)
+            
+            # Encrypt
+            cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
+            encryptor = cipher.encryptor()
+            encrypted = encryptor.update(padded_command) + encryptor.finalize()
+            
+            self.log(f"Encrypted '{command}' -> {encrypted.hex()}")
+            return encrypted
+            
+        except Exception as e:
+            self.log(f"Encryption failed: {e}", "ERROR")
+            return command.encode('utf-8')
+    
+    def decrypt_response(self, encrypted_data):
+        """Decrypt response using AES128"""
+        try:
+            key = self.keycode.encode('utf-8').ljust(16, b'\x00')[:16]
+            cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
+            decryptor = cipher.decryptor()
+            decrypted = decryptor.update(encrypted_data) + decryptor.finalize()
+            
+            # Remove padding
+            padding_length = decrypted[-1]
+            if padding_length <= 16:
+                decrypted = decrypted[:-padding_length]
+            
+            self.log(f"Decrypted {encrypted_data.hex()} -> '{decrypted.decode('utf-8', errors='ignore')}'")
+            return decrypted
+            
+        except Exception as e:
+            self.log(f"Decryption failed: {e}", "ERROR")
+            return encrypted_data
+    
+    def connect_to_tv(self):
+        """Connect to the LG TV"""
+        try:
+            self.log(f"Connecting to TV at {self.tv_ip}:{self.tv_port}")
+            self.tv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.tv_socket.settimeout(10)
+            self.tv_socket.connect((self.tv_ip, self.tv_port))
+            self.log("Connected to TV successfully")
+            return True
+        except Exception as e:
+            self.log(f"Failed to connect to TV: {e}", "ERROR")
+            return False
+    
+    def send_command_to_tv(self, command):
+        """Send command to TV with raw logging"""
+        if not self.tv_socket:
+            if not self.connect_to_tv():
+                return False
+        
+        try:
+            # Try encrypted first
+            encrypted_command = self.encrypt_command(command)
+            self.log_raw(encrypted_command, "SEND")
+            
+            # Send encrypted command + carriage return
+            self.tv_socket.send(encrypted_command)
+            self.tv_socket.send(b'\x0D')
+            
+            # Try to receive response
+            self.tv_socket.settimeout(2)
+            response = self.tv_socket.recv(1024)
+            if response:
+                self.log_raw(response, "RECV")
+                # Try to decrypt
+                try:
+                    decrypted = self.decrypt_response(response)
+                    self.log(f"Decrypted response: {decrypted.decode('utf-8', errors='ignore')}")
+                except:
+                    self.log("Response could not be decrypted")
+            else:
+                self.log("No response received")
+            
+            return True
+            
+        except socket.timeout:
+            self.log("No response received (timeout)")
+            return True
+        except Exception as e:
+            self.log(f"Command failed: {e}", "ERROR")
+            return False
+    
+    def handle_client_command(self, client_socket, command):
+        """Handle command from client"""
+        self.log(f"Processing command: {command}")
+        
+        # Map commands to TV commands
+        command_map = {
+            "power_on": "POWER on",
+            "power_off": "POWER off", 
+            "volume_up": "KEY_ACTION volumeup",
+            "volume_down": "KEY_ACTION volumedown",
+            "mute_on": "VOLUME_MUTE on",
+            "mute_off": "VOLUME_MUTE off",
+            "query_volume": "CURRENT_VOL",
+            "query_power": "POWER ?"
+        }
+        
+        tv_command = command_map.get(command, command)
+        success = self.send_command_to_tv(tv_command)
+        
+        # Send response back to client
+        response = {"success": success, "command": command}
+        client_socket.send(json.dumps(response).encode('utf-8'))
+        client_socket.close()
+    
+    def start_server(self):
+        """Start the control server"""
+        try:
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_socket.bind(('localhost', self.server_port))
+            self.server_socket.listen(5)
+            
+            self.log(f"Server started on localhost:{self.server_port}")
+            self.log("Raw communication logging enabled")
+            self.log("Commands: power_on, power_off, volume_up, volume_down, mute_on, mute_off, query_volume")
+            
+            # Connect to TV first
+            if not self.connect_to_tv():
+                self.log("Failed to connect to TV, but server will continue", "WARNING")
+            
+            self.running = True
+            
+            while self.running:
+                try:
+                    client_socket, addr = self.server_socket.accept()
+                    command = client_socket.recv(1024).decode('utf-8').strip()
+                    
+                    # Handle command in separate thread
+                    thread = threading.Thread(
+                        target=self.handle_client_command,
+                        args=(client_socket, command)
+                    )
+                    thread.daemon = True
+                    thread.start()
+                    
+                except Exception as e:
+                    if self.running:
+                        self.log(f"Server error: {e}", "ERROR")
+                        
+        except Exception as e:
+            self.log(f"Failed to start server: {e}", "ERROR")
+        finally:
+            self.cleanup()
+    
+    def cleanup(self):
+        """Clean up connections"""
+        self.running = False
+        if self.tv_socket:
+            self.tv_socket.close()
+        if self.server_socket:
+            self.server_socket.close()
+        self.log("Server stopped")
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 lg-server-raw <tv_ip>")
+        sys.exit(1)
+    
+    tv_ip = sys.argv[1]
+    server = LGServerRaw(tv_ip)
+    
+    try:
+        server.start_server()
+    except KeyboardInterrupt:
+        print("\nShutting down...")
+        server.cleanup()
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+

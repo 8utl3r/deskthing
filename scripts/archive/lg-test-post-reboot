@@ -1,0 +1,234 @@
+#!/usr/bin/env python3
+"""
+LG C5 Post-Reboot Test
+Comprehensive test of all approaches after TV hard reboot
+"""
+
+import socket
+import sys
+import time
+from datetime import datetime
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+
+def log(message, level="INFO"):
+    timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{timestamp}] {level}: {message}")
+
+def log_raw(data, direction):
+    """Log raw bytes being sent/received"""
+    if isinstance(data, bytes):
+        hex_str = data.hex()
+        ascii_str = ''.join([chr(b) if 32 <= b <= 126 else f'\\x{b:02x}' for b in data])
+        print(f"[RAW {direction}] {hex_str} | {ascii_str}")
+    else:
+        print(f"[RAW {direction}] {data}")
+
+def test_basic_connection(tv_ip, tv_port):
+    """Test basic connection to TV"""
+    log(f"Testing basic connection to {tv_ip}:{tv_port}")
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(3)
+        sock.connect((tv_ip, tv_port))
+        log("✅ Basic connection successful")
+        sock.close()
+        return True
+    except Exception as e:
+        log(f"❌ Basic connection failed: {e}", "ERROR")
+        return False
+
+def test_unencrypted_command(tv_ip, tv_port, command):
+    """Test unencrypted command"""
+    log(f"Testing unencrypted command: '{command}'")
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(3)
+        sock.connect((tv_ip, tv_port))
+        
+        # Send command with carriage return
+        cmd_bytes = command.encode('utf-8') + b'\x0D'
+        log_raw(cmd_bytes, "SEND")
+        sock.send(cmd_bytes)
+        
+        # Wait for response
+        sock.settimeout(2)
+        try:
+            response = sock.recv(1024)
+            if response:
+                log_raw(response, "RECV")
+                log(f"🎉 SUCCESS! Response: {response.decode('utf-8', errors='ignore')}")
+                sock.close()
+                return True
+            else:
+                log("No response")
+        except socket.timeout:
+            log("Response timeout")
+        
+        sock.close()
+        return False
+    except Exception as e:
+        log(f"❌ Unencrypted command failed: {e}", "ERROR")
+        return False
+
+def test_encrypted_command(tv_ip, tv_port, command, keycode):
+    """Test encrypted command"""
+    log(f"Testing encrypted command: '{command}'")
+    try:
+        # Encrypt command
+        key = keycode.encode('utf-8').ljust(16, b'\x00')[:16]
+        command_bytes = command.encode('utf-8')
+        while len(command_bytes) % 16 != 0:
+            command_bytes += b'\x00'
+        
+        cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
+        encryptor = cipher.encryptor()
+        encrypted = encryptor.update(command_bytes) + encryptor.finalize()
+        
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(3)
+        sock.connect((tv_ip, tv_port))
+        
+        # Send encrypted command with carriage return
+        cmd_bytes = encrypted + b'\x0D'
+        log_raw(cmd_bytes, "SEND")
+        sock.send(cmd_bytes)
+        
+        # Wait for response
+        sock.settimeout(2)
+        try:
+            response = sock.recv(1024)
+            if response:
+                log_raw(response, "RECV")
+                log(f"🎉 SUCCESS! Response: {response.decode('utf-8', errors='ignore')}")
+                sock.close()
+                return True
+            else:
+                log("No response")
+        except socket.timeout:
+            log("Response timeout")
+        
+        sock.close()
+        return False
+    except Exception as e:
+        log(f"❌ Encrypted command failed: {e}", "ERROR")
+        return False
+
+def test_set_id_command(tv_ip, tv_port, command, set_id):
+    """Test command with Set ID"""
+    log(f"Testing command with Set ID {set_id}: '{command}'")
+    try:
+        # Try different Set ID formats
+        set_id_formats = [
+            f"{command}{set_id}",
+            f"{set_id}{command}",
+            f"{command} {set_id}",
+            f"{set_id} {command}",
+        ]
+        
+        for cmd_format in set_id_formats:
+            log(f"  Trying format: '{cmd_format}'")
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(3)
+                sock.connect((tv_ip, tv_port))
+                
+                cmd_bytes = cmd_format.encode('utf-8') + b'\x0D'
+                log_raw(cmd_bytes, "SEND")
+                sock.send(cmd_bytes)
+                
+                sock.settimeout(2)
+                try:
+                    response = sock.recv(1024)
+                    if response:
+                        log_raw(response, "RECV")
+                        log(f"🎉 SUCCESS! Response: {response.decode('utf-8', errors='ignore')}")
+                        sock.close()
+                        return True
+                    else:
+                        log("No response")
+                except socket.timeout:
+                    log("Response timeout")
+                
+                sock.close()
+                time.sleep(0.5)
+            except Exception as e:
+                log(f"    Format failed: {e}")
+        
+        return False
+    except Exception as e:
+        log(f"❌ Set ID command failed: {e}", "ERROR")
+        return False
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python3 lg-test-post-reboot <tv_ip> [keycode] [set_id]")
+        sys.exit(1)
+    
+    tv_ip = sys.argv[1]
+    keycode = sys.argv[2] if len(sys.argv) > 2 else "IKXTFKE6"
+    set_id = int(sys.argv[3]) if len(sys.argv) > 3 else 2
+    
+    log(f"🚀 Starting comprehensive post-reboot test for {tv_ip}")
+    log(f"Keycode: {keycode}, Set ID: {set_id}")
+    
+    # Test 1: Basic connection
+    if not test_basic_connection(tv_ip, 9761):
+        log("❌ Basic connection failed - TV might not be ready yet", "ERROR")
+        return
+    
+    time.sleep(1)
+    
+    # Test 2: Simple unencrypted command
+    log("\n=== TEST 1: Simple Unencrypted Command ===")
+    if test_unencrypted_command(tv_ip, 9761, "CURRENT_VOL"):
+        log("✅ Unencrypted command worked!")
+        return
+    
+    time.sleep(1)
+    
+    # Test 3: Encrypted command
+    log("\n=== TEST 2: Encrypted Command ===")
+    if test_encrypted_command(tv_ip, 9761, "CURRENT_VOL", keycode):
+        log("✅ Encrypted command worked!")
+        return
+    
+    time.sleep(1)
+    
+    # Test 4: Set ID command
+    log("\n=== TEST 3: Set ID Command ===")
+    if test_set_id_command(tv_ip, 9761, "CURRENT_VOL", set_id):
+        log("✅ Set ID command worked!")
+        return
+    
+    time.sleep(1)
+    
+    # Test 5: Try different ports
+    log("\n=== TEST 4: Different Ports ===")
+    ports_to_try = [3000, 3001, 8080, 9999]
+    for port in ports_to_try:
+        log(f"Trying port {port}...")
+        if test_unencrypted_command(tv_ip, port, "CURRENT_VOL"):
+            log(f"✅ Port {port} worked!")
+            return
+        time.sleep(0.5)
+    
+    log("\n❌ All tests failed - TV still not responding to network commands")
+    log("This suggests a deeper issue with the TV's IP control functionality")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+

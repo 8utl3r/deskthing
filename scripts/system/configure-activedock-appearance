@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Configure ActiveDock 2 to look like the default macOS dock
+set -euo pipefail
+
+PREFS_DOMAIN="com.sergey-gerasimenko.ActiveDock-2"
+PREFS_FILE="$HOME/Library/Preferences/${PREFS_DOMAIN}.plist"
+
+if [ ! -f "$PREFS_FILE" ]; then
+    echo "ActiveDock 2 preferences file not found at: $PREFS_FILE"
+    exit 1
+fi
+
+echo "Configuring ActiveDock 2 to match default macOS dock appearance..."
+echo ""
+
+# Default macOS dock characteristics:
+# - Position: Bottom
+# - Size: 48 pixels
+# - Magnification: Off
+# - Minimize Effect: Scale
+# - Background: Translucent
+# - No indicators or special effects
+
+# Hide the default Apple dock (important!)
+defaults write "$PREFS_DOMAIN" HideAppleDock -bool true
+echo "✓ Hidden default Apple dock"
+
+# Set dock position to bottom
+# displayIndex values: 0=left, 1=right, 2=top, 3=bottom
+defaults write "$PREFS_DOMAIN" displayIndex -int 3
+echo "✓ Set position to bottom"
+
+# Set dock size to match default (48 pixels)
+# cellHeight appears to be the size - default is around 48-50
+# Current is 100, let's set to 48
+defaults write "$PREFS_DOMAIN" cellHeight -int 48
+echo "✓ Set size to 48 pixels (default dock size)"
+
+# Use default theme (themeIndex 0 is usually default)
+defaults write "$PREFS_DOMAIN" themeIndex -int 0
+echo "✓ Set theme to default"
+
+# Minimize indicator settings (make minimal to match default)
+defaults write "$PREFS_DOMAIN" indicatorSize -int 1
+defaults write "$PREFS_DOMAIN" indicatorShape -int 0
+echo "✓ Set indicators to minimal"
+
+# Disable window previews (default dock doesn't show previews on hover)
+defaults write "$PREFS_DOMAIN" WindowPreview -bool false
+echo "✓ Disabled window previews"
+
+# Enable reserve space (dock takes up space like default)
+defaults write "$PREFS_DOMAIN" ReserveSpace -bool true
+echo "✓ Enabled reserve space (like default dock)"
+
+# Auto-hide delay (match default dock behavior)
+defaults write "$PREFS_DOMAIN" autoHideDelay -float 0
+echo "✓ Set auto-hide delay to 0"
+
+# Show app badges (default dock shows badges)
+defaults write "$PREFS_DOMAIN" ShowAppBadges -bool true
+echo "✓ Enabled app badges"
+
+# Enable trash (default dock has trash)
+defaults write "$PREFS_DOMAIN" enableTrash -bool true
+echo "✓ Enabled trash"
+
+echo ""
+echo "✓ ActiveDock 2 configured to match default macOS dock!"
+echo ""
+echo "Current settings:"
+defaults read "$PREFS_DOMAIN" 2>/dev/null | grep -E "cellHeight|displayIndex|themeIndex|HideAppleDock|WindowPreview|ReserveSpace" || true
+echo ""
+echo "Note: You may need to restart ActiveDock 2 for all changes to take effect."
+echo "You can restart it from the menu bar icon → Quit ActiveDock 2, then reopen it."

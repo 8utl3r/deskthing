@@ -1,0 +1,103 @@
+#!/bin/bash
+
+# Test Home Assistant TV Control Integration
+# This script tests the HA API endpoints that Hammerspoon will use
+
+set -e
+
+# Configuration
+HA_SERVER="192.168.0.105:8123"
+TOKEN_FILE="$HOME/.homeassistant_token"
+C5_TV="lg_webos_tv_oled42c5pua"
+
+# Check if token exists
+if [[ ! -f "$TOKEN_FILE" ]]; then
+    echo "❌ Error: Home Assistant token not found at $TOKEN_FILE"
+    exit 1
+fi
+
+# Read token
+HA_TOKEN=$(cat "$TOKEN_FILE")
+
+echo "🧪 Testing Home Assistant TV Control Integration..."
+echo "📺 Target TV: $C5_TV"
+echo ""
+
+# Test 1: Get TV state
+echo "1️⃣ Testing TV state retrieval..."
+TV_STATE=$(curl -s -H "Authorization: Bearer $HA_TOKEN" "http://$HA_SERVER/api/states/media_player.$C5_TV")
+if echo "$TV_STATE" | jq -e '.entity_id' > /dev/null; then
+    echo "✅ TV state retrieved successfully"
+    echo "   State: $(echo "$TV_STATE" | jq -r '.state')"
+    echo "   Volume: $(echo "$TV_STATE" | jq -r '.attributes.volume_level // "N/A"')"
+else
+    echo "❌ Failed to get TV state"
+    exit 1
+fi
+
+echo ""
+
+# Test 2: Turn TV on
+echo "2️⃣ Testing TV power on..."
+POWER_RESPONSE=$(curl -s -X POST \
+    -H "Authorization: Bearer $HA_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "{\"entity_id\": \"media_player.$C5_TV\"}" \
+    "http://$HA_SERVER/api/services/media_player/turn_on")
+
+if [[ -z "$POWER_RESPONSE" ]] || echo "$POWER_RESPONSE" | jq -e '.[0].entity_id' > /dev/null 2>/dev/null; then
+    echo "✅ TV power on command sent successfully"
+else
+    echo "❌ Failed to turn on TV"
+    exit 1
+fi
+
+echo ""
+
+# Test 3: Set volume
+echo "3️⃣ Testing volume control..."
+VOLUME_RESPONSE=$(curl -s -X POST \
+    -H "Authorization: Bearer $HA_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "{\"entity_id\": \"media_player.$C5_TV\", \"volume_level\": 0.05}" \
+    "http://$HA_SERVER/api/services/media_player/volume_set")
+
+if [[ -z "$VOLUME_RESPONSE" ]] || echo "$VOLUME_RESPONSE" | jq -e '.[0].entity_id' > /dev/null 2>/dev/null; then
+    echo "✅ Volume control command sent successfully"
+else
+    echo "❌ Failed to set volume"
+    exit 1
+fi
+
+echo ""
+
+# Test 4: Turn TV off
+echo "4️⃣ Testing TV power off..."
+POWER_RESPONSE=$(curl -s -X POST \
+    -H "Authorization: Bearer $HA_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "{\"entity_id\": \"media_player.$C5_TV\"}" \
+    "http://$HA_SERVER/api/services/media_player/turn_off")
+
+if [[ -z "$POWER_RESPONSE" ]] || echo "$POWER_RESPONSE" | jq -e '.[0].entity_id' > /dev/null 2>/dev/null; then
+    echo "✅ TV power off command sent successfully"
+else
+    echo "❌ Failed to turn off TV"
+    exit 1
+fi
+
+echo ""
+echo "🎉 All tests passed! Home Assistant TV Control is ready for Hammerspoon integration."
+echo ""
+echo "📋 Available hotkeys in Hammerspoon:"
+echo "   Cmd+Alt+T  - Toggle TV power"
+echo "   Cmd+Alt+1  - Set volume to 1%"
+echo "   Cmd+Alt+5  - Set volume to 5%"
+echo "   Cmd+Alt+2  - Set volume to 25%"
+echo "   Cmd+Alt+3  - Set volume to 50%"
+echo "   Cmd+Alt+D  - Check dock status"
+echo ""
+echo "🔄 The system will automatically:"
+echo "   • Turn on TV and set quiet volume when docked"
+echo "   • Turn off TV or set louder volume when undocked"
+echo "   • Monitor dock status every 2 seconds"

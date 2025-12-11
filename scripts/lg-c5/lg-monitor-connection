@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""
+LG C5 Connection Monitor - See what the TV sends when we connect
+"""
+
+import socket
+import sys
+import time
+from datetime import datetime
+
+def log(message, level="INFO"):
+    timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{timestamp}] {level}: {message}")
+
+def log_raw(data, direction):
+    """Log raw bytes being sent/received"""
+    if isinstance(data, bytes):
+        hex_str = data.hex()
+        ascii_str = ''.join([chr(b) if 32 <= b <= 126 else f'\\x{b:02x}' for b in data])
+        print(f"[RAW {direction}] {hex_str} | {ascii_str}")
+    else:
+        print(f"[RAW {direction}] {data}")
+
+def monitor_connection(tv_ip, tv_port=9761):
+    """Monitor what the TV sends when we connect"""
+    log(f"Monitoring connection to {tv_ip}:{tv_port}")
+    
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(10)
+        sock.connect((tv_ip, tv_port))
+        log("Connected successfully")
+        
+        # Wait and see if TV sends anything
+        log("Waiting for TV to send data...")
+        sock.settimeout(5)
+        
+        try:
+            while True:
+                data = sock.recv(1024)
+                if data:
+                    log_raw(data, "RECV")
+                    log(f"Received {len(data)} bytes")
+                else:
+                    log("No more data")
+                    break
+        except socket.timeout:
+            log("No data received from TV")
+        
+        # Try sending a simple command and see what happens
+        log("\nSending CURRENT_VOL command...")
+        command = b"CURRENT_VOL\r"
+        log_raw(command, "SEND")
+        sock.send(command)
+        
+        # Wait for response
+        sock.settimeout(3)
+        try:
+            response = sock.recv(1024)
+            if response:
+                log_raw(response, "RECV")
+                log(f"Response: {response.decode('utf-8', errors='ignore')}")
+            else:
+                log("No response to command")
+        except socket.timeout:
+            log("Command response timeout")
+        
+        sock.close()
+        log("Connection closed")
+        
+    except Exception as e:
+        log(f"Connection failed: {e}", "ERROR")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python3 lg-monitor-connection <tv_ip>")
+        sys.exit(1)
+    
+    tv_ip = sys.argv[1]
+    monitor_connection(tv_ip)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+# Home Assistant Diagnostic Tool
+# Diagnoses connection issues and helps find the right approach
+
+set -euo pipefail
+
+HA_SERVER="192.168.0.105"
+HA_PORT="8123"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo "  --scan-ports      Scan common Home Assistant ports"
+    echo "  --check-network   Check network connectivity"
+    echo "  --help           Show this help message"
+    echo ""
+    echo "This script diagnoses connection issues with your Home Assistant server."
+}
+
+check_network() {
+    echo -e "${GREEN}Network Connectivity Check${NC}"
+    echo ""
+    
+    echo -e "${BLUE}Checking basic connectivity to $HA_SERVER...${NC}"
+    
+    if ping -c 1 "$HA_SERVER" >/dev/null 2>&1; then
+        echo -e "${GREEN}✓ Server $HA_SERVER is reachable${NC}"
+    else
+        echo -e "${RED}✗ Server $HA_SERVER is not reachable${NC}"
+        echo "This suggests:"
+        echo "• The IP address might be wrong"
+        echo "• The server might be down"
+        echo "• There might be network issues"
+        return 1
+    fi
+    
+    echo ""
+}
+
+scan_ports() {
+    echo -e "${GREEN}Port Scanning${NC}"
+    echo ""
+    
+    echo -e "${BLUE}Scanning common Home Assistant ports on $HA_SERVER...${NC}"
+    
+    local ports=(8123 8124 4357 1883 8883)
+    local open_ports=()
+    
+    for port in "${ports[@]}"; do
+        echo -n "Checking port $port... "
+        
+        if nc -z -w1 "$HA_SERVER" "$port" 2>/dev/null; then
+            echo -e "${GREEN}✓ OPEN${NC}"
+            open_ports+=("$port")
+        else
+            echo -e "${RED}✗ CLOSED${NC}"
+        fi
+    done
+    
+    echo ""
+    
+    if [[ ${#open_ports[@]} -gt 0 ]]; then
+        echo -e "${GREEN}Open ports found: ${open_ports[*]}${NC}"
+        
+        if [[ " ${open_ports[*]} " =~ " 8123 " ]]; then
+            echo -e "${GREEN}✓ Port 8123 is open - Home Assistant should be accessible${NC}"
+        else
+            echo -e "${YELLOW}⚠ Port 8123 is not open - Home Assistant might be on a different port${NC}"
+        fi
+    else
+        echo -e "${RED}✗ No common Home Assistant ports are open${NC}"
+        echo "This suggests:"
+        echo "• Home Assistant is not running"
+        echo "• It's running on a non-standard port"
+        echo "• There's a firewall blocking access"
+    fi
+    
+    echo ""
+}
+
+check_ha_status() {
+    echo -e "${GREEN}Home Assistant Status Check${NC}"
+    echo ""
+    
+    local base_url="http://$HA_SERVER:$HA_PORT"
+    
+    echo -e "${BLUE}Testing Home Assistant endpoints...${NC}"
+    
+    # Test main page
+    echo -n "Testing main page... "
+    if curl -s -I "$base_url" | grep -q "200 OK"; then
+        echo -e "${GREEN}✓ Accessible${NC}"
+    else
+        echo -e "${RED}✗ Not accessible${NC}"
+    fi
+    
+    # Test API
+    echo -n "Testing API... "
+    if response=$(curl -s -w "%{http_code}" "$base_url/api/" 2>/dev/null); then
+        local http_code="${response: -3}"
+        if [[ "$http_code" == "200" ]]; then
+            echo -e "${GREEN}✓ Accessible (no auth required)${NC}"
+        elif [[ "$http_code" == "401" ]]; then
+            echo -e "${YELLOW}⚠ Accessible (auth required)${NC}"
+        else
+            echo -e "${RED}✗ HTTP $http_code${NC}"
+        fi
+    else
+        echo -e "${RED}✗ Not accessible${NC}"
+    fi
+    
+    # Test profile page
+    echo -n "Testing profile page... "
+    if curl -s -I "$base_url/profile" | grep -q "200 OK"; then
+        echo -e "${GREEN}✓ Accessible${NC}"
+    else
+        echo -e "${RED}✗ Not accessible${NC}"
+    fi
+    
+    echo ""
+}
+
+suggest_solutions() {
+    echo -e "${GREEN}Suggested Solutions${NC}"
+    echo ""
+    
+    echo -e "${BLUE}If Home Assistant is not accessible:${NC}"
+    echo "1. Check if Home Assistant is running"
+    echo "2. Verify the IP address and port"
+    echo "3. Check firewall settings"
+    echo "4. Try accessing from the same network"
+    echo ""
+    
+    echo -e "${BLUE}If Home Assistant is accessible but no token section:${NC}"
+    echo "1. Try the manual export method: ./bin/ha-export-guide"
+    echo "2. Look for 'Advanced Mode' in settings and enable it"
+    echo "3. Check if you're using Home Assistant OS vs Core"
+    echo "4. Try different browsers or incognito mode"
+    echo ""
+    
+    echo -e "${BLUE}Alternative approaches:${NC}"
+    echo "1. Use the File Editor add-on to copy config files"
+    echo "2. Download a full backup from Server Controls"
+    echo "3. Access the server directly if you have SSH access"
+    echo "4. Use the Home Assistant Companion app"
+    echo ""
+}
+
+main() {
+    local scan_ports=false
+    local check_network=false
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --scan-ports)
+                scan_ports=true
+                shift
+                ;;
+            --check-network)
+                check_network=true
+                shift
+                ;;
+            --help)
+                usage
+                exit 0
+                ;;
+            *)
+                echo "Unknown option: $1"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+    
+    echo -e "${GREEN}Home Assistant Diagnostic Tool${NC}"
+    echo "Target: $HA_SERVER:$HA_PORT"
+    echo ""
+    
+    # Check network connectivity
+    if [[ "$check_network" == "true" ]]; then
+        check_network
+    fi
+    
+    # Scan ports
+    if [[ "$scan_ports" == "true" ]]; then
+        scan_ports
+    fi
+    
+    # Check HA status
+    check_ha_status
+    
+    # Suggest solutions
+    suggest_solutions
+    
+    echo -e "${BLUE}Next Steps:${NC}"
+    echo "1. Run: ./bin/ha-explore-simple --check-api"
+    echo "2. Run: ./bin/ha-export-guide for manual export"
+    echo "3. Or run: ./bin/ha-explore-simple --open-pages to open all pages"
+}
+
+main "$@"
+
+
+
+
+
+
+
+
+
+
+
+

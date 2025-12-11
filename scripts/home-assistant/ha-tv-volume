@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Home Assistant TV Volume Control Script
+# Usage: ./bin/ha-tv-volume [volume_level] [tv_entity]
+# Example: ./bin/ha-tv-volume 1 lg_webos_tv_oled42c5pua
+
+set -e
+
+# Configuration
+HA_SERVER="192.168.0.105:8123"
+TOKEN_FILE="$HOME/.homeassistant_token"
+
+# Default values
+DEFAULT_VOLUME=${1:-1}
+DEFAULT_TV=${2:-"lg_webos_tv_oled42c5pua"}
+
+# Convert percentage to decimal (1% = 0.01)
+if [[ $DEFAULT_VOLUME -gt 1 ]]; then
+    VOLUME_LEVEL=$(echo "scale=2; $DEFAULT_VOLUME / 100" | bc)
+else
+    VOLUME_LEVEL="0.01"
+fi
+
+# Check if token exists
+if [[ ! -f "$TOKEN_FILE" ]]; then
+    echo "❌ Error: Home Assistant token not found at $TOKEN_FILE"
+    echo "Run: ./bin/ha-get-token to get your API token"
+    exit 1
+fi
+
+# Read token
+HA_TOKEN=$(cat "$TOKEN_FILE")
+
+echo "📺 Setting TV volume to ${DEFAULT_VOLUME}%..."
+echo "🎯 Target: media_player.$DEFAULT_TV"
+echo "📊 Volume level: $VOLUME_LEVEL"
+
+# Send volume command
+RESPONSE=$(curl -s -X POST \
+    -H "Authorization: Bearer $HA_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "{\"entity_id\": \"media_player.$DEFAULT_TV\", \"volume_level\": \"$VOLUME_LEVEL\"}" \
+    "http://$HA_SERVER/api/services/media_player/volume_set")
+
+if [[ "$RESPONSE" =~ "volume_level" ]] || [[ -z "$RESPONSE" ]] || [[ "$RESPONSE" == "[]" ]]; then
+    echo "✅ Volume set successfully!"
+else
+    echo "❌ Error: $RESPONSE"
+    exit 1
+fi
+
+echo "🎵 TV volume is now at ${DEFAULT_VOLUME}%"

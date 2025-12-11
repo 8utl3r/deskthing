@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# Alternative TV Control - Wake on LAN approach
+# This might avoid triggering Google Cast
+
+set -e
+
+# Configuration
+LG_TV_MAC="YOUR_TV_MAC_ADDRESS"  # You'll need to find this
+LG_TV_IP="192.168.0.39"          # Your LG monitor IP
+HA_SERVER="192.168.0.105:8123"
+TOKEN_FILE="$HOME/.homeassistant_token"
+
+# Check if wakeonlan is installed
+if ! command -v wakeonlan &> /dev/null; then
+    echo "Installing wakeonlan..."
+    brew install wakeonlan
+fi
+
+# Wake TV using Wake-on-LAN
+wake_tv() {
+    echo "🔌 Waking TV via Wake-on-LAN..."
+    wakeonlan "$LG_TV_MAC"
+    sleep 3
+}
+
+# Turn off TV using Home Assistant
+turn_off_tv() {
+    echo "📺 Turning off TV via Home Assistant..."
+    HA_TOKEN=$(cat "$TOKEN_FILE")
+    curl -s -X POST \
+        -H "Authorization: Bearer $HA_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"entity_id": "media_player.lg_webos_tv_oled42c5pua"}' \
+        "http://$HA_SERVER/api/services/media_player/turn_off"
+}
+
+# Set volume using Home Assistant
+set_volume() {
+    local volume=$1
+    echo "🔊 Setting volume to $volume%..."
+    HA_TOKEN=$(cat "$TOKEN_FILE")
+    curl -s -X POST \
+        -H "Authorization: Bearer $HA_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d "{\"entity_id\": \"media_player.lg_webos_tv_oled42c5pua\", \"volume_level\": $(echo "scale=2; $volume / 100" | bc)}" \
+        "http://$HA_SERVER/api/services/media_player/volume_set"
+}
+
+# Main function
+case "${1:-help}" in
+    "on")
+        wake_tv
+        ;;
+    "off")
+        turn_off_tv
+        ;;
+    "volume")
+        set_volume "${2:-1}"
+        ;;
+    *)
+        echo "Usage: $0 {on|off|volume [1-100]}"
+        echo ""
+        echo "Examples:"
+        echo "  $0 on          # Wake TV with Wake-on-LAN"
+        echo "  $0 off         # Turn off TV via HA"
+        echo "  $0 volume 5    # Set volume to 5%"
+        ;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1187 @@
+{
+  "entity_id": "scene.bathroom_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Read",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.002073+00:00",
+  "last_reported": "2025-07-29T23:43:35.002073+00:00",
+  "last_updated": "2025-07-29T23:43:35.002073+00:00",
+  "context": {
+    "id": "01K1C93V2T8XGA77H35R24T1NG",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_dimmed",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Dimmed",
+    "speed": 0.5,
+    "brightness": 77,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Dimmed"
+  },
+  "last_changed": "2025-07-29T23:43:35.004322+00:00",
+  "last_reported": "2025-07-29T23:43:35.004322+00:00",
+  "last_updated": "2025-07-29T23:43:35.004322+00:00",
+  "context": {
+    "id": "01K1C93V2WF6TF5C7HFF9ETDBC",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.pete_s_office_tea_light",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Pete's Office",
+    "group_type": "room",
+    "name": "Tea Light",
+    "speed": 0.603,
+    "brightness": 87,
+    "is_dynamic": false,
+    "friendly_name": "Pete's Office Tea Light"
+  },
+  "last_changed": "2025-07-29T23:43:35.007632+00:00",
+  "last_reported": "2025-07-29T23:43:35.007632+00:00",
+  "last_updated": "2025-07-29T23:43:35.007632+00:00",
+  "context": {
+    "id": "01K1C93V2ZPCPE628S6JBDDW0T",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_savanna_sunset",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Savanna sunset",
+    "speed": 0.6190476190476191,
+    "brightness": 206,
+    "is_dynamic": true,
+    "friendly_name": "Bedroom Savanna sunset"
+  },
+  "last_changed": "2025-07-29T23:43:35.009568+00:00",
+  "last_reported": "2025-07-29T23:43:35.009568+00:00",
+  "last_updated": "2025-07-29T23:43:35.009568+00:00",
+  "context": {
+    "id": "01K1C93V31HQ270QX5KDT7CFWX",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_space_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Space",
+    "group_type": "zone",
+    "name": "Energize",
+    "speed": 0.603,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Living Space Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.014745+00:00",
+  "last_reported": "2025-07-29T23:43:35.014745+00:00",
+  "last_updated": "2025-07-29T23:43:35.014745+00:00",
+  "context": {
+    "id": "01K1C93V368NHSBKA2K1GA1AAQ",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_rest",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Rest",
+    "speed": 0.6031746031746031,
+    "brightness": 89,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Rest"
+  },
+  "last_changed": "2025-07-29T23:43:35.016761+00:00",
+  "last_reported": "2025-07-29T23:43:35.016761+00:00",
+  "last_updated": "2025-07-29T23:43:35.016761+00:00",
+  "context": {
+    "id": "01K1C93V380P1YAWT655864HF7",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_space_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Space",
+    "group_type": "zone",
+    "name": "Read",
+    "speed": 0.603,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Living Space Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.020872+00:00",
+  "last_reported": "2025-07-29T23:43:35.020872+00:00",
+  "last_updated": "2025-07-29T23:43:35.020872+00:00",
+  "context": {
+    "id": "01K1C93V3C1ZQFVV4JQ884JW70",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Concentrate",
+    "speed": 0.6031746031746031,
+    "brightness": null,
+    "is_dynamic": false,
+    "friendly_name": "Kitchen Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.026957+00:00",
+  "last_reported": "2025-07-29T23:43:35.026957+00:00",
+  "last_updated": "2025-07-29T23:43:35.026957+00:00",
+  "context": {
+    "id": "01K1C93V3J6D52FR15ZEF6VDD9",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Energize",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Living Room Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.028692+00:00",
+  "last_reported": "2025-07-29T23:43:35.028692+00:00",
+  "last_updated": "2025-07-29T23:43:35.028692+00:00",
+  "context": {
+    "id": "01K1C93V3MTZ1X0QN5R71PA0YB",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_golden_pond",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Golden pond",
+    "speed": 0.626984126984127,
+    "brightness": 165,
+    "is_dynamic": true,
+    "friendly_name": "Bedroom Golden pond"
+  },
+  "last_changed": "2025-07-29T23:43:35.030576+00:00",
+  "last_reported": "2025-07-29T23:43:35.030576+00:00",
+  "last_updated": "2025-07-29T23:43:35.030576+00:00",
+  "context": {
+    "id": "01K1C93V3P0NRN93F72KV1QEAX",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Energize",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Home Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.036459+00:00",
+  "last_reported": "2025-07-29T23:43:35.036459+00:00",
+  "last_updated": "2025-07-29T23:43:35.036459+00:00",
+  "context": {
+    "id": "01K1C93V3WRC1Y26M11P7AZSR1",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.pete_s_office_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Pete's Office",
+    "group_type": "room",
+    "name": "Nightlight",
+    "speed": 0.603,
+    "brightness": 0,
+    "is_dynamic": false,
+    "friendly_name": "Pete's Office Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.038809+00:00",
+  "last_reported": "2025-07-29T23:43:35.038809+00:00",
+  "last_updated": "2025-07-29T23:43:35.038809+00:00",
+  "context": {
+    "id": "01K1C93V3Y56G7JK53ESEP02MC",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.pete_s_office_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Pete's Office",
+    "group_type": "room",
+    "name": "Concentrate",
+    "speed": 0.603,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Pete's Office Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.043247+00:00",
+  "last_reported": "2025-07-29T23:43:35.043247+00:00",
+  "last_updated": "2025-07-29T23:43:35.043247+00:00",
+  "context": {
+    "id": "01K1C93V43GMJ3M1MH8GYTB935",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_sleepy",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Sleepy",
+    "speed": 0.626984126984127,
+    "brightness": 64,
+    "is_dynamic": true,
+    "friendly_name": "Bedroom Sleepy"
+  },
+  "last_changed": "2025-07-29T23:43:35.045698+00:00",
+  "last_reported": "2025-07-29T23:43:35.045698+00:00",
+  "last_updated": "2025-07-29T23:43:35.045698+00:00",
+  "context": {
+    "id": "01K1C93V45RMRTWQQ92NR5PD56",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Nightlight",
+    "speed": 0.5,
+    "brightness": 0,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.048450+00:00",
+  "last_reported": "2025-07-29T23:43:35.048450+00:00",
+  "last_updated": "2025-07-29T23:43:35.048450+00:00",
+  "context": {
+    "id": "01K1C93V4853357A6C4W5ADE0M",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.pete_s_office_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Pete's Office",
+    "group_type": "room",
+    "name": "Read",
+    "speed": 0.603,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Pete's Office Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.050285+00:00",
+  "last_reported": "2025-07-29T23:43:35.050285+00:00",
+  "last_updated": "2025-07-29T23:43:35.050285+00:00",
+  "context": {
+    "id": "01K1C93V4AZHYW8JNQN3AWE1RN",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Read",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Home Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.054854+00:00",
+  "last_reported": "2025-07-29T23:43:35.054854+00:00",
+  "last_updated": "2025-07-29T23:43:35.054854+00:00",
+  "context": {
+    "id": "01K1C93V4EX8B1HR1HGN1J14CQ",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Concentrate",
+    "speed": 0.5,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.057038+00:00",
+  "last_reported": "2025-07-29T23:43:35.057038+00:00",
+  "last_updated": "2025-07-29T23:43:35.057038+00:00",
+  "context": {
+    "id": "01K1C93V4HS5JH4PT5WJ9D9FMB",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_rest",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Rest",
+    "speed": 0.6031746031746031,
+    "brightness": 89,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Rest"
+  },
+  "last_changed": "2025-07-29T23:43:35.059365+00:00",
+  "last_reported": "2025-07-29T23:43:35.059365+00:00",
+  "last_updated": "2025-07-29T23:43:35.059365+00:00",
+  "context": {
+    "id": "01K1C93V4KEQBM1887Q1VCEGCR",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_space_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Space",
+    "group_type": "zone",
+    "name": "Relax",
+    "speed": 0.603,
+    "brightness": 143,
+    "is_dynamic": false,
+    "friendly_name": "Living Space Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.062313+00:00",
+  "last_reported": "2025-07-29T23:43:35.062313+00:00",
+  "last_updated": "2025-07-29T23:43:35.062313+00:00",
+  "context": {
+    "id": "01K1C93V4PTH89QBGS4G3K50ZF",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_bright",
+  "state": "2023-12-03T23:00:15.503575+00:00",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Bright",
+    "speed": 0.5,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Bright"
+  },
+  "last_changed": "2025-07-29T23:43:35.064171+00:00",
+  "last_reported": "2025-07-29T23:43:35.064171+00:00",
+  "last_updated": "2025-07-29T23:43:35.064171+00:00",
+  "context": {
+    "id": "01K1C93V4RE41E06ARNY7VC3T6",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Relax",
+    "speed": 0.5,
+    "brightness": 144,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.070487+00:00",
+  "last_reported": "2025-07-29T23:43:35.070487+00:00",
+  "last_updated": "2025-07-29T23:43:35.070487+00:00",
+  "context": {
+    "id": "01K1C93V4YKMRW991894ZMWGP7",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_rest",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Rest",
+    "speed": 0.6031746031746031,
+    "brightness": 89,
+    "is_dynamic": false,
+    "friendly_name": "Living Room Rest"
+  },
+  "last_changed": "2025-07-29T23:43:35.072611+00:00",
+  "last_reported": "2025-07-29T23:43:35.072611+00:00",
+  "last_updated": "2025-07-29T23:43:35.072611+00:00",
+  "context": {
+    "id": "01K1C93V50E7JZ3PYJ88EKN1F0",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Nightlight",
+    "speed": 0.6031746031746031,
+    "brightness": null,
+    "is_dynamic": false,
+    "friendly_name": "Kitchen Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.078019+00:00",
+  "last_reported": "2025-07-29T23:43:35.078019+00:00",
+  "last_updated": "2025-07-29T23:43:35.078019+00:00",
+  "context": {
+    "id": "01K1C93V564NDGB43EPFXX67E8",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Nightlight",
+    "speed": 0.6031746031746031,
+    "brightness": 0,
+    "is_dynamic": false,
+    "friendly_name": "Living Room Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.080382+00:00",
+  "last_reported": "2025-07-29T23:43:35.080382+00:00",
+  "last_updated": "2025-07-29T23:43:35.080382+00:00",
+  "context": {
+    "id": "01K1C93V58D56PEA0ZY3M0YMFE",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Relax",
+    "speed": 0.6031746031746031,
+    "brightness": null,
+    "is_dynamic": false,
+    "friendly_name": "Kitchen Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.082321+00:00",
+  "last_reported": "2025-07-29T23:43:35.082321+00:00",
+  "last_updated": "2025-07-29T23:43:35.082321+00:00",
+  "context": {
+    "id": "01K1C93V5A9R1Y0QT9EYS1ZMNV",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_space_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Space",
+    "group_type": "zone",
+    "name": "Concentrate",
+    "speed": 0.603,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Living Space Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.085130+00:00",
+  "last_reported": "2025-07-29T23:43:35.085130+00:00",
+  "last_updated": "2025-07-29T23:43:35.085130+00:00",
+  "context": {
+    "id": "01K1C93V5D8AYE7X5PSQC5298Q",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_dimmed",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Dimmed",
+    "speed": 0.5,
+    "brightness": 77,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Dimmed"
+  },
+  "last_changed": "2025-07-29T23:43:35.087292+00:00",
+  "last_reported": "2025-07-29T23:43:35.087292+00:00",
+  "last_updated": "2025-07-29T23:43:35.087292+00:00",
+  "context": {
+    "id": "01K1C93V5FVEJ1YHF3XEGCMMP3",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Relax",
+    "speed": 0.6031746031746031,
+    "brightness": 143,
+    "is_dynamic": false,
+    "friendly_name": "Living Room Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.100418+00:00",
+  "last_reported": "2025-07-29T23:43:35.100418+00:00",
+  "last_updated": "2025-07-29T23:43:35.100418+00:00",
+  "context": {
+    "id": "01K1C93V5WQVAQH6THRQJ6KJNM",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_spring_blossom",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Spring blossom",
+    "speed": 0.5595238095238095,
+    "brightness": 207,
+    "is_dynamic": true,
+    "friendly_name": "Bedroom Spring blossom"
+  },
+  "last_changed": "2025-07-29T23:43:35.103111+00:00",
+  "last_reported": "2025-07-29T23:43:35.103111+00:00",
+  "last_updated": "2025-07-29T23:43:35.103111+00:00",
+  "context": {
+    "id": "01K1C93V5ZTYAHMV5SMS3EC1DS",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Concentrate",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Living Room Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.107872+00:00",
+  "last_reported": "2025-07-29T23:43:35.107872+00:00",
+  "last_updated": "2025-07-29T23:43:35.107872+00:00",
+  "context": {
+    "id": "01K1C93V63JN10G7S4K2RG6FDB",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_bright",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Bright",
+    "speed": 0.5,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Bright"
+  },
+  "last_changed": "2025-07-29T23:43:35.109959+00:00",
+  "last_reported": "2025-07-29T23:43:35.109959+00:00",
+  "last_updated": "2025-07-29T23:43:35.109959+00:00",
+  "context": {
+    "id": "01K1C93V65T0RPR4XREHBDDHWY",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Energize",
+    "speed": 0.6031746031746031,
+    "brightness": null,
+    "is_dynamic": false,
+    "friendly_name": "Kitchen Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.111852+00:00",
+  "last_reported": "2025-07-29T23:43:35.111852+00:00",
+  "last_updated": "2025-07-29T23:43:35.111852+00:00",
+  "context": {
+    "id": "01K1C93V67A1H5S75CECYB4E5V",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_rest",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Rest",
+    "speed": 0.6031746031746031,
+    "brightness": null,
+    "is_dynamic": false,
+    "friendly_name": "Kitchen Rest"
+  },
+  "last_changed": "2025-07-29T23:43:35.114163+00:00",
+  "last_reported": "2025-07-29T23:43:35.114163+00:00",
+  "last_updated": "2025-07-29T23:43:35.114163+00:00",
+  "context": {
+    "id": "01K1C93V6ADKNDWCNE0ZWKH65M",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Concentrate",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Home Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.118973+00:00",
+  "last_reported": "2025-07-29T23:43:35.118973+00:00",
+  "last_updated": "2025-07-29T23:43:35.118973+00:00",
+  "context": {
+    "id": "01K1C93V6EVGCR0088YVEYB8AB",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_rest",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Rest",
+    "speed": 0.6031746031746031,
+    "brightness": 89,
+    "is_dynamic": false,
+    "friendly_name": "Home Rest"
+  },
+  "last_changed": "2025-07-29T23:43:35.120959+00:00",
+  "last_reported": "2025-07-29T23:43:35.120959+00:00",
+  "last_updated": "2025-07-29T23:43:35.120959+00:00",
+  "context": {
+    "id": "01K1C93V6GJZ4PVKHH9Z55PVG2",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_concentrate",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Concentrate",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Concentrate"
+  },
+  "last_changed": "2025-07-29T23:43:35.127016+00:00",
+  "last_reported": "2025-07-29T23:43:35.127016+00:00",
+  "last_updated": "2025-07-29T23:43:35.127016+00:00",
+  "context": {
+    "id": "01K1C93V6QYK1DKX65WEZC3C4P",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_tropical_twilight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Tropical twilight",
+    "speed": 0.6388888888888888,
+    "brightness": 111,
+    "is_dynamic": true,
+    "friendly_name": "Bedroom Tropical twilight"
+  },
+  "last_changed": "2025-07-29T23:43:35.129079+00:00",
+  "last_reported": "2025-07-29T23:43:35.129079+00:00",
+  "last_updated": "2025-07-29T23:43:35.129079+00:00",
+  "context": {
+    "id": "01K1C93V6SV5WRMD3ZN5YPGA3M",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Energize",
+    "speed": 0.5,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.135284+00:00",
+  "last_reported": "2025-07-29T23:43:35.135284+00:00",
+  "last_updated": "2025-07-29T23:43:35.135284+00:00",
+  "context": {
+    "id": "01K1C93V6ZBCT1WQ6YS8Q71755",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Relax",
+    "speed": 0.6031746031746031,
+    "brightness": 143,
+    "is_dynamic": false,
+    "friendly_name": "Home Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.137937+00:00",
+  "last_reported": "2025-07-29T23:43:35.137937+00:00",
+  "last_updated": "2025-07-29T23:43:35.137937+00:00",
+  "context": {
+    "id": "01K1C93V71Y8GFK2PQFRHKJQVH",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Read",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Living Room Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.140558+00:00",
+  "last_reported": "2025-07-29T23:43:35.140558+00:00",
+  "last_updated": "2025-07-29T23:43:35.140558+00:00",
+  "context": {
+    "id": "01K1C93V746V3M332H0DEGQ31S",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_space_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Space",
+    "group_type": "zone",
+    "name": "Nightlight",
+    "speed": 0.603,
+    "brightness": 0,
+    "is_dynamic": false,
+    "friendly_name": "Living Space Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.142749+00:00",
+  "last_reported": "2025-07-29T23:43:35.142749+00:00",
+  "last_updated": "2025-07-29T23:43:35.142749+00:00",
+  "context": {
+    "id": "01K1C93V76P6W33K905GVN07E1",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.pete_s_office_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Pete's Office",
+    "group_type": "room",
+    "name": "Energize",
+    "speed": 0.603,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Pete's Office Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.146057+00:00",
+  "last_reported": "2025-07-29T23:43:35.146057+00:00",
+  "last_updated": "2025-07-29T23:43:35.146057+00:00",
+  "context": {
+    "id": "01K1C93V7AFF8V0YN39RE3F4AD",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Read",
+    "speed": 0.6031746031746031,
+    "brightness": null,
+    "is_dynamic": false,
+    "friendly_name": "Kitchen Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.148428+00:00",
+  "last_reported": "2025-07-29T23:43:35.148428+00:00",
+  "last_updated": "2025-07-29T23:43:35.148428+00:00",
+  "context": {
+    "id": "01K1C93V7CQWMV5JR6YCZ11CND",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_arctic_aurora",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Arctic aurora",
+    "speed": 0.6388888888888888,
+    "brightness": 178,
+    "is_dynamic": true,
+    "friendly_name": "Bedroom Arctic aurora"
+  },
+  "last_changed": "2025-07-29T23:43:35.150973+00:00",
+  "last_reported": "2025-07-29T23:43:35.150973+00:00",
+  "last_updated": "2025-07-29T23:43:35.150973+00:00",
+  "context": {
+    "id": "01K1C93V7E5Y9X6C0Y8NNCHCJV",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_read",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Read",
+    "speed": 0.5,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bedroom Read"
+  },
+  "last_changed": "2025-07-29T23:43:35.152742+00:00",
+  "last_reported": "2025-07-29T23:43:35.152742+00:00",
+  "last_updated": "2025-07-29T23:43:35.152742+00:00",
+  "context": {
+    "id": "01K1C93V7GGH65WNX9RGJE0STJ",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_energize",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Energize",
+    "speed": 0.6031746031746031,
+    "brightness": 255,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Energize"
+  },
+  "last_changed": "2025-07-29T23:43:35.155081+00:00",
+  "last_reported": "2025-07-29T23:43:35.155081+00:00",
+  "last_updated": "2025-07-29T23:43:35.155081+00:00",
+  "context": {
+    "id": "01K1C93V7KRMXDMY03QTMPAFAX",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Nightlight",
+    "speed": 0.6031746031746031,
+    "brightness": 0,
+    "is_dynamic": false,
+    "friendly_name": "Home Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.161366+00:00",
+  "last_reported": "2025-07-29T23:43:35.161366+00:00",
+  "last_updated": "2025-07-29T23:43:35.161366+00:00",
+  "context": {
+    "id": "01K1C93V7SC4JFCNY2E8DQ03V2",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.pete_s_office_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Pete's Office",
+    "group_type": "room",
+    "name": "Relax",
+    "speed": 0.603,
+    "brightness": 143,
+    "is_dynamic": false,
+    "friendly_name": "Pete's Office Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.163890+00:00",
+  "last_reported": "2025-07-29T23:43:35.163890+00:00",
+  "last_updated": "2025-07-29T23:43:35.163890+00:00",
+  "context": {
+    "id": "01K1C93V7VCB2WXKENFDP440MC",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_nightlight",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Nightlight",
+    "speed": 0.5,
+    "brightness": 0,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Nightlight"
+  },
+  "last_changed": "2025-07-29T23:43:35.166017+00:00",
+  "last_reported": "2025-07-29T23:43:35.166017+00:00",
+  "last_updated": "2025-07-29T23:43:35.166017+00:00",
+  "context": {
+    "id": "01K1C93V7YCKWN2R61757X618X",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_relax",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Relax",
+    "speed": 0.6031746031746031,
+    "brightness": 143,
+    "is_dynamic": false,
+    "friendly_name": "Bathroom Relax"
+  },
+  "last_changed": "2025-07-29T23:43:35.167974+00:00",
+  "last_reported": "2025-07-29T23:43:35.167974+00:00",
+  "last_updated": "2025-07-29T23:43:35.167974+00:00",
+  "context": {
+    "id": "01K1C93V7Z114CT56E3JFM5W4T",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_golden_pond",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Golden pond",
+    "speed": 0.626984126984127,
+    "brightness": 165,
+    "is_dynamic": true,
+    "friendly_name": "Bathroom Golden pond"
+  },
+  "last_changed": "2025-07-29T23:43:35.170463+00:00",
+  "last_reported": "2025-07-29T23:43:35.170463+00:00",
+  "last_updated": "2025-07-29T23:43:35.170463+00:00",
+  "context": {
+    "id": "01K1C93V820RBXM4SFSGEKECYC",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.home_natural_light",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Home",
+    "group_type": "zone",
+    "name": "Natural light",
+    "is_active": false,
+    "friendly_name": "Home Natural light"
+  },
+  "last_changed": "2025-07-29T23:43:35.172849+00:00",
+  "last_reported": "2025-07-29T23:43:35.172849+00:00",
+  "last_updated": "2025-07-29T23:43:35.172849+00:00",
+  "context": {
+    "id": "01K1C93V84DRQYY2P64G9G3WVQ",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.kitchen_natural_light",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Kitchen",
+    "group_type": "room",
+    "name": "Natural light",
+    "is_active": false,
+    "friendly_name": "Kitchen Natural light"
+  },
+  "last_changed": "2025-07-29T23:43:35.176632+00:00",
+  "last_reported": "2025-07-29T23:43:35.176632+00:00",
+  "last_updated": "2025-07-29T23:43:35.176632+00:00",
+  "context": {
+    "id": "01K1C93V88M287P5P7RQ9FJ5NW",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bathroom_natural_light",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bathroom",
+    "group_type": "room",
+    "name": "Natural light",
+    "is_active": false,
+    "friendly_name": "Bathroom Natural light"
+  },
+  "last_changed": "2025-07-29T23:43:35.179435+00:00",
+  "last_reported": "2025-07-29T23:43:35.179435+00:00",
+  "last_updated": "2025-07-29T23:43:35.179435+00:00",
+  "context": {
+    "id": "01K1C93V8BDB8KNX8XBDYDNB1B",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.bedroom_natural_light",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Bedroom",
+    "group_type": "room",
+    "name": "Natural light",
+    "is_active": false,
+    "friendly_name": "Bedroom Natural light"
+  },
+  "last_changed": "2025-07-29T23:43:35.182789+00:00",
+  "last_reported": "2025-07-29T23:43:35.182789+00:00",
+  "last_updated": "2025-07-29T23:43:35.182789+00:00",
+  "context": {
+    "id": "01K1C93V8E1WA31KZR2KBFC70Z",
+    "parent_id": null,
+    "user_id": null
+  }
+}
+{
+  "entity_id": "scene.living_room_natural_light",
+  "state": "unknown",
+  "attributes": {
+    "group_name": "Living Room",
+    "group_type": "room",
+    "name": "Natural light",
+    "is_active": false,
+    "friendly_name": "Living Room Natural light"
+  },
+  "last_changed": "2025-07-29T23:43:35.185105+00:00",
+  "last_reported": "2025-07-29T23:43:35.185105+00:00",
+  "last_updated": "2025-07-29T23:43:35.185105+00:00",
+  "context": {
+    "id": "01K1C93V8HK3NH6GEB710WHVQB",
+    "parent_id": null,
+    "user_id": null
+  }
+}
