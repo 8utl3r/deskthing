@@ -120,3 +120,6 @@ If Caps Lock is just sending Caps Lock, Karabiner-Elements isn't processing it.
 
 
 
+
+
+
