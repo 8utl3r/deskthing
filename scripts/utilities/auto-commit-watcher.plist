@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.pete.auto-commit-watcher</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/pete/dotfiles/scripts/utilities/auto-commit-watcher</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/pete/dotfiles</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/pete/.auto_commit_watcher.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/pete/.auto_commit_watcher.err.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>WATCH_INTERVAL</key>
+        <string>30</string>
+        <key>COMMIT_DELAY</key>
+        <string>5</string>
+        <key>ENABLED</key>
+        <string>1</string>
+    </dict>
+</dict>
+</plist>
