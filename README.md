@@ -41,6 +41,7 @@ brew bundle --file ./Brewfile
 
 ### Applications
 - **Alfred 5** application launcher (⌘+Space)
+- **CheatSheet** shortcut viewer - shows keyboard shortcuts when holding Command (⌘) key
 - **Cursor** IDE with custom settings and keybindings
 - **Docker** with CLI and Desktop configuration
 - **CrossOver** Windows compatibility for running Windows games and apps
