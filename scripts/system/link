@@ -31,8 +31,19 @@ LINK_PAIRS=(
   "aerospace/aerospace.toml|$HOME/.aerospace.toml"
   "karabiner/karabiner.json|$HOME/.config/karabiner/karabiner.json"
   "hammerspoon/init.lua|$HOME/.hammerspoon/init.lua"
+  "hammerspoon/shortcut-overlay.lua|$HOME/.hammerspoon/shortcut-overlay.lua"
+  "hammerspoon/shortcut-overlay-debug.lua|$HOME/.hammerspoon/shortcut-overlay-debug.lua"
+  "hammerspoon/shortcut-overlay-fixed.lua|$HOME/.hammerspoon/shortcut-overlay-fixed.lua"
+  "hammerspoon/test-overlay.lua|$HOME/.hammerspoon/test-overlay.lua"
+  "hammerspoon/lg-c5|$HOME/.hammerspoon/lg-c5"
+  "hammerspoon/home-assistant|$HOME/.hammerspoon/home-assistant"
   "gh/config.yml|$HOME/.config/gh/config.yml"
   "alfred/Alfred.alfredpreferences|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences"
+  "activedock/com.sergey-gerasimenko.ActiveDock-2|$HOME/Library/Application Support/com.sergey-gerasimenko.ActiveDock-2"
+  "activedock/com.sergey-gerasimenko.ActiveDock-2.plist|$HOME/Library/Preferences/com.sergey-gerasimenko.ActiveDock-2.plist"
+  "bloom/com.asiafu.Bloom.plist|$HOME/Library/Preferences/com.asiafu.Bloom.plist"
+  "cheatsheet/com.mediaatelier.CheatSheet.plist|$HOME/Library/Preferences/com.mediaatelier.CheatSheet.plist"
+  "flexinet/com.macplus-software.FlexiNet.plist|$HOME/Library/Preferences/com.macplus-software.FlexiNet.plist"
   "ice/com.jordanbaird.Ice.plist|$HOME/Library/Preferences/com.jordanbaird.Ice.plist"
   "docker/config.json|$HOME/.docker/config.json"
   "docker/daemon.json|$HOME/.docker/daemon.json"
@@ -46,7 +57,7 @@ LINK_PAIRS=(
   ".editorconfig|$HOME/.editorconfig"
 )
 
-repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+repo_root="$(cd "$(dirname "$0")/../.." && pwd)"
 
 link_one() {
   local src_rel="$1"
