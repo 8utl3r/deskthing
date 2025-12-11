@@ -1,57 +1,125 @@
-local hyper = {"cmd", "alt", "ctrl", "shift"}
+-- Hammerspoon Configuration
+-- Main entry point that loads configuration and modules
 
--- Reload config
-hs.hotkey.bind(hyper, "r", function()
-  hs.reload()
-  hs.notify.new({title = "Hammerspoon", informativeText = "Config reloaded"}):send()
-end)
+-- Load configuration first
+local config = require("config")
+local logger = require("lib.logger")
+local debug = require("lib.debug")
 
--- Quick app launchers (adjust to taste)
-local apps = {
-  t = "WezTerm",
-  c = "Cursor",
-  b = "Mullvad Browser",
-  f = "Finder",
+-- Set up logging
+local mainLogger = logger.get("hammerspoon", config.get("logging").defaultLevel)
+logger.setDefaultLogLevel(config.get("logging").defaultLevel)
+
+-- Initialize debug system
+if config.get("debug").enabled then
+    debug.setEnabled(true)
+    mainLogger.info("Debug mode enabled")
+end
+
+-- Initialize cleanup handler as a table before modules load
+-- Store original cleanup if it was a function
+local originalCleanupFunc = nil
+if type(hs.cleanup) == "function" then
+    originalCleanupFunc = hs.cleanup
+    hs.cleanup = {}
+elseif not hs.cleanup then
+    hs.cleanup = {}
+end
+
+-- Module loading order (dependencies first)
+local modules = {
+    -- Core modules (no dependencies)
+    "modules.window-management",
+    "modules.app-launcher",
+    "modules.caffeine",
+    
+    -- Feature modules
+    "modules.shortcut-overlay",
+    "modules.lg-monitor",
+    "modules.home-assistant",
 }
-for key, app in pairs(apps) do
-  hs.hotkey.bind(hyper, key, function() hs.application.launchOrFocus(app) end)
+
+-- Load and initialize modules
+local loadedModules = {}
+
+for _, moduleName in ipairs(modules) do
+    local success, module = pcall(function()
+        return require(moduleName)
+    end)
+    
+    if success and module then
+        if module.init then
+            local initSuccess, initErr = pcall(function()
+                module.init()
+            end)
+            
+            if initSuccess then
+                loadedModules[moduleName] = module
+                mainLogger.info("Loaded and initialized: " .. moduleName)
+            else
+                mainLogger.error("Failed to initialize " .. moduleName .. ": " .. tostring(initErr))
+            end
+        else
+            loadedModules[moduleName] = module
+            mainLogger.info("Loaded: " .. moduleName)
+        end
+    else
+        mainLogger.error("Failed to load module: " .. moduleName)
+        if module then
+            mainLogger.error("Error: " .. tostring(module))
+        end
+    end
 end
 
--- Move window to next screen
-hs.hotkey.bind(hyper, "n", function()
-  local win = hs.window.focusedWindow()
-  if win then win:moveToScreen(win:screen():next()) end
+-- Reload config hotkey
+local hyper = config.get("hyper")
+hs.hotkey.bind(hyper, "r", function()
+    mainLogger.info("Reloading configuration...")
+    hs.reload()
+    hs.notify.new({
+        title = "Hammerspoon",
+        informativeText = "Config reloaded"
+    }):send()
 end)
 
--- Center window and size to 70%
-hs.hotkey.bind(hyper, "space", function()
-  local win = hs.window.focusedWindow()
-  if not win then return end
-  local screen = win:screen()
-  local max = screen:frame()
-  local w = max.w * 0.7
-  local h = max.h * 0.7
-  local x = max.x + (max.w - w) / 2
-  local y = max.y + (max.h - h) / 2
-  win:setFrame({x = x, y = y, w = w, h = h})
+-- Register our cleanup function to be called on reload
+table.insert(hs.cleanup, function()
+    mainLogger.info("Cleaning up resources...")
+    
+    -- Call all module cleanup functions
+    for moduleName, module in pairs(loadedModules) do
+        if module.cleanup then
+            local success, err = pcall(function()
+                module.cleanup()
+            end)
+            if not success then
+                mainLogger.error("Cleanup error in " .. moduleName .. ": " .. tostring(err))
+            end
+        end
+    end
+    
+    -- Close debug trace file
+    debug.close()
+    
+    -- Call original cleanup function if it existed
+    if originalCleanupFunc then
+        local success, err = pcall(function()
+            originalCleanupFunc()
+        end)
+        if not success then
+            mainLogger.error("Error in original cleanup: " .. tostring(err))
+        end
+    end
+    
+    mainLogger.info("Cleanup complete")
 end)
 
--- Screenshot (area selection)
-hs.hotkey.bind(hyper, "s", function()
-  hs.eventtap.keyStroke({"cmd", "shift"}, "4")
-end)
+mainLogger.info("Hammerspoon configuration loaded successfully")
+mainLogger.info("Loaded " .. #modules .. " modules")
 
--- Prevent sleep toggle (menubar)
-local caffeine = hs.menubar.new()
-local function setCaffeine(state)
-  caffeine:setTitle(state and "AWAKE" or "SLEEP")
-end
-if caffeine then
-  caffeine:setClickCallback(function()
-    setCaffeine(hs.caffeinate.toggle("displayIdle"))
-  end)
-  setCaffeine(hs.caffeinate.get("displayIdle"))
-end
-
--- Load LG Monitor Control (new menu bar system)
-require("lg-menu")
+-- Show notification on successful load
+hs.notify.new({
+    title = "Hammerspoon",
+    informativeText = "Configuration loaded successfully",
+    withdrawAfter = 2
+}):send()
