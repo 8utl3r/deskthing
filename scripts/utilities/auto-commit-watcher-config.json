@@ -1,0 +1,23 @@
+{
+  "autoCommitWatcher": {
+    "enabled": true,
+    "watchInterval": 30,
+    "commitDelay": 5,
+    "watchDirectories": [
+      "scripts",
+      "cursor",
+      "hammerspoon",
+      "karabiner",
+      "macos"
+    ],
+    "excludeDirectories": [
+      "scripts/state",
+      "scripts/archive",
+      ".git"
+    ],
+    "aiCommitPrompt": "You are a git commit message generator. Analyze the code changes and generate a concise commit message following Conventional Commits format. Focus on what changed and why it matters to the user or codebase.",
+    "autoStartWithCursor": true,
+    "statusFile": "$HOME/.auto_commit_watcher_status.json"
+  }
+}
+

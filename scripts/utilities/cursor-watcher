@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Watches for Cursor app to start/stop and manages auto-commit-watcher accordingly
+
+set -euo pipefail
+
+WATCHER_SCRIPT="$(cd "$(dirname "$0")" && pwd)/auto-commit-watcher"
+STATUS_FILE="$HOME/.auto_commit_watcher_status.json"
+LOCK_FILE="/tmp/cursor_watcher.lock"
+
+# Check if already running
+if [ -f "$LOCK_FILE" ]; then
+  local pid=$(cat "$LOCK_FILE" 2>/dev/null || echo "")
+  if [ -n "$pid" ] && ps -p "$pid" > /dev/null 2>&1; then
+    echo "Cursor watcher already running (PID: $pid)"
+    exit 1
+  else
+    rm -f "$LOCK_FILE"
+  fi
+fi
+
+echo $$ > "$LOCK_FILE"
+
+# Cleanup on exit
+cleanup() {
+  # Stop auto-commit-watcher if running
+  pkill -f "auto-commit-watcher" 2>/dev/null || true
+  rm -f "$LOCK_FILE"
+  exit 0
+}
+
+trap cleanup EXIT INT TERM
+
+# Check if Cursor is running
+is_cursor_running() {
+  pgrep -x "Cursor" > /dev/null 2>&1
+}
+
+# Start auto-commit-watcher
+start_watcher() {
+  if ! pgrep -f "auto-commit-watcher" > /dev/null 2>&1; then
+    echo "$(date): Starting auto-commit-watcher (Cursor detected)"
+    "$WATCHER_SCRIPT" > /dev/null 2>&1 &
+  fi
+}
+
+# Stop auto-commit-watcher
+stop_watcher() {
+  if pgrep -f "auto-commit-watcher" > /dev/null 2>&1; then
+    echo "$(date): Stopping auto-commit-watcher (Cursor closed)"
+    pkill -f "auto-commit-watcher" 2>/dev/null || true
+  fi
+}
+
+# Main loop
+echo "Cursor watcher started - monitoring Cursor app"
+last_state=""
+
+while true; do
+  if is_cursor_running; then
+    if [ "$last_state" != "running" ]; then
+      start_watcher
+      last_state="running"
+    fi
+  else
+    if [ "$last_state" != "stopped" ]; then
+      stop_watcher
+      last_state="stopped"
+    fi
+  fi
+  
+  sleep 5
+done
+

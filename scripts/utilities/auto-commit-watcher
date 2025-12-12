@@ -5,17 +5,83 @@
 set -euo pipefail
 
 # Configuration
-WATCH_INTERVAL=${WATCH_INTERVAL:-30}  # Check for changes every N seconds
-COMMIT_DELAY=${COMMIT_DELAY:-5}       # Wait N seconds after last change before committing
-DRY_RUN=${DRY_RUN:-0}                 # Set to 1 for dry-run mode
-ENABLED=${ENABLED:-1}                 # Set to 0 to disable
+# Load from Cursor settings if available, otherwise use defaults
+CURSOR_SETTINGS="$HOME/Library/Application Support/Cursor/User/settings.json"
+CONFIG_FILE="$(cd "$(dirname "$0")" && pwd)/auto-commit-watcher-config.json"
+
+# Load configuration
+load_config() {
+  # Try to read from Cursor settings first
+  if [ -f "$CURSOR_SETTINGS" ] && command -v jq > /dev/null 2>&1; then
+    WATCH_INTERVAL=$(jq -r '.["autoCommitWatcher.watchInterval"] // 30' "$CURSOR_SETTINGS" 2>/dev/null || echo "30")
+    COMMIT_DELAY=$(jq -r '.["autoCommitWatcher.commitDelay"] // 5' "$CURSOR_SETTINGS" 2>/dev/null || echo "5")
+    ENABLED=$(jq -r '.["autoCommitWatcher.enabled"] // true' "$CURSOR_SETTINGS" 2>/dev/null | grep -q "true" && echo "1" || echo "0")
+    
+    # Read watch directories
+    if jq -e '.["autoCommitWatcher.watchDirectories"]' "$CURSOR_SETTINGS" > /dev/null 2>&1; then
+      WATCH_DIRS=$(jq -r '.["autoCommitWatcher.watchDirectories"] | join(" ")' "$CURSOR_SETTINGS" 2>/dev/null || echo "")
+    fi
+    
+    # Read AI prompt
+    if jq -e '.["autoCommitWatcher.aiCommitPrompt"]' "$CURSOR_SETTINGS" > /dev/null 2>&1; then
+      AI_PROMPT=$(jq -r '.["autoCommitWatcher.aiCommitPrompt"]' "$CURSOR_SETTINGS" 2>/dev/null || echo "")
+    fi
+  fi
+  
+  # Fallback to config file or environment variables
+  WATCH_INTERVAL=${WATCH_INTERVAL:-${WATCH_INTERVAL_ENV:-30}}
+  COMMIT_DELAY=${COMMIT_DELAY:-${COMMIT_DELAY_ENV:-5}}
+  DRY_RUN=${DRY_RUN:-${DRY_RUN_ENV:-0}}
+  ENABLED=${ENABLED:-${ENABLED_ENV:-1}}
+  WATCH_DIRS=${WATCH_DIRS:-""}
+  AI_PROMPT=${AI_PROMPT:-""}
+}
+
 LOG_FILE="${LOG_FILE:-$HOME/.auto_commit_watcher.log}"
+STATUS_FILE="${STATUS_FILE:-$HOME/.auto_commit_watcher_status.json}"
+
+# Initialize config (call after setting defaults)
+load_config
 
 # Paths
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 CURSOR_BIN="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
-CURSOR_AGENT_BIN="$HOME/.local/bin/cursor-agent"  # If installed separately
+CURSOR_AGENT_BIN="$HOME/.local/bin/cursor-agent"
 LOCK_FILE="/tmp/auto_commit_watcher.lock"
+
+# Status tracking
+update_status() {
+  local status="$1"
+  local message="$2"
+  local countdown="${3:-}"
+  local last_commit="${4:-}"
+  
+  # Handle empty countdown
+  local countdown_json="null"
+  if [ -n "$countdown" ] && [ "$countdown" != "null" ]; then
+    countdown_json="$countdown"
+  fi
+  
+  # Get last commit time safely
+  local last_commit_time="never"
+  if cd "$REPO_ROOT" 2>/dev/null; then
+    local commit_timestamp=$(git log -1 --format=%ct 2>/dev/null || echo "0")
+    if [ "$commit_timestamp" != "0" ] && [ -n "$commit_timestamp" ]; then
+      last_commit_time=$(date -r "$commit_timestamp" '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo "never")
+    fi
+  fi
+  
+  cat > "$STATUS_FILE" <<EOF
+{
+  "status": "$status",
+  "message": "$message",
+  "countdown": $countdown_json,
+  "lastCommit": "$last_commit",
+  "timestamp": $(date +%s),
+  "lastCommitTime": "$last_commit_time"
+}
+EOF
+}
 
 # Files/patterns to ignore
 IGNORE_PATTERNS=(
@@ -91,15 +157,25 @@ trap cleanup EXIT INT TERM
 # Check if Cursor CLI is available
 check_cursor() {
   # Check for cursor-agent (separate CLI tool)
-  if [ -f "$CURSOR_AGENT_BIN" ] && command -v cursor-agent > /dev/null 2>&1; then
-    log_info "Cursor Agent CLI found"
+  if [ -f "$CURSOR_AGENT_BIN" ] && "$CURSOR_AGENT_BIN" --version > /dev/null 2>&1; then
+    local version=$("$CURSOR_AGENT_BIN" --version 2>/dev/null || echo "unknown")
+    log_info "Cursor Agent CLI found (version: $version)"
+    return 0
+  fi
+  
+  # Check if it's in PATH
+  if command -v cursor-agent > /dev/null 2>&1; then
+    local version=$(cursor-agent --version 2>/dev/null || echo "unknown")
+    log_info "Cursor Agent CLI found in PATH (version: $version)"
+    CURSOR_AGENT_BIN="cursor-agent"
     return 0
   fi
   
   # Check for Cursor app binary
   if [ -f "$CURSOR_BIN" ]; then
-    log_info "Cursor app binary found (limited AI features)"
-    return 0
+    log_warn "Cursor app binary found (limited AI features)"
+    log_warn "Install Cursor Agent CLI for AI commit messages: curl https://cursor.com/install -fsS | bash"
+    return 1
   fi
   
   log_warn "Cursor CLI not found - using fallback commit message generation"
@@ -151,13 +227,30 @@ should_ignore() {
   return 1  # Should not ignore
 }
 
-# Get changed files (excluding ignored)
+# Get changed files (excluding ignored and outside watch directories)
 get_changed_files() {
   cd "$REPO_ROOT"
   git status --porcelain | while read -r status file; do
-    if ! should_ignore "$file"; then
-      echo "$file"
+    # Check if file should be ignored
+    if should_ignore "$file"; then
+      continue
     fi
+    
+    # If watch directories are specified, only include files in those directories
+    if [ -n "$WATCH_DIRS" ]; then
+      local in_watch_dir=0
+      for dir in $WATCH_DIRS; do
+        if [[ "$file" == "$dir"/* ]] || [[ "$file" == "$dir" ]]; then
+          in_watch_dir=1
+          break
+        fi
+      done
+      if [ "$in_watch_dir" -eq 0 ]; then
+        continue
+      fi
+    fi
+    
+    echo "$file"
   done
 }
 
@@ -170,41 +263,85 @@ generate_commit_message() {
     return
   fi
   
-  # Get git diff for context
+  cd "$REPO_ROOT"
+  
+  # Get git diff for context (limit to reasonable size for AI)
   local diff_output
-  diff_output=$(cd "$REPO_ROOT" && git diff --cached 2>/dev/null || git diff 2>/dev/null || echo "")
+  diff_output=$(git diff --cached 2>/dev/null || git diff 2>/dev/null || echo "")
   
-  # Create prompt for Cursor
-  local prompt="Generate a concise git commit message following conventional commits format (type(scope): description) for these changes:\n\nFiles changed:\n$changed_files\n\nDiff:\n${diff_output:0:2000}"
+  # Limit diff size to avoid token limits (keep first 4000 chars)
+  local diff_preview="${diff_output:0:4000}"
+  if [ "${#diff_output}" -gt 4000 ]; then
+    diff_preview="${diff_preview}... (truncated)"
+  fi
   
+  # Create comprehensive prompt for AI
+  local file_list=$(echo "$changed_files" | head -20 | sed 's/^/  - /')
+  local file_count=$(echo "$changed_files" | wc -l | tr -d ' ')
+  
+  # Use custom AI prompt if provided, otherwise use default
+  local base_prompt
+  if [ -n "$AI_PROMPT" ]; then
+    base_prompt="$AI_PROMPT"
+  else
+    base_prompt="You are a git commit message generator. Analyze the following code changes and generate a concise, descriptive commit message following the Conventional Commits format (type(scope): description)."
+  fi
+  
+  local prompt="$base_prompt
+
+Files changed ($file_count):
+$file_list
+
+Git diff:
+\`\`\`
+$diff_preview
+\`\`\`
+
+Requirements:
+- Use Conventional Commits format: type(scope): description
+- Types: feat, fix, docs, style, refactor, perf, test, chore, config
+- Be specific about what changed and why
+- Keep it concise (under 72 characters for the subject line)
+- Focus on the user-facing impact or technical change
+
+Generate only the commit message, nothing else:"
+
   # Try to use Cursor CLI to generate message
-  local commit_msg
+  local commit_msg=""
   
   # Try cursor-agent first (if installed)
-  if [ -f "$CURSOR_AGENT_BIN" ] && command -v cursor-agent > /dev/null 2>&1; then
-    # Use cursor-agent to generate commit message
-    # Format: cursor-agent --print "prompt"
-    commit_msg=$(cursor-agent --print "Generate a concise git commit message following conventional commits format for: $changed_files" 2>/dev/null || echo "")
+  # Note: Redirect log messages to stderr so they don't pollute stdout
+  if [ -f "$CURSOR_AGENT_BIN" ] && "$CURSOR_AGENT_BIN" --version > /dev/null 2>&1; then
+    echo "Generating commit message using Cursor Agent AI..." >&2
+    # Try to get AI-generated message with timeout
+    local temp_output
+    temp_output=$(timeout 10 "$CURSOR_AGENT_BIN" --print --output-format text "$prompt" 2>&1 || echo "")
+    # Extract just the commit message (first non-log line)
+    commit_msg=$(echo "$temp_output" | grep -vE "^\[.*\]|^[0-9]{4}-[0-9]{2}-[0-9]{2}" | grep -vE "Generating|Using|INFO|WARN|ERROR|SUCCESS|Cursor|Agent" | grep -v "^$" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || echo "")
+  elif command -v cursor-agent > /dev/null 2>&1; then
+    echo "Generating commit message using Cursor Agent AI..." >&2
+    local temp_output
+    temp_output=$(timeout 10 cursor-agent --print --output-format text "$prompt" 2>&1 || echo "")
+    commit_msg=$(echo "$temp_output" | grep -vE "^\[.*\]|^[0-9]{4}-[0-9]{2}-[0-9]{2}" | grep -vE "Generating|Using|INFO|WARN|ERROR|SUCCESS|Cursor|Agent" | grep -v "^$" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || echo "")
+  fi
+  
+  # Clean up the message
+  if [ -n "$commit_msg" ]; then
+    # Remove quotes, extra whitespace, and ensure it's a single line
+    commit_msg=$(echo "$commit_msg" | sed 's/^"//;s/"$//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | sed 's/\[.*\]//g')
     
-    if [ -n "$commit_msg" ] && [ "${#commit_msg}" -ge 10 ]; then
-      echo "Generated commit message using Cursor Agent" >&2
+    # Validate it looks like a commit message (has a colon or is reasonable length)
+    if [ "${#commit_msg}" -ge 10 ] && [ "${#commit_msg}" -le 200 ] && echo "$commit_msg" | grep -qE "^[a-z]+(\([^)]+\))?:"; then
+      echo "$commit_msg"
+      return
     else
-      commit_msg=$(generate_fallback_message "$changed_files")
+      echo "AI-generated message seems invalid, using fallback" >&2
     fi
-  else
-    # Use fallback message generator (works without Cursor CLI)
-    commit_msg=$(generate_fallback_message "$changed_files")
-    echo "Using fallback commit message generator" >&2
   fi
   
-  # Clean up the message (remove quotes, newlines, etc.)
-  commit_msg=$(echo "$commit_msg" | sed 's/^"//;s/"$//' | tr '\n' ' ' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-  
-  # Ensure it's not empty
-  if [ -z "$commit_msg" ]; then
-    commit_msg="chore: update files"
-  fi
-  
+  # Fallback to heuristic-based message
+  echo "Using fallback commit message generator" >&2
+  commit_msg=$(generate_fallback_message "$changed_files")
   echo "$commit_msg"
 }
 
@@ -292,6 +429,14 @@ watch_loop() {
   log_info "Starting auto-commit watcher"
   log_info "Watch interval: ${WATCH_INTERVAL}s, Commit delay: ${COMMIT_DELAY}s"
   log_info "Repository: $REPO_ROOT"
+  if [ -n "$WATCH_DIRS" ]; then
+    log_info "Watching directories: $WATCH_DIRS"
+  else
+    log_info "Watching all directories"
+  fi
+  
+  # Initialize status
+  update_status "idle" "Watching for changes" "" ""
   
   if [ "$DRY_RUN" -eq 1 ]; then
     log_warn "DRY RUN MODE - No actual commits will be made"
@@ -309,11 +454,22 @@ watch_loop() {
     changed_files=$(get_changed_files)
     
     if [ -n "$changed_files" ]; then
+      # List the changed files
+      local file_count=$(echo "$changed_files" | wc -l | tr -d ' ')
+      log_info "Changes detected ($file_count file(s)):"
+      echo "$changed_files" | head -10 | while read -r file; do
+        log_info "  - $file"
+      done
+      if [ "$file_count" -gt 10 ]; then
+        log_info "  ... and $((file_count - 10)) more file(s)"
+      fi
+      
       # New changes detected
       if [ "$pending_commit" -eq 0 ]; then
         last_change_time=$(date +%s)
         pending_commit=1
-        log_info "Changes detected, waiting ${COMMIT_DELAY}s before committing..."
+        log_info "Waiting ${COMMIT_DELAY}s before committing..."
+        update_status "waiting" "Changes detected, waiting ${COMMIT_DELAY}s" "$COMMIT_DELAY" ""
       else
         # More changes while waiting - only reset timer if it's been less than half the delay
         # This prevents infinite resets while still allowing new changes to be included
@@ -324,8 +480,22 @@ watch_loop() {
         if [ "$time_since_change" -lt "$half_delay" ]; then
           last_change_time=$(date +%s)
           log_info "Additional changes detected, resetting ${COMMIT_DELAY}s timer..."
+          update_status "waiting" "Additional changes detected, resetting timer" "$COMMIT_DELAY" ""
         else
+          local remaining=$((COMMIT_DELAY - time_since_change))
           log_info "Additional changes detected, but will commit soon (${time_since_change}s/${COMMIT_DELAY}s)..."
+          update_status "waiting" "Will commit soon" "$remaining" ""
+        fi
+      fi
+    else
+      # No changes detected
+      if [ "$pending_commit" -eq 0 ]; then
+        log_info "No changes detected"
+        # Update status only occasionally to avoid file I/O spam
+        local now=$(date +%s)
+        local last_status_time=$(jq -r '.timestamp // 0' "$STATUS_FILE" 2>/dev/null || echo "0")
+        if [ $((now - last_status_time)) -ge 60 ]; then
+          update_status "idle" "Watching for changes" "" ""
         fi
       fi
     fi
@@ -344,13 +514,24 @@ watch_loop() {
           pending_commit=0
           last_change_time=0
         else
-          log_info "Committing changes..."
-          log_info "Files to commit: $(echo "$changed_files" | head -5 | tr '\n' ' ')$([ $(echo "$changed_files" | wc -l) -gt 5 ] && echo " ... and more")"
-          
-          # Generate commit message
-          local commit_msg
-          commit_msg=$(generate_commit_message "$changed_files")
+        log_info "Committing changes..."
+        log_info "Files to commit: $(echo "$changed_files" | head -5 | tr '\n' ' ')$([ $(echo "$changed_files" | wc -l) -gt 5 ] && echo " ... and more")"
+        update_status "committing" "Committing changes..." "0" ""
+        
+        # Generate commit message (capture stdout only, log separately)
+        local commit_msg
+        commit_msg=$(generate_commit_message "$changed_files" 2>&1)
+        
+        # Clean commit message of any log artifacts
+        commit_msg=$(echo "$commit_msg" | grep -vE "^\[.*\]|^[0-9]{4}-[0-9]{2}-[0-9]{2}" | grep -v "Generating\|Using\|INFO\|WARN\|ERROR\|SUCCESS" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        
+        # Fallback if cleaning removed everything
+        if [ -z "$commit_msg" ] || [ "${#commit_msg}" -lt 5 ]; then
+          commit_msg=$(generate_fallback_message "$changed_files")
+          log_info "Using fallback commit message: $commit_msg"
+        else
           log_info "Generated commit message: $commit_msg"
+        fi
           
           # Commit
           if commit_changes "$commit_msg"; then
@@ -359,8 +540,13 @@ watch_loop() {
             pending_commit=0
             last_change_time=0
             changed_files=""
+            
+            # Update status with last commit info
+            local last_commit_short=$(echo "$commit_msg" | cut -c1-50)
+            update_status "idle" "Last commit: $last_commit_short" "" "$commit_msg"
           else
             log_error "Commit failed, will retry on next cycle"
+            update_status "error" "Commit failed, will retry" "" ""
           fi
         fi
       fi

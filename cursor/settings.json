@@ -16,5 +16,23 @@
   "cursor.composer.usageSummaryDisplay": "always",
   "workbench.colorTheme": "Solarized Dark",
   "explorer.confirmDelete": false,
-  "git.autofetch": true
+  "git.autofetch": true,
+  "autoCommitWatcher.enabled": true,
+  "autoCommitWatcher.watchInterval": 30,
+  "autoCommitWatcher.commitDelay": 5,
+  "autoCommitWatcher.watchDirectories": [
+    "scripts",
+    "cursor",
+    "hammerspoon",
+    "karabiner",
+    "macos"
+  ],
+  "autoCommitWatcher.excludeDirectories": [
+    "scripts/state",
+    "scripts/archive",
+    ".git"
+  ],
+  "autoCommitWatcher.aiCommitPrompt": "You are a git commit message generator. Analyze the code changes and generate a concise commit message following Conventional Commits format. Focus on what changed and why it matters to the user or codebase.",
+  "autoCommitWatcher.autoStartWithCursor": true,
+  "autoCommitWatcher.statusFile": "~/.auto_commit_watcher_status.json"
 }
