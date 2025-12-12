@@ -111,6 +111,9 @@ tail -f ~/.hammerspoon/logs/hammerspoon.log
 
 ## Debugging
 
+> **Quick Start**: See [DEBUGGING_QUICK_START.md](DEBUGGING_QUICK_START.md) for a 5-minute setup guide.  
+> **Full Guide**: See [DEBUGGING.md](DEBUGGING.md) for complete documentation.
+
 ### Runtime Tracing with Cursor IDE
 
 The configuration includes a comprehensive debugging framework (`lib/debug.lua`) that provides:
