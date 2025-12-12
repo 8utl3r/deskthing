@@ -1,12 +1,12 @@
 {
-  "name": "debug-adapter",
+  "name": "hammerspoon-debug-adapter",
   "version": "1.0.0",
-  "description": "",
-  "main": "debug-adapter.js",
+  "description": "DAP (Debug Adapter Protocol) server for debugging Hammerspoon in Cursor IDE",
+  "main": "dap-server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dap-server.js"
   },
-  "keywords": [],
+  "keywords": ["hammerspoon", "debug", "dap", "cursor"],
   "author": "",
   "license": "ISC",
   "dependencies": {
