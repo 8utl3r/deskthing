@@ -95,6 +95,7 @@ IGNORE_PATTERNS=(
   ".auto_commit_watcher.log"
   ".auto_commit_watcher.out.log"
   ".auto_commit_watcher.err.log"
+  ".auto_commit_message"
 )
 
 # Colors for output
@@ -154,33 +155,11 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-# Check if Cursor CLI is available
+# Check if Cursor CLI is available (no longer needed, but kept for compatibility)
 check_cursor() {
-  # Check for cursor-agent (separate CLI tool)
-  if [ -f "$CURSOR_AGENT_BIN" ] && "$CURSOR_AGENT_BIN" --version > /dev/null 2>&1; then
-    local version=$("$CURSOR_AGENT_BIN" --version 2>/dev/null || echo "unknown")
-    log_info "Cursor Agent CLI found (version: $version)"
-    return 0
-  fi
-  
-  # Check if it's in PATH
-  if command -v cursor-agent > /dev/null 2>&1; then
-    local version=$(cursor-agent --version 2>/dev/null || echo "unknown")
-    log_info "Cursor Agent CLI found in PATH (version: $version)"
-    CURSOR_AGENT_BIN="cursor-agent"
-    return 0
-  fi
-  
-  # Check for Cursor app binary
-  if [ -f "$CURSOR_BIN" ]; then
-    log_warn "Cursor app binary found (limited AI features)"
-    log_warn "Install Cursor Agent CLI for AI commit messages: curl https://cursor.com/install -fsS | bash"
-    return 1
-  fi
-  
-  log_warn "Cursor CLI not found - using fallback commit message generation"
-  log_warn "Install with: curl https://cursor.com/install -fsS | bash"
-  return 1
+  # No longer using Cursor CLI - commit messages come from AUTO_COMMIT comments
+  log_info "Using AUTO_COMMIT message extraction (no CLI required)"
+  return 0
 }
 
 # Check if file should be ignored
@@ -535,6 +514,12 @@ watch_loop() {
           
           # Commit
           if commit_changes "$commit_msg"; then
+            # Delete .auto_commit_message file if it was used
+            if [ -f "$REPO_ROOT/.auto_commit_message" ]; then
+              rm -f "$REPO_ROOT/.auto_commit_message"
+              log_info "Removed .auto_commit_message file after commit"
+            fi
+            
             # Push
             push_changes
             pending_commit=0
