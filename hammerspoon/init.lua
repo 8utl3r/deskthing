@@ -89,13 +89,13 @@ table.insert(hs.cleanup, function()
     -- Call all module cleanup functions
     for moduleName, module in pairs(loadedModules) do
         if module.cleanup then
-            local success, err = pcall(function()
+    local success, err = pcall(function()
                 module.cleanup()
-            end)
-            if not success then
+    end)
+    if not success then
                 mainLogger.error("Cleanup error in " .. moduleName .. ": " .. tostring(err))
-            end
-        end
+    end
+end
     end
     
     -- Close debug trace file
@@ -103,10 +103,10 @@ table.insert(hs.cleanup, function()
     
     -- Call original cleanup function if it existed
     if originalCleanupFunc then
-        local success, err = pcall(function()
+local success, err = pcall(function()
             originalCleanupFunc()
-        end)
-        if not success then
+end)
+if not success then
             mainLogger.error("Error in original cleanup: " .. tostring(err))
         end
     end
