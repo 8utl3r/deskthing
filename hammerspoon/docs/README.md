@@ -111,14 +111,45 @@ tail -f ~/.hammerspoon/logs/hammerspoon.log
 
 ## Debugging
 
-### Runtime Tracing
+### Runtime Tracing with Cursor IDE
 
 The configuration includes a comprehensive debugging framework (`lib/debug.lua`) that provides:
 
 - Function call tracing with entry/exit logging
+- Breakpoint support with pause/resume
 - Variable state inspection
 - Performance timing
-- Cursor IDE integration via JSON output
+- Full Cursor IDE integration via debug adapter
+
+### Quick Start Debugging
+
+1. **Enable Debug Mode**:
+   ```bash
+   export HAMMERSPOON_DEBUG=true
+   ```
+
+2. **Start Debug Adapter in Cursor**:
+   - Open Run and Debug panel (Cmd+Shift+D)
+   - Select "Hammerspoon: Debug"
+   - Press F5
+
+3. **Set Breakpoints**:
+   ```bash
+   # Using the management utility
+   node hammerspoon/lib/debug-adapter/manage-breakpoints.js add shortcut-overlay showOverlay 0
+   
+   # Or edit ~/.hammerspoon/debug/breakpoints.json directly
+   ```
+
+4. **Enable Tracing** (in Hammerspoon Console):
+   ```lua
+   local debug = require("lib.debug")
+   debug.trace("shortcut-overlay", "showOverlay")
+   ```
+
+5. **Reload Hammerspoon**: Press `Hyper+R`
+
+See [DEBUGGING.md](DEBUGGING.md) for complete debugging guide.
 
 ### Debug Output
 
@@ -132,16 +163,10 @@ Debug traces are written to `~/.hammerspoon/debug/trace.json` in JSON format:
   "module": "shortcut-overlay",
   "function": "showOverlay",
   "data": {...},
-  "callStackDepth": 2
+  "callStackDepth": 2,
+  "paused": false
 }
 ```
-
-### Using Debug in Cursor
-
-1. Enable debug mode: `export HAMMERSPOON_DEBUG=true`
-2. Reload Hammerspoon config
-3. Watch trace file: `tail -f ~/.hammerspoon/debug/trace.json`
-4. Or use Cursor's file watcher to monitor the trace file
 
 ### Debug Commands
 
@@ -151,6 +176,9 @@ local debug = require("lib.debug")
 
 -- Enable tracing for a specific function
 debug.trace("shortcut-overlay", "showOverlay")
+
+-- Set a breakpoint
+debug.setBreakpoint("shortcut-overlay", "showOverlay", 0)
 
 -- Export current state
 debug.exportState("module-name", {state = "data"})
