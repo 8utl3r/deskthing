@@ -233,7 +233,60 @@ get_changed_files() {
   done
 }
 
-# Generate commit message using Cursor CLI
+# Extract commit message from AUTO_COMMIT comments or file
+extract_commit_message() {
+  local changed_files="$1"
+  local commit_msg=""
+  
+  cd "$REPO_ROOT"
+  
+  # Method 1: Check for .auto_commit_message file (highest priority)
+  if [ -f ".auto_commit_message" ]; then
+    commit_msg=$(head -1 .auto_commit_message | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    if [ -n "$commit_msg" ] && [ "${#commit_msg}" -ge 5 ]; then
+      log_info "Found commit message in .auto_commit_message: $commit_msg"
+      echo "$commit_msg"
+      return 0
+    fi
+  fi
+  
+  # Method 2: Look for AUTO_COMMIT comments in changed files
+  # Check each changed file for AUTO_COMMIT comments
+  while IFS= read -r file; do
+    if [ -z "$file" ] || [ ! -f "$file" ]; then
+      continue
+    fi
+    
+    # Check for shell/script comments: # AUTO_COMMIT: message
+    commit_msg=$(grep -h "^[[:space:]]*# AUTO_COMMIT:" "$file" 2>/dev/null | head -1 | sed 's/^[[:space:]]*# AUTO_COMMIT:[[:space:]]*//' | sed 's/[[:space:]]*$//')
+    if [ -n "$commit_msg" ]; then
+      log_info "Found commit message in $file: $commit_msg"
+      echo "$commit_msg"
+      return 0
+    fi
+    
+    # Check for HTML/XML comments: <!-- AUTO_COMMIT: message -->
+    commit_msg=$(grep -h "<!--[[:space:]]*AUTO_COMMIT:" "$file" 2>/dev/null | head -1 | sed 's/.*<!--[[:space:]]*AUTO_COMMIT:[[:space:]]*//' | sed 's/[[:space:]]*-->.*//' | sed 's/[[:space:]]*$//')
+    if [ -n "$commit_msg" ]; then
+      log_info "Found commit message in $file: $commit_msg"
+      echo "$commit_msg"
+      return 0
+    fi
+    
+    # Check for other comment styles: // AUTO_COMMIT: message
+    commit_msg=$(grep -h "^[[:space:]]*// AUTO_COMMIT:" "$file" 2>/dev/null | head -1 | sed 's/^[[:space:]]*\/\/ AUTO_COMMIT:[[:space:]]*//' | sed 's/[[:space:]]*$//')
+    if [ -n "$commit_msg" ]; then
+      log_info "Found commit message in $file: $commit_msg"
+      echo "$commit_msg"
+      return 0
+    fi
+  done <<< "$changed_files"
+  
+  # If no message found, return failure
+  return 1
+}
+
+# Generate commit message (simple - just extract from comments/file or use fallback)
 generate_commit_message() {
   local changed_files="$1"
   
@@ -242,84 +295,17 @@ generate_commit_message() {
     return
   fi
   
-  cd "$REPO_ROOT"
-  
-  # Get git diff for context (limit to reasonable size for AI)
-  local diff_output
-  diff_output=$(git diff --cached 2>/dev/null || git diff 2>/dev/null || echo "")
-  
-  # Limit diff size to avoid token limits (keep first 4000 chars)
-  local diff_preview="${diff_output:0:4000}"
-  if [ "${#diff_output}" -gt 4000 ]; then
-    diff_preview="${diff_preview}... (truncated)"
-  fi
-  
-  # Create comprehensive prompt for AI
-  local file_list=$(echo "$changed_files" | head -20 | sed 's/^/  - /')
-  local file_count=$(echo "$changed_files" | wc -l | tr -d ' ')
-  
-  # Use custom AI prompt if provided, otherwise use default
-  local base_prompt
-  if [ -n "$AI_PROMPT" ]; then
-    base_prompt="$AI_PROMPT"
-  else
-    base_prompt="You are a git commit message generator. Analyze the following code changes and generate a concise, descriptive commit message following the Conventional Commits format (type(scope): description)."
-  fi
-  
-  local prompt="$base_prompt
-
-Files changed ($file_count):
-$file_list
-
-Git diff:
-\`\`\`
-$diff_preview
-\`\`\`
-
-Requirements:
-- Use Conventional Commits format: type(scope): description
-- Types: feat, fix, docs, style, refactor, perf, test, chore, config
-- Be specific about what changed and why
-- Keep it concise (under 72 characters for the subject line)
-- Focus on the user-facing impact or technical change
-
-Generate only the commit message, nothing else:"
-
-  # Try to use Cursor CLI to generate message
-  local commit_msg=""
-  
-  # Try cursor-agent first (if installed)
-  # Note: Redirect log messages to stderr so they don't pollute stdout
-  if [ -f "$CURSOR_AGENT_BIN" ] && "$CURSOR_AGENT_BIN" --version > /dev/null 2>&1; then
-    echo "Generating commit message using Cursor Agent AI..." >&2
-    # Try to get AI-generated message with timeout
-    local temp_output
-    temp_output=$(timeout 10 "$CURSOR_AGENT_BIN" --print --output-format text "$prompt" 2>&1 || echo "")
-    # Extract just the commit message (first non-log line)
-    commit_msg=$(echo "$temp_output" | grep -vE "^\[.*\]|^[0-9]{4}-[0-9]{2}-[0-9]{2}" | grep -vE "Generating|Using|INFO|WARN|ERROR|SUCCESS|Cursor|Agent" | grep -v "^$" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || echo "")
-  elif command -v cursor-agent > /dev/null 2>&1; then
-    echo "Generating commit message using Cursor Agent AI..." >&2
-    local temp_output
-    temp_output=$(timeout 10 cursor-agent --print --output-format text "$prompt" 2>&1 || echo "")
-    commit_msg=$(echo "$temp_output" | grep -vE "^\[.*\]|^[0-9]{4}-[0-9]{2}-[0-9]{2}" | grep -vE "Generating|Using|INFO|WARN|ERROR|SUCCESS|Cursor|Agent" | grep -v "^$" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || echo "")
-  fi
-  
-  # Clean up the message
-  if [ -n "$commit_msg" ]; then
-    # Remove quotes, extra whitespace, and ensure it's a single line
-    commit_msg=$(echo "$commit_msg" | sed 's/^"//;s/"$//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | sed 's/\[.*\]//g')
-    
-    # Validate it looks like a commit message (has a colon or is reasonable length)
-    if [ "${#commit_msg}" -ge 10 ] && [ "${#commit_msg}" -le 200 ] && echo "$commit_msg" | grep -qE "^[a-z]+(\([^)]+\))?:"; then
+  # Try to extract from AUTO_COMMIT comments or file
+  local commit_msg
+  if commit_msg=$(extract_commit_message "$changed_files"); then
+    if [ -n "$commit_msg" ] && [ "${#commit_msg}" -ge 5 ]; then
       echo "$commit_msg"
-      return
-    else
-      echo "AI-generated message seems invalid, using fallback" >&2
+      return 0
     fi
   fi
   
   # Fallback to heuristic-based message
-  echo "Using fallback commit message generator" >&2
+  log_info "No AUTO_COMMIT message found, using fallback generator"
   commit_msg=$(generate_fallback_message "$changed_files")
   echo "$commit_msg"
 }
@@ -497,19 +483,15 @@ watch_loop() {
         log_info "Files to commit: $(echo "$changed_files" | head -5 | tr '\n' ' ')$([ $(echo "$changed_files" | wc -l) -gt 5 ] && echo " ... and more")"
         update_status "committing" "Committing changes..." "0" ""
         
-        # Generate commit message (capture stdout only, log separately)
+        # Generate commit message (extract from AUTO_COMMIT comments/file or use fallback)
         local commit_msg
-        commit_msg=$(generate_commit_message "$changed_files" 2>&1)
+        commit_msg=$(generate_commit_message "$changed_files")
         
-        # Clean commit message of any log artifacts
-        commit_msg=$(echo "$commit_msg" | grep -vE "^\[.*\]|^[0-9]{4}-[0-9]{2}-[0-9]{2}" | grep -v "Generating\|Using\|INFO\|WARN\|ERROR\|SUCCESS" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        
-        # Fallback if cleaning removed everything
         if [ -z "$commit_msg" ] || [ "${#commit_msg}" -lt 5 ]; then
           commit_msg=$(generate_fallback_message "$changed_files")
-          log_info "Using fallback commit message: $commit_msg"
+          log_warn "No AUTO_COMMIT message found, using fallback: $commit_msg"
         else
-          log_info "Generated commit message: $commit_msg"
+          log_info "Using commit message: $commit_msg"
         fi
           
           # Commit

@@ -4,21 +4,31 @@ Automatically commits and pushes changes to your dotfiles repository using Curso
 
 ## Features
 
-- **AI-Generated Commit Messages**: Uses Cursor CLI to generate conventional commit messages
+- **Coding Agent Commit Messages**: Uses commit messages added by the coding agent (via AUTO_COMMIT comments or .auto_commit_message file)
 - **Smart File Watching**: Monitors for changes and commits after a delay period
 - **Automatic Push**: Pushes commits to remote repository automatically
 - **Safety Features**: Dry-run mode, configurable delays, file exclusions
 - **Background Service**: Can run as a macOS launchd service
+- **Directory Filtering**: Watch only specific directories
+- **Status Tracking**: Real-time status via JSON file
 
 ## Installation
 
-### 1. Install Cursor CLI (if needed)
+### 1. Understand AUTO_COMMIT Messages
 
-The script uses the Cursor binary from your installed Cursor.app. If you need the separate CLI:
+**IMPORTANT:** The script does NOT use AI to generate commit messages. Instead, the coding agent (the AI making changes) must add commit messages using one of these methods:
 
+**Method 1: .auto_commit_message file (preferred)**
 ```bash
-curl https://cursor.com/install -fsS | bash
+echo "refactor(scripts): improve logging" > .auto_commit_message
 ```
+
+**Method 2: AUTO_COMMIT comments in files**
+```bash
+# AUTO_COMMIT: feat(cursor): add new feature
+```
+
+See `CODING_AGENT_INSTRUCTIONS.md` and `AUTO_COMMIT_MESSAGE_GUIDE.md` for details.
 
 ### 2. Test the Script
 
