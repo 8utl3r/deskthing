@@ -6,7 +6,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { watch } = require('fs');
 
 const DEBUG_DIR = process.env.HAMMERSPOON_DEBUG_DIR || path.join(process.env.HOME, '.hammerspoon/debug');
 const CONFIG_DIR = process.env.HAMMERSPOON_CONFIG_DIR || path.join(process.env.HOME, '.hammerspoon');
@@ -59,14 +58,22 @@ function loadBreakpoints() {
 
 // Watch for breakpoint changes
 function watchBreakpoints() {
-    if (fs.existsSync(BREAKPOINT_FILE)) {
-        watch(BREAKPOINT_FILE, (eventType) => {
-            if (eventType === 'change') {
-                console.log('📌 Breakpoints updated');
-                loadBreakpoints();
+    let lastModTime = 0;
+    
+    setInterval(() => {
+        try {
+            if (fs.existsSync(BREAKPOINT_FILE)) {
+                const stats = fs.statSync(BREAKPOINT_FILE);
+                if (stats.mtimeMs > lastModTime) {
+                    lastModTime = stats.mtimeMs;
+                    console.log('📌 Breakpoints updated');
+                    loadBreakpoints();
+                }
             }
-        });
-    }
+        } catch (err) {
+            // Ignore errors
+        }
+    }, 1000); // Check every second
 }
 
 // Watch trace file for debug events
@@ -112,20 +119,30 @@ function watchTraceFile() {
 
 // Watch for commands from Cursor
 function watchCommands() {
-    if (fs.existsSync(COMMAND_FILE)) {
-        watch(COMMAND_FILE, (eventType) => {
-            if (eventType === 'change') {
-                try {
-                    const data = JSON.parse(fs.readFileSync(COMMAND_FILE, 'utf8'));
-                    handleCommand(data);
-                    // Clear command file after processing
-                    fs.writeFileSync(COMMAND_FILE, JSON.stringify({ command: null }));
-                } catch (err) {
-                    // Ignore parse errors
+    let lastModTime = 0;
+    
+    setInterval(() => {
+        try {
+            if (fs.existsSync(COMMAND_FILE)) {
+                const stats = fs.statSync(COMMAND_FILE);
+                if (stats.mtimeMs > lastModTime) {
+                    lastModTime = stats.mtimeMs;
+                    try {
+                        const data = JSON.parse(fs.readFileSync(COMMAND_FILE, 'utf8'));
+                        if (data && data.command && data.command !== "null") {
+                            handleCommand(data);
+                            // Clear command file after processing
+                            fs.writeFileSync(COMMAND_FILE, JSON.stringify({ command: null }));
+                        }
+                    } catch (err) {
+                        // Ignore parse errors
+                    }
                 }
             }
-        });
-    }
+        } catch (err) {
+            // Ignore errors
+        }
+    }, 500); // Check every 500ms
 }
 
 // Handle commands from Cursor

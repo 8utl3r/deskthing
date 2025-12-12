@@ -58,8 +58,10 @@ jj undo
 - **[How It Works](how_it_works.md)** - Technical deep dive into architecture and concepts
 - **[Comparison](comparison.md)** - Detailed comparison with Git and other VCS systems
 - **[Usage Guide](usage_guide.md)** - Getting started, workflows, and migration from Git
+- **[Cursor Integration](cursor_integration.md)** - Integrating Jujutsu with Cursor IDE and GitHub/GitLab
 - **[Community Reception](community_reception.md)** - Reviews, adoption, and community feedback
 - **[VCS Alternatives](vcs_alternatives.md)** - Overview of the version control landscape
+- **[Complete Book](JUJUTSU_VCS_BOOK.md)** - Comprehensive guide in book format
 
 ## Why Jujutsu?
 

@@ -18,7 +18,10 @@ local debugState = {
     callStack = {},
     startTimes = {},
     paused = false,
-    pauseReason = nil
+    pauseReason = nil,
+    breakpointTimer = nil,
+    commandTimer = nil,
+    breakpointFileModTime = 0
 }
 
 -- Initialize debug system
@@ -87,8 +90,13 @@ function debug.watchBreakpoints()
         return
     end
     
+    -- Store timer reference for cleanup
+    if debugState.breakpointTimer then
+        debugState.breakpointTimer:stop()
+    end
+    
     -- Check for breakpoint changes every second
-    hs.timer.doEvery(1, function()
+    debugState.breakpointTimer = hs.timer.doEvery(1, function()
         local attrs = hs.fs.attributes(debugState.breakpointFile, "modification")
         if attrs then
             local lastMod = debugState.breakpointFileModTime or 0
@@ -106,12 +114,19 @@ function debug.watchCommands()
         return
     end
     
-    hs.timer.doEvery(0.5, function()
+    -- Store timer reference for cleanup
+    if debugState.commandTimer then
+        debugState.commandTimer:stop()
+    end
+    
+    debugState.commandTimer = hs.timer.doEvery(0.5, function()
         local content = utils.readFile(debugState.commandFile)
         if content then
             local cmd = utils.safeJsonDecode(content)
             if cmd and cmd.command and cmd.command ~= "null" then
                 debug.handleCommand(cmd)
+                -- Clear command after processing
+                utils.writeFile(debugState.commandFile, "{\"command\":null}")
             end
         end
     end)
@@ -465,6 +480,17 @@ end
 
 -- Close trace file (call on cleanup)
 function debug.close()
+    -- Stop timers
+    if debugState.breakpointTimer then
+        debugState.breakpointTimer:stop()
+        debugState.breakpointTimer = nil
+    end
+    if debugState.commandTimer then
+        debugState.commandTimer:stop()
+        debugState.commandTimer = nil
+    end
+    
+    -- Close trace file
     if debugState.traceFile then
         local file = io.open(debugState.traceFile, "a")
         if file then
