@@ -1,0 +1,16 @@
+{
+  "name": "debug-adapter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "debug-adapter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vscode/debugadapter": "^1.68.0",
+    "@vscode/debugprotocol": "^1.68.0"
+  }
+}
