@@ -112,7 +112,27 @@ tail -f ~/.hammerspoon/logs/hammerspoon.log
 ## Debugging
 
 > **Quick Start**: See [DEBUGGING_QUICK_START.md](DEBUGGING_QUICK_START.md) for a 5-minute setup guide.  
+> **DAP Adapter**: See [DAP_ADAPTER.md](DAP_ADAPTER.md) for full Cursor IDE integration with visual breakpoints, call stack, and variable inspection.  
 > **Full Guide**: See [DEBUGGING.md](DEBUGGING.md) for complete documentation.
+
+### DAP (Debug Adapter Protocol) Integration
+
+The Hammerspoon setup includes a **full DAP adapter** that integrates with Cursor IDE's debug UI:
+
+- ✅ **Visual Breakpoints** - Set breakpoints directly in the editor
+- ✅ **Call Stack** - Navigate execution stack visually
+- ✅ **Variable Inspection** - View local, module, and global variables
+- ✅ **Step Controls** - Step over, into, and out of functions
+- ✅ **Evaluate Expressions** - Evaluate Lua in debug console
+
+**Quick Start**:
+1. `export HAMMERSPOON_DEBUG=true`
+2. In Cursor: `Cmd+Shift+D` → "Hammerspoon: Debug (DAP)" → `F5`
+3. Set breakpoints by clicking in the gutter
+4. Enable tracing: `debug.trace("module", "function")` in Hammerspoon Console
+5. Reload and debug!
+
+See [DAP_ADAPTER.md](DAP_ADAPTER.md) for complete documentation.
 
 ### Runtime Tracing with Cursor IDE
 
