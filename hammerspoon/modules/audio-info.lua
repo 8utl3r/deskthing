@@ -45,12 +45,86 @@ local function getAudioInfo()
         device = device
     }
     
-    -- Safely get sample rate (method may not exist)
+    -- Debug: Check device object
+    print("[AUDIO-INFO] Device object type: " .. type(device))
+    print("[AUDIO-INFO] Device name: " .. tostring(deviceName))
+    print("[AUDIO-INFO] Device UID: " .. tostring(deviceUID))
+    
+    -- Try to get sample rate using the method
+    print("[AUDIO-INFO] Attempting device:sampleRate()...")
     local srSuccess, sampleRate = pcall(function()
         return device:sampleRate()
     end)
-    if srSuccess and sampleRate and type(sampleRate) == "number" then
+    
+    print("[AUDIO-INFO] sampleRate() call - success: " .. tostring(srSuccess) .. ", value: " .. tostring(sampleRate) .. ", type: " .. type(sampleRate))
+    
+    if srSuccess and sampleRate and type(sampleRate) == "number" and sampleRate > 0 then
         info.sampleRate = sampleRate
+        print("[AUDIO-INFO] ✓ Got sample rate from device:sampleRate(): " .. tostring(sampleRate) .. " Hz")
+    else
+        -- Try alternative: Use Audio MIDI Setup data via plist or system_profiler
+        print("[AUDIO-INFO] sampleRate() unavailable, trying alternative methods...")
+        
+        -- Method 1: Try to get from CoreAudio via system_profiler
+        local fallbackSuccess, fallbackRate = pcall(function()
+            -- Get the default output device name
+            local devName = deviceName or "Unknown"
+            print("[AUDIO-INFO] Looking up device: " .. devName)
+            
+            -- Use system_profiler to get detailed audio info
+            local cmd = "system_profiler SPAudioDataType -xml 2>/dev/null | plutil -convert json -o - - 2>/dev/null | grep -A 5 '\"" .. devName:gsub('"', '\\"') .. "' | grep -i 'samplerate\\|sample_rate' | head -1"
+            local result = hs.execute(cmd, true)  -- true = capture output
+            print("[AUDIO-INFO] system_profiler result: " .. tostring(result))
+            
+            if result and result ~= "" then
+                -- Try to extract number from result
+                local rate = tonumber(result:match("%d+"))
+                if rate then
+                    return rate
+                end
+            end
+            
+            -- Method 2: Try using sw_vers and checking Audio MIDI Setup preferences
+            -- This is more complex, so let's try a simpler approach first
+            
+            return nil
+        end)
+        
+        if fallbackSuccess and fallbackRate and type(fallbackRate) == "number" and fallbackRate > 0 then
+            info.sampleRate = fallbackRate
+            print("[AUDIO-INFO] ✓ Got sample rate from fallback method: " .. tostring(fallbackRate) .. " Hz")
+        else
+            -- Method 3: Try using osascript to query Audio MIDI Setup
+            print("[AUDIO-INFO] Trying osascript method...")
+            local osaSuccess, osaRate = pcall(function()
+                -- Use AppleScript to get sample rate from Audio MIDI Setup
+                local script = [[
+                    tell application "System Events"
+                        tell process "Audio MIDI Setup"
+                            -- This is complex, try a different approach
+                        end tell
+                    end tell
+                ]]
+                -- Actually, let's use a shell command that queries CoreAudio directly
+                local cmd = "ioreg -r -c IOAudioEngine | grep -A 10 'IOAudioSampleRate' | head -1 | awk '{print $NF}' | sed 's/[^0-9.]//g'"
+                local result = hs.execute(cmd, true)
+                print("[AUDIO-INFO] ioreg result: " .. tostring(result))
+                if result and result ~= "" then
+                    local rate = tonumber(result:match("%d+%.?%d*"))
+                    if rate then
+                        return math.floor(rate)
+                    end
+                end
+                return nil
+            end)
+            
+            if osaSuccess and osaRate and type(osaRate) == "number" and osaRate > 0 then
+                info.sampleRate = osaRate
+                print("[AUDIO-INFO] ✓ Got sample rate from ioreg: " .. tostring(osaRate) .. " Hz")
+            else
+                print("[AUDIO-INFO] ✗ Could not get sample rate from any method")
+            end
+        end
     end
     
     -- Safely get volume (method may not exist)
