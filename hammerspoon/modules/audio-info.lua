@@ -188,7 +188,7 @@ local function updateMenuBar()
     if not info then
         print("[AUDIO-INFO] No audio device found")
         if menuBarItem then
-            menuBarItem:setTitle("🔊 No Audio")
+            menuBarItem:setTitle("No Audio")
             menuBarItem:setTooltip("No audio output device found")
         else
             print("[AUDIO-INFO] WARNING: menuBarItem is nil!")
@@ -200,19 +200,32 @@ local function updateMenuBar()
     print("[AUDIO-INFO] Got audio info: " .. (info.name or "unknown"))
     
     -- Create menu bar title (compact)
-    local title = "🔊 "
+    local title = ""
     
     -- Add mute indicator
     if info.muted then
         title = title .. "🔇 "
     end
     
-    -- Add sample rate
-    title = title .. formatSampleRate(info.sampleRate)
+    -- Add sample rate (only if available and valid)
+    local sampleRateStr = formatSampleRate(info.sampleRate)
+    local hasSampleRate = sampleRateStr ~= "N/A" and info.sampleRate > 0
+    
+    if hasSampleRate then
+        title = title .. sampleRateStr
+    end
     
     -- Add bit depth if available
     if info.bitDepth then
-        title = title .. "/" .. info.bitDepth .. "bit"
+        if hasSampleRate then
+            title = title .. "/"
+        end
+        title = title .. info.bitDepth .. "bit"
+    end
+    
+    -- If we have nothing to show, show device name
+    if title == "" or (not hasSampleRate and not info.bitDepth) then
+        title = info.name or "Audio"
     end
     
     -- Set title
