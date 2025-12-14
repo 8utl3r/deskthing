@@ -45,38 +45,25 @@ local function getAudioInfo()
         device = device
     }
     
-    -- Debug: Check device object
-    print("[AUDIO-INFO] Device object type: " .. type(device))
-    print("[AUDIO-INFO] Device name: " .. tostring(deviceName))
-    print("[AUDIO-INFO] Device UID: " .. tostring(deviceUID))
-    
-    -- Try to get sample rate using the method
-    print("[AUDIO-INFO] Attempting device:sampleRate()...")
+    -- Try to get sample rate using the method (may not exist in this Hammerspoon version)
     local srSuccess, sampleRate = pcall(function()
         return device:sampleRate()
     end)
     
-    print("[AUDIO-INFO] sampleRate() call - success: " .. tostring(srSuccess) .. ", value: " .. tostring(sampleRate) .. ", type: " .. type(sampleRate))
-    
     if srSuccess and sampleRate and type(sampleRate) == "number" and sampleRate > 0 then
         info.sampleRate = sampleRate
-        print("[AUDIO-INFO] ✓ Got sample rate from device:sampleRate(): " .. tostring(sampleRate) .. " Hz")
     else
-        -- Try alternative: Use Audio MIDI Setup data via plist or system_profiler
-        print("[AUDIO-INFO] sampleRate() unavailable, trying alternative methods...")
-        
-        -- Method 1: Try using ioreg to query CoreAudio directly
-        print("[AUDIO-INFO] Trying ioreg method (CoreAudio)...")
-        local ioregSuccess, ioregRate = pcall(function()
-            -- Query IORegistry for audio device sample rate
-            -- This queries the default output device's audio engine
-            local cmd = "ioreg -r -c IOAudioEngine 2>/dev/null | grep -A 5 'IOAudioSampleRate' | grep 'IOAudioSampleRate' | head -1 | sed 's/.*= \\([0-9]*\\).*/\\1/'"
-            local result = hs.execute(cmd, true)  -- true = capture output
-            print("[AUDIO-INFO] ioreg command result: " .. tostring(result))
+        -- sampleRate() method doesn't exist in this Hammerspoon version
+        -- Use system_profiler as fallback (this works reliably)
+        local spSuccess, spRate = pcall(function()
+            local devName = deviceName or "Unknown"
+            -- system_profiler shows "Current SampleRate: 192000" format
+            local cmd = "system_profiler SPAudioDataType 2>/dev/null | grep -A 10 '" .. devName:gsub("'", "'\\''") .. "' | grep 'Current SampleRate' | awk '{print $3}'"
+            local result = hs.execute(cmd, true)
             
             if result and result ~= "" then
-                -- Clean up the result (remove newlines, whitespace)
-                result = result:gsub("%s+", "")
+                -- Clean up the result (remove newlines, whitespace, trim)
+                result = result:gsub("^%s+", ""):gsub("%s+$", ""):gsub("\n", "")
                 local rate = tonumber(result)
                 if rate and rate > 0 then
                     return rate
@@ -85,63 +72,8 @@ local function getAudioInfo()
             return nil
         end)
         
-        if ioregSuccess and ioregRate and type(ioregRate) == "number" and ioregRate > 0 then
-            info.sampleRate = ioregRate
-            print("[AUDIO-INFO] ✓ Got sample rate from ioreg: " .. tostring(ioregRate) .. " Hz")
-        else
-            -- Method 2: Try using system_profiler
-            print("[AUDIO-INFO] Trying system_profiler method...")
-            local spSuccess, spRate = pcall(function()
-                local devName = deviceName or "Unknown"
-                -- Get audio device info and extract sample rate
-                local cmd = "system_profiler SPAudioDataType 2>/dev/null | grep -A 30 '" .. devName:gsub("'", "'\\''") .. "' | grep -i 'Sample Rate' | head -1 | sed 's/.*Sample Rate: \\([0-9]*\\).*/\\1/'"
-                local result = hs.execute(cmd, true)
-                print("[AUDIO-INFO] system_profiler result: " .. tostring(result))
-                
-                if result and result ~= "" then
-                    result = result:gsub("%s+", "")
-                    local rate = tonumber(result)
-                    if rate and rate > 0 then
-                        return rate
-                    end
-                end
-                return nil
-            end)
-            
-            if spSuccess and spRate and type(spRate) == "number" and spRate > 0 then
-                info.sampleRate = spRate
-                print("[AUDIO-INFO] ✓ Got sample rate from system_profiler: " .. tostring(spRate) .. " Hz")
-            else
-                -- Method 3: Try using plutil to read Audio MIDI Setup preferences
-                print("[AUDIO-INFO] Trying plutil method (Audio MIDI Setup prefs)...")
-                local plutilSuccess, plutilRate = pcall(function()
-                    -- Audio MIDI Setup stores device settings in ~/Library/Preferences/com.apple.audio.AudioMIDISetup.plist
-                    local prefsFile = os.getenv("HOME") .. "/Library/Preferences/com.apple.audio.AudioMIDISetup.plist"
-                    if hs.fs.attributes(prefsFile) then
-                        -- Try to extract sample rate from plist
-                        local cmd = "plutil -extract 'Devices' raw " .. prefsFile .. " 2>/dev/null | grep -i 'samplerate' | head -1 | sed 's/.*\\([0-9][0-9][0-9][0-9][0-9]\\).*/\\1/'"
-                        local result = hs.execute(cmd, true)
-                        print("[AUDIO-INFO] plutil result: " .. tostring(result))
-                        
-                        if result and result ~= "" then
-                            result = result:gsub("%s+", "")
-                            local rate = tonumber(result)
-                            if rate and rate > 0 then
-                                return rate
-                            end
-                        end
-                    end
-                    return nil
-                end)
-                
-                if plutilSuccess and plutilRate and type(plutilRate) == "number" and plutilRate > 0 then
-                    info.sampleRate = plutilRate
-                    print("[AUDIO-INFO] ✓ Got sample rate from plutil: " .. tostring(plutilRate) .. " Hz")
-                else
-                    print("[AUDIO-INFO] ✗ Could not get sample rate from any method")
-                    print("[AUDIO-INFO] Note: sampleRate() method may not be available in this Hammerspoon version")
-                end
-            end
+        if spSuccess and spRate and type(spRate) == "number" and spRate > 0 then
+            info.sampleRate = spRate
         end
     end
     
@@ -278,18 +210,13 @@ local function updateMenuBar()
     
     local info = getAudioInfo()
     if not info then
-        print("[AUDIO-INFO] No audio device found")
         if menuBarItem then
             menuBarItem:setTitle("No Audio")
             menuBarItem:setTooltip("No audio output device found")
-        else
-            print("[AUDIO-INFO] WARNING: menuBarItem is nil!")
         end
         debug.callEnd("audio-info", "updateMenuBar")
         return
     end
-    
-    print("[AUDIO-INFO] Got audio info: " .. (info.name or "unknown"))
     
     -- Create menu bar title (compact)
     local title = ""
@@ -428,27 +355,20 @@ end
 
 -- Initialize
 function audioInfo.init()
-    print("[AUDIO-INFO] Starting initialization...")
     logger.info("Initializing audio-info module")
     
     -- Create menu bar (with error handling)
-    print("[AUDIO-INFO] Creating menu bar...")
     local menuBarCreated = createMenuBar()
     if not menuBarCreated then
-        print("[AUDIO-INFO] ERROR: Failed to create menu bar")
         logger.error("Failed to initialize audio-info menu bar, continuing without it")
-    else
-        print("[AUDIO-INFO] Menu bar created successfully")
     end
     
     -- Delay initial update to ensure hs.audiodevice extension is loaded
     -- The extension loads after modules, so we need to wait
     hs.timer.doAfter(1.0, function()
-        print("[AUDIO-INFO] Performing delayed initial update (after extensions loaded)...")
-        
         -- Check if hs.audiodevice is available
         if not hs.audiodevice then
-            print("[AUDIO-INFO] ERROR: hs.audiodevice extension not available")
+            logger.error("hs.audiodevice extension not available")
             return
         end
         
