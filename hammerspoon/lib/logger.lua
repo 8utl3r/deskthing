@@ -32,13 +32,21 @@ function logger.new(moduleName, logLevel)
         return cachedLogger
     end
     
+    -- Ensure logLevel is valid
+    if type(logLevel) ~= "string" and type(logLevel) ~= "number" then
+        logLevel = defaultLogLevel
+    end
+    
     -- Create new logger instance
     local log = hs.logger.new(moduleName, logLevel)
     
     -- Set up file logging
     local logsDir = ensureLogsDir()
     local logFile = logsDir .. "/" .. moduleName .. ".log"
-    log:setLogLevel(logLevel)
+    -- setLogLevel is already set by hs.logger.new, but ensure it's correct
+    if logLevel then
+        log:setLogLevel(logLevel)
+    end
     
     -- Create wrapper with additional functionality
     local wrapper = {

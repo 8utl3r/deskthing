@@ -7,8 +7,10 @@ local logger = require("lib.logger")
 local debug = require("lib.debug")
 
 -- Set up logging
-local mainLogger = logger.get("hammerspoon", config.get("logging").defaultLevel)
-logger.setDefaultLogLevel(config.get("logging").defaultLevel)
+local loggingConfig = config.get("logging")
+local logLevel = (loggingConfig and loggingConfig.defaultLevel) or "info"
+local mainLogger = logger.get("hammerspoon", logLevel)
+logger.setDefaultLogLevel(logLevel)
 
 -- Initialize debug system
 if config.get("debug").enabled then
