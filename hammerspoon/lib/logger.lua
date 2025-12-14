@@ -74,6 +74,9 @@ function logger.new(moduleName, logLevel)
         
         -- Log at different levels
         debug = function(self, message, ...)
+            if not message or message == "" then
+                return  -- Skip nil or empty messages
+            end
             if self._logger then
                 self._logger:d(message, ...)
                 self:_writeToFile("DEBUG", message, ...)
@@ -83,6 +86,9 @@ function logger.new(moduleName, logLevel)
         end,
         
         info = function(self, message, ...)
+            if not message or message == "" then
+                return  -- Skip nil or empty messages
+            end
             if self._logger then
                 self._logger:i(message, ...)
                 self:_writeToFile("INFO", message, ...)
@@ -92,6 +98,9 @@ function logger.new(moduleName, logLevel)
         end,
         
         warning = function(self, message, ...)
+            if not message or message == "" then
+                return  -- Skip nil or empty messages
+            end
             if self._logger then
                 self._logger:w(message, ...)
                 self:_writeToFile("WARNING", message, ...)
@@ -101,6 +110,9 @@ function logger.new(moduleName, logLevel)
         end,
         
         error = function(self, message, ...)
+            if not message or message == "" then
+                return  -- Skip nil or empty messages
+            end
             if self._logger then
                 self._logger:e(message, ...)
                 self:_writeToFile("ERROR", message, ...)

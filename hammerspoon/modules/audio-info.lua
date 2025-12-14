@@ -26,7 +26,7 @@ local function getAudioInfo()
         return device:name()
     end)
     local deviceName = (nameSuccess and deviceName) or "Unknown"
-    logger.debug("Got audio device: " .. tostring(deviceName))
+    -- Device name retrieved successfully
     
     -- Safely get device UID
     local uidSuccess, deviceUID = pcall(function()
@@ -282,13 +282,7 @@ local function updateMenuBar()
         menuBarItem:setTooltip(tooltip)
     end
     
-    logger.debug(string.format("Audio info updated: %s @ %s/%d-bit, %d ch, %s",
-        info.name,
-        formatSampleRate(info.sampleRate),
-        info.bitDepth or 0,
-        info.channels or 0,
-        formatBitrate(info.bitrateKbps)
-    ))
+    -- Audio info updated successfully
     
     debug.callEnd("audio-info", "updateMenuBar")
 end
@@ -319,7 +313,7 @@ local function createMenuBar()
     -- Don't do initial update here - it will be done in init() after a delay
     -- to ensure hs.audiodevice extension is loaded
     
-    logger.info("Audio info menu bar configured")
+    -- Audio info menu bar configured
     return true
 end
 
@@ -341,7 +335,7 @@ local function stopUpdateTimer()
     if updateTimer then
         updateTimer:stop()
         updateTimer = nil
-        logger.debug("Audio info update timer stopped")
+        -- Update timer stopped
     end
 end
 
@@ -354,12 +348,12 @@ function audioInfo.cleanup()
         menuBarItem = nil
     end
     
-    logger.debug("Audio info cleanup complete")
+    -- Cleanup complete
 end
 
 -- Initialize
 function audioInfo.init()
-    logger.info("Initializing audio-info module")
+    -- Initializing audio-info module
     
     -- Create menu bar (with error handling)
     local menuBarCreated = createMenuBar()
@@ -385,7 +379,7 @@ function audioInfo.init()
         -- Watch for audio device changes (with error handling)
         local watcherSuccess, watcherErr = pcall(function()
             hs.audiodevice.watcher.setCallback(function(event)
-                logger.debug("Audio device event: " .. tostring(event))
+                -- Audio device changed, updating menu bar
                 -- Update immediately when device changes
                 updateMenuBar()
             end)
@@ -394,7 +388,7 @@ function audioInfo.init()
         
         if not watcherSuccess then
             logger.warning("Failed to start audio device watcher: " .. tostring(watcherErr))
-            logger.info("Audio info will still update via timer")
+            -- Audio info will still update via timer
         end
     end)
     
@@ -402,7 +396,7 @@ function audioInfo.init()
     hs.cleanup = hs.cleanup or {}
     table.insert(hs.cleanup, audioInfo.cleanup)
     
-    logger.info("Audio info module initialized")
+    -- Audio info module initialized
 end
 
 return audioInfo
