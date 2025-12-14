@@ -29,21 +29,27 @@ function logger.new(moduleName, logLevel)
         -- Update log level if a different one is requested
         -- Compare stored log level string (not numeric getLogLevel() return value)
         if cachedLogger._logLevel ~= logLevel then
-            cachedLogger:setLogLevel(logLevel)
-            cachedLogger._logLevel = logLevel  -- Update stored level
+            -- Ensure logLevel is valid before setting it
+            if type(logLevel) == "string" or type(logLevel) == "number" then
+                cachedLogger:setLogLevel(logLevel)
+                cachedLogger._logLevel = logLevel  -- Update stored level
+            end
         end
         return cachedLogger
     end
     
-    -- Create new logger instance
+    -- Double-check logLevel is valid before creating logger
+    if type(logLevel) ~= "string" and type(logLevel) ~= "number" then
+        logLevel = defaultLogLevel
+    end
+    
+    -- Create new logger instance (this already sets the log level)
     local log = hs.logger.new(moduleName, logLevel)
     
     -- Set up file logging
     local logsDir = ensureLogsDir()
     local logFile = logsDir .. "/" .. moduleName .. ".log"
-    -- setLogLevel is already set by hs.logger.new, but ensure it's correct
-    -- logLevel is already validated above, so it's safe to use
-    log:setLogLevel(logLevel)
+    -- Note: hs.logger.new() already sets the log level, so we don't need to call setLogLevel again
     
     -- Create wrapper with additional functionality
     local wrapper = {
