@@ -77,7 +77,7 @@ function debug.loadBreakpoints()
         if data and data.breakpoints then
             debugState.breakpoints = {}
             for _, bp in ipairs(data.breakpoints) do
-                local key = bp.module .. "." .. (bp.function or "")
+                local key = bp.module .. "." .. (bp["function"] or "")
                 debugState.breakpoints[key] = bp
             end
         end
@@ -170,7 +170,7 @@ function debug.checkBreakpoint(module, functionName, line)
         debugState.paused = true
         debugState.pauseReason = {
             module = module,
-            function = functionName,
+            ["function"] = functionName,
             line = line or 0,
             breakpoint = bp
         }
@@ -269,7 +269,7 @@ local function createTraceEntry(event, module, functionName, data)
         timestampISO = os.date("!%Y-%m-%dT%H:%M:%SZ"),
         event = event,
         module = module,
-        function = functionName,
+        ["function"] = functionName,
         data = data,
         callStackDepth = #debugState.callStack,
         paused = debugState.paused
@@ -333,7 +333,7 @@ function debug.callStart(module, functionName, args, line)
     
     table.insert(debugState.callStack, {
         module = module,
-        function = functionName,
+        ["function"] = functionName,
         startTime = startTime,
         line = line
     })
@@ -357,7 +357,7 @@ function debug.callEnd(module, functionName, returnValue)
     -- Remove from call stack
     for i = #debugState.callStack, 1, -1 do
         local entry = debugState.callStack[i]
-        if entry.module == module and entry.function == functionName then
+        if entry.module == module and entry["function"] == functionName then
             table.remove(debugState.callStack, i)
             break
         end
@@ -451,7 +451,7 @@ function debug.setBreakpoint(module, functionName, line, condition)
     local key = module .. "." .. functionName
     debugState.breakpoints[key] = {
         module = module,
-        function = functionName,
+        ["function"] = functionName,
         line = line or 0,
         condition = condition,
         enabled = true
