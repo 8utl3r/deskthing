@@ -74,6 +74,9 @@ local function getAudioInfo()
         
         if spSuccess and spRate and type(spRate) == "number" and spRate > 0 then
             info.sampleRate = spRate
+            logger.info("Retrieved sample rate from system_profiler: " .. tostring(spRate) .. " Hz")
+        else
+            logger.warning("Failed to retrieve sample rate from system_profiler (success: " .. tostring(spSuccess) .. ", rate: " .. tostring(spRate) .. ")")
         end
     end
     
