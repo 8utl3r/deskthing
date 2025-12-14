@@ -46,6 +46,20 @@ function logger.new(moduleName, logLevel)
     -- Create new logger instance (this already sets the log level)
     local log = hs.logger.new(moduleName, logLevel)
     
+    -- Ensure logger was created successfully
+    if not log then
+        -- Fallback: try with default log level
+        log = hs.logger.new(moduleName, "info")
+        if not log then
+            -- Last resort: create without log level
+            log = hs.logger.new(moduleName)
+        end
+        if not log then
+            -- Ultimate fallback: return nil or create a dummy logger
+            error("Failed to create logger for module: " .. tostring(moduleName))
+        end
+    end
+    
     -- Set up file logging
     local logsDir = ensureLogsDir()
     local logFile = logsDir .. "/" .. moduleName .. ".log"
@@ -60,23 +74,39 @@ function logger.new(moduleName, logLevel)
         
         -- Log at different levels
         debug = function(self, message, ...)
-            self._logger:d(message, ...)
-            self:_writeToFile("DEBUG", message, ...)
+            if self._logger then
+                self._logger:d(message, ...)
+                self:_writeToFile("DEBUG", message, ...)
+            else
+                print("[DEBUG] " .. tostring(message))
+            end
         end,
         
         info = function(self, message, ...)
-            self._logger:i(message, ...)
-            self:_writeToFile("INFO", message, ...)
+            if self._logger then
+                self._logger:i(message, ...)
+                self:_writeToFile("INFO", message, ...)
+            else
+                print("[INFO] " .. tostring(message))
+            end
         end,
         
         warning = function(self, message, ...)
-            self._logger:w(message, ...)
-            self:_writeToFile("WARNING", message, ...)
+            if self._logger then
+                self._logger:w(message, ...)
+                self:_writeToFile("WARNING", message, ...)
+            else
+                print("[WARNING] " .. tostring(message))
+            end
         end,
         
         error = function(self, message, ...)
-            self._logger:e(message, ...)
-            self:_writeToFile("ERROR", message, ...)
+            if self._logger then
+                self._logger:e(message, ...)
+                self:_writeToFile("ERROR", message, ...)
+            else
+                print("[ERROR] " .. tostring(message))
+            end
         end,
         
         -- Write to file
@@ -99,6 +129,10 @@ function logger.new(moduleName, logLevel)
         
         -- Set log level
         setLogLevel = function(self, level)
+            if not self._logger then
+                return  -- Can't set log level if logger doesn't exist
+            end
+            
             -- Validate level before using it - use hardcoded fallback
             if not level or (type(level) ~= "string" and type(level) ~= "number") then
                 level = "info"  -- Hardcoded safe default
@@ -129,7 +163,10 @@ function logger.new(moduleName, logLevel)
         
         -- Get log level
         getLogLevel = function(self)
-            return self._logger:getLogLevel()
+            if self._logger then
+                return self._logger:getLogLevel()
+            end
+            return 0  -- Default log level if logger doesn't exist
         end
     }
     
