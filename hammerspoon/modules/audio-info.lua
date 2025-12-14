@@ -149,13 +149,18 @@ local function updateMenuBar()
     
     local info = getAudioInfo()
     if not info then
+        print("[AUDIO-INFO] No audio device found")
         if menuBarItem then
             menuBarItem:setTitle("🔊 No Audio")
             menuBarItem:setTooltip("No audio output device found")
+        else
+            print("[AUDIO-INFO] WARNING: menuBarItem is nil!")
         end
         debug.callEnd("audio-info", "updateMenuBar")
         return
     end
+    
+    print("[AUDIO-INFO] Got audio info: " .. (info.name or "unknown"))
     
     -- Create menu bar title (compact)
     local title = "🔊 "
@@ -238,8 +243,10 @@ local function createMenuBar()
     end
     
     -- Initial update
+    print("[AUDIO-INFO] Performing initial update...")
     updateMenuBar()
     
+    print("[AUDIO-INFO] Menu bar configured successfully")
     logger.info("Audio info menu bar configured")
     return true
 end
@@ -280,12 +287,17 @@ end
 
 -- Initialize
 function audioInfo.init()
+    print("[AUDIO-INFO] Starting initialization...")
     logger.info("Initializing audio-info module")
     
     -- Create menu bar (with error handling)
+    print("[AUDIO-INFO] Creating menu bar...")
     local menuBarCreated = createMenuBar()
     if not menuBarCreated then
+        print("[AUDIO-INFO] ERROR: Failed to create menu bar")
         logger.error("Failed to initialize audio-info menu bar, continuing without it")
+    else
+        print("[AUDIO-INFO] Menu bar created successfully")
     end
     
     -- Start update timer
