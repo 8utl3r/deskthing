@@ -122,7 +122,7 @@ local function getAudioInfo()
         
         local result = hs.execute(cProgram, true)
         if result and result ~= "" then
-            -- Format: sample_rate,bit_depth,channels
+            -- Format: sample_rate,bit_depth,channels,is_float
             result = result:gsub("^%s+", ""):gsub("%s+$", ""):gsub("\n", "")
             local parts = {}
             for part in result:gmatch("([^,]+)") do
@@ -132,7 +132,8 @@ local function getAudioInfo()
                 return {
                     sampleRate = parts[1],
                     bitDepth = parts[2],
-                    channels = parts[3]
+                    channels = parts[3],
+                    isFloat = (#parts >= 4 and parts[4] == 1) or false
                 }
             end
         end
