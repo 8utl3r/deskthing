@@ -314,7 +314,6 @@ local function createMenuBar()
     -- Don't do initial update here - it will be done in init() after a delay
     -- to ensure hs.audiodevice extension is loaded
     
-    print("[AUDIO-INFO] Menu bar configured successfully")
     logger.info("Audio info menu bar configured")
     return true
 end
