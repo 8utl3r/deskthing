@@ -16,9 +16,12 @@ local function getAudioInfo()
     
     local device = hs.audiodevice.defaultOutputDevice()
     if not device then
+        logger.warning("No default output device found")
         debug.callEnd("audio-info", "getAudioInfo", nil)
         return nil
     end
+    
+    logger.debug("Got audio device: " .. tostring(device:name()))
     
     local info = {
         name = device:name() or "Unknown",
@@ -32,17 +35,24 @@ local function getAudioInfo()
     }
     
     -- Try to get stream format for accurate bit depth and channel info
+    -- Note: streamFormat() may not be available in all Hammerspoon versions
     local success, streamFormat = pcall(function()
-        return device:streamFormat()
+        -- Try different possible method names
+        if device.streamFormat then
+            return device:streamFormat()
+        elseif device.getStreamFormat then
+            return device:getStreamFormat()
+        end
+        return nil
     end)
     
-    if success and streamFormat then
+    if success and streamFormat and type(streamFormat) == "table" then
         -- Get bit depth from stream format
         if streamFormat.bitsPerChannel then
             info.bitDepth = streamFormat.bitsPerChannel
         elseif streamFormat.bitsPerFrame and streamFormat.channelsPerFrame then
             -- Calculate bit depth from bits per frame and channels
-            info.bitDepth = streamFormat.bitsPerFrame / streamFormat.channelsPerFrame
+            info.bitDepth = math.floor(streamFormat.bitsPerFrame / streamFormat.channelsPerFrame)
         end
         
         -- Get channel count
@@ -206,22 +216,32 @@ end
 
 -- Create menu bar item
 local function createMenuBar()
-    menuBarItem = hs.menubar.new()
+    local success, result = pcall(function()
+        menuBarItem = hs.menubar.new()
+        return menuBarItem
+    end)
     
-    if not menuBarItem then
-        logger.error("Failed to create audio-info menu bar item")
-        return
+    if not success or not menuBarItem then
+        logger.error("Failed to create audio-info menu bar item: " .. tostring(result))
+        return false
     end
     
     -- Set click callback to open Audio MIDI Setup
-    menuBarItem:setClickCallback(function()
-        hs.execute("open -a 'Audio MIDI Setup'")
+    local clickSuccess, clickErr = pcall(function()
+        menuBarItem:setClickCallback(function()
+            hs.execute("open -a 'Audio MIDI Setup'")
+        end)
     end)
+    
+    if not clickSuccess then
+        logger.warning("Failed to set click callback: " .. tostring(clickErr))
+    end
     
     -- Initial update
     updateMenuBar()
     
     logger.info("Audio info menu bar configured")
+    return true
 end
 
 -- Start update timer
@@ -262,16 +282,29 @@ end
 function audioInfo.init()
     logger.info("Initializing audio-info module")
     
-    createMenuBar()
+    -- Create menu bar (with error handling)
+    local menuBarCreated = createMenuBar()
+    if not menuBarCreated then
+        logger.error("Failed to initialize audio-info menu bar, continuing without it")
+    end
+    
+    -- Start update timer
     startUpdateTimer()
     
-    -- Watch for audio device changes
-    hs.audiodevice.watcher.setCallback(function(uid, event)
-        logger.debug("Audio device event: " .. tostring(event) .. " for device: " .. tostring(uid))
-        -- Update immediately when device changes
-        updateMenuBar()
+    -- Watch for audio device changes (with error handling)
+    local watcherSuccess, watcherErr = pcall(function()
+        hs.audiodevice.watcher.setCallback(function(event)
+            logger.debug("Audio device event: " .. tostring(event))
+            -- Update immediately when device changes
+            updateMenuBar()
+        end)
+        hs.audiodevice.watcher.start()
     end)
-    hs.audiodevice.watcher.start()
+    
+    if not watcherSuccess then
+        logger.warning("Failed to start audio device watcher: " .. tostring(watcherErr))
+        logger.info("Audio info will still update via timer")
+    end
     
     -- Register cleanup
     hs.cleanup = hs.cleanup or {}
