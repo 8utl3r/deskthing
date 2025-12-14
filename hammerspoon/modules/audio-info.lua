@@ -305,7 +305,7 @@ local function updateMenuBar()
             "━━━━━━━━━━━━━━━━━━━━\n" ..
             "Device: %s\n" ..
             "Sample Rate: %s\n" ..
-            "Bit Depth: %d-bit\n" ..
+            "Bit Depth: %d-bit%s\n" ..
             "Channels: %d\n" ..
             "Bitrate: %s\n" ..
             "Volume: %d%%\n" ..
@@ -315,6 +315,7 @@ local function updateMenuBar()
             info.name,
             formatSampleRate(info.sampleRate),
             info.bitDepth or 0,
+            bitDepthNote,
             info.channels or 0,
             formatBitrate(info.bitrateKbps),
             math.floor(info.volume * 100),
