@@ -98,35 +98,93 @@ local function getAudioInfo()
         info.muted = muted
     end
     
-    -- Try to get stream format for accurate bit depth and channel info
-    -- Note: streamFormat() may not be available in all Hammerspoon versions
-    -- This would give us the ACTUAL output format, not just device capabilities
-    local success, streamFormat = pcall(function()
-        -- Try different possible method names
-        if device.streamFormat then
-            return device:streamFormat()
-        elseif device.getStreamFormat then
-            return device:getStreamFormat()
+    -- Try to get ACTUAL output format from CoreAudio (most reliable)
+    -- Use our custom C program to query CoreAudio directly
+    local coreAudioSuccess, coreAudioFormat = pcall(function()
+        -- Try multiple possible paths for the binary
+        local possiblePaths = {
+            os.getenv("HOME") .. "/.hammerspoon/lib/audio-format-query",
+            "/Users/pete/dotfiles/hammerspoon/lib/audio-format-query",
+            "./lib/audio-format-query"
+        }
+        
+        local cProgram = nil
+        for _, path in ipairs(possiblePaths) do
+            if hs.fs.attributes(path) then
+                cProgram = path
+                break
+            end
+        end
+        
+        if not cProgram then
+            return nil
+        end
+        
+        local result = hs.execute(cProgram, true)
+        if result and result ~= "" then
+            -- Format: sample_rate,bit_depth,channels
+            result = result:gsub("^%s+", ""):gsub("%s+$", ""):gsub("\n", "")
+            local parts = {}
+            for part in result:gmatch("([^,]+)") do
+                table.insert(parts, tonumber(part))
+            end
+            if #parts >= 3 then
+                return {
+                    sampleRate = parts[1],
+                    bitDepth = parts[2],
+                    channels = parts[3]
+                }
+            end
         end
         return nil
     end)
     
     local bitDepthSource = "unknown"  -- Track where bit depth came from
     
-    if success and streamFormat and type(streamFormat) == "table" then
-        -- Get bit depth from stream format (ACTUAL output format)
-        if streamFormat.bitsPerChannel then
-            info.bitDepth = streamFormat.bitsPerChannel
-            bitDepthSource = "actual"  -- This is the actual output format
-        elseif streamFormat.bitsPerFrame and streamFormat.channelsPerFrame then
-            -- Calculate bit depth from bits per frame and channels
-            info.bitDepth = math.floor(streamFormat.bitsPerFrame / streamFormat.channelsPerFrame)
-            bitDepthSource = "actual"
+    if coreAudioSuccess and coreAudioFormat and type(coreAudioFormat) == "table" then
+        -- Use actual output format from CoreAudio
+        if coreAudioFormat.bitDepth and coreAudioFormat.bitDepth > 0 then
+            info.bitDepth = coreAudioFormat.bitDepth
+            bitDepthSource = "actual"  -- This is the actual output format from CoreAudio
         end
+        if coreAudioFormat.channels and coreAudioFormat.channels > 0 then
+            info.channels = coreAudioFormat.channels
+        end
+        -- Use CoreAudio sample rate if available (more accurate than system_profiler)
+        if coreAudioFormat.sampleRate and coreAudioFormat.sampleRate > 0 then
+            info.sampleRate = coreAudioFormat.sampleRate
+        end
+    end
+    
+    -- Fallback: Try to get stream format from Hammerspoon API (may not be available)
+    if not info.bitDepth or not info.channels then
+        local success, streamFormat = pcall(function()
+            -- Try different possible method names
+            if device.streamFormat then
+                return device:streamFormat()
+            elseif device.getStreamFormat then
+                return device:getStreamFormat()
+            end
+            return nil
+        end)
         
-        -- Get channel count
-        if streamFormat.channelsPerFrame then
-            info.channels = streamFormat.channelsPerFrame
+        if success and streamFormat and type(streamFormat) == "table" then
+            -- Get bit depth from stream format (ACTUAL output format)
+            if not info.bitDepth then
+                if streamFormat.bitsPerChannel then
+                    info.bitDepth = streamFormat.bitsPerChannel
+                    bitDepthSource = "actual"  -- This is the actual output format
+                elseif streamFormat.bitsPerFrame and streamFormat.channelsPerFrame then
+                    -- Calculate bit depth from bits per frame and channels
+                    info.bitDepth = math.floor(streamFormat.bitsPerFrame / streamFormat.channelsPerFrame)
+                    bitDepthSource = "actual"
+                end
+            end
+            
+            -- Get channel count
+            if not info.channels and streamFormat.channelsPerFrame then
+                info.channels = streamFormat.channelsPerFrame
+            end
         end
     end
     
