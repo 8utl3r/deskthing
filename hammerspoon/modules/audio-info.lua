@@ -65,64 +65,82 @@ local function getAudioInfo()
         -- Try alternative: Use Audio MIDI Setup data via plist or system_profiler
         print("[AUDIO-INFO] sampleRate() unavailable, trying alternative methods...")
         
-        -- Method 1: Try to get from CoreAudio via system_profiler
-        local fallbackSuccess, fallbackRate = pcall(function()
-            -- Get the default output device name
-            local devName = deviceName or "Unknown"
-            print("[AUDIO-INFO] Looking up device: " .. devName)
-            
-            -- Use system_profiler to get detailed audio info
-            local cmd = "system_profiler SPAudioDataType -xml 2>/dev/null | plutil -convert json -o - - 2>/dev/null | grep -A 5 '\"" .. devName:gsub('"', '\\"') .. "' | grep -i 'samplerate\\|sample_rate' | head -1"
+        -- Method 1: Try using ioreg to query CoreAudio directly
+        print("[AUDIO-INFO] Trying ioreg method (CoreAudio)...")
+        local ioregSuccess, ioregRate = pcall(function()
+            -- Query IORegistry for audio device sample rate
+            -- This queries the default output device's audio engine
+            local cmd = "ioreg -r -c IOAudioEngine 2>/dev/null | grep -A 5 'IOAudioSampleRate' | grep 'IOAudioSampleRate' | head -1 | sed 's/.*= \\([0-9]*\\).*/\\1/'"
             local result = hs.execute(cmd, true)  -- true = capture output
-            print("[AUDIO-INFO] system_profiler result: " .. tostring(result))
+            print("[AUDIO-INFO] ioreg command result: " .. tostring(result))
             
             if result and result ~= "" then
-                -- Try to extract number from result
-                local rate = tonumber(result:match("%d+"))
-                if rate then
+                -- Clean up the result (remove newlines, whitespace)
+                result = result:gsub("%s+", "")
+                local rate = tonumber(result)
+                if rate and rate > 0 then
                     return rate
                 end
             end
-            
-            -- Method 2: Try using sw_vers and checking Audio MIDI Setup preferences
-            -- This is more complex, so let's try a simpler approach first
-            
             return nil
         end)
         
-        if fallbackSuccess and fallbackRate and type(fallbackRate) == "number" and fallbackRate > 0 then
-            info.sampleRate = fallbackRate
-            print("[AUDIO-INFO] ✓ Got sample rate from fallback method: " .. tostring(fallbackRate) .. " Hz")
+        if ioregSuccess and ioregRate and type(ioregRate) == "number" and ioregRate > 0 then
+            info.sampleRate = ioregRate
+            print("[AUDIO-INFO] ✓ Got sample rate from ioreg: " .. tostring(ioregRate) .. " Hz")
         else
-            -- Method 3: Try using osascript to query Audio MIDI Setup
-            print("[AUDIO-INFO] Trying osascript method...")
-            local osaSuccess, osaRate = pcall(function()
-                -- Use AppleScript to get sample rate from Audio MIDI Setup
-                local script = [[
-                    tell application "System Events"
-                        tell process "Audio MIDI Setup"
-                            -- This is complex, try a different approach
-                        end tell
-                    end tell
-                ]]
-                -- Actually, let's use a shell command that queries CoreAudio directly
-                local cmd = "ioreg -r -c IOAudioEngine | grep -A 10 'IOAudioSampleRate' | head -1 | awk '{print $NF}' | sed 's/[^0-9.]//g'"
+            -- Method 2: Try using system_profiler
+            print("[AUDIO-INFO] Trying system_profiler method...")
+            local spSuccess, spRate = pcall(function()
+                local devName = deviceName or "Unknown"
+                -- Get audio device info and extract sample rate
+                local cmd = "system_profiler SPAudioDataType 2>/dev/null | grep -A 30 '" .. devName:gsub("'", "'\\''") .. "' | grep -i 'Sample Rate' | head -1 | sed 's/.*Sample Rate: \\([0-9]*\\).*/\\1/'"
                 local result = hs.execute(cmd, true)
-                print("[AUDIO-INFO] ioreg result: " .. tostring(result))
+                print("[AUDIO-INFO] system_profiler result: " .. tostring(result))
+                
                 if result and result ~= "" then
-                    local rate = tonumber(result:match("%d+%.?%d*"))
-                    if rate then
-                        return math.floor(rate)
+                    result = result:gsub("%s+", "")
+                    local rate = tonumber(result)
+                    if rate and rate > 0 then
+                        return rate
                     end
                 end
                 return nil
             end)
             
-            if osaSuccess and osaRate and type(osaRate) == "number" and osaRate > 0 then
-                info.sampleRate = osaRate
-                print("[AUDIO-INFO] ✓ Got sample rate from ioreg: " .. tostring(osaRate) .. " Hz")
+            if spSuccess and spRate and type(spRate) == "number" and spRate > 0 then
+                info.sampleRate = spRate
+                print("[AUDIO-INFO] ✓ Got sample rate from system_profiler: " .. tostring(spRate) .. " Hz")
             else
-                print("[AUDIO-INFO] ✗ Could not get sample rate from any method")
+                -- Method 3: Try using plutil to read Audio MIDI Setup preferences
+                print("[AUDIO-INFO] Trying plutil method (Audio MIDI Setup prefs)...")
+                local plutilSuccess, plutilRate = pcall(function()
+                    -- Audio MIDI Setup stores device settings in ~/Library/Preferences/com.apple.audio.AudioMIDISetup.plist
+                    local prefsFile = os.getenv("HOME") .. "/Library/Preferences/com.apple.audio.AudioMIDISetup.plist"
+                    if hs.fs.attributes(prefsFile) then
+                        -- Try to extract sample rate from plist
+                        local cmd = "plutil -extract 'Devices' raw " .. prefsFile .. " 2>/dev/null | grep -i 'samplerate' | head -1 | sed 's/.*\\([0-9][0-9][0-9][0-9][0-9]\\).*/\\1/'"
+                        local result = hs.execute(cmd, true)
+                        print("[AUDIO-INFO] plutil result: " .. tostring(result))
+                        
+                        if result and result ~= "" then
+                            result = result:gsub("%s+", "")
+                            local rate = tonumber(result)
+                            if rate and rate > 0 then
+                                return rate
+                            end
+                        end
+                    end
+                    return nil
+                end)
+                
+                if plutilSuccess and plutilRate and type(plutilRate) == "number" and plutilRate > 0 then
+                    info.sampleRate = plutilRate
+                    print("[AUDIO-INFO] ✓ Got sample rate from plutil: " .. tostring(plutilRate) .. " Hz")
+                else
+                    print("[AUDIO-INFO] ✗ Could not get sample rate from any method")
+                    print("[AUDIO-INFO] Note: sampleRate() method may not be available in this Hammerspoon version")
+                end
             end
         end
     end
