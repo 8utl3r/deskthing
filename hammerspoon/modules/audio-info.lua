@@ -242,9 +242,8 @@ local function createMenuBar()
         logger.warning("Failed to set click callback: " .. tostring(clickErr))
     end
     
-    -- Initial update
-    print("[AUDIO-INFO] Performing initial update...")
-    updateMenuBar()
+    -- Don't do initial update here - it will be done in init() after a delay
+    -- to ensure hs.audiodevice extension is loaded
     
     print("[AUDIO-INFO] Menu bar configured successfully")
     logger.info("Audio info menu bar configured")
@@ -300,23 +299,38 @@ function audioInfo.init()
         print("[AUDIO-INFO] Menu bar created successfully")
     end
     
-    -- Start update timer
-    startUpdateTimer()
-    
-    -- Watch for audio device changes (with error handling)
-    local watcherSuccess, watcherErr = pcall(function()
-        hs.audiodevice.watcher.setCallback(function(event)
-            logger.debug("Audio device event: " .. tostring(event))
-            -- Update immediately when device changes
-            updateMenuBar()
+    -- Delay initial update to ensure hs.audiodevice extension is loaded
+    -- The extension loads after modules, so we need to wait
+    hs.timer.doAfter(1.0, function()
+        print("[AUDIO-INFO] Performing delayed initial update (after extensions loaded)...")
+        
+        -- Check if hs.audiodevice is available
+        if not hs.audiodevice then
+            print("[AUDIO-INFO] ERROR: hs.audiodevice extension not available")
+            return
+        end
+        
+        -- Perform initial update
+        updateMenuBar()
+        
+        -- Now start the update timer
+        startUpdateTimer()
+        
+        -- Watch for audio device changes (with error handling)
+        local watcherSuccess, watcherErr = pcall(function()
+            hs.audiodevice.watcher.setCallback(function(event)
+                logger.debug("Audio device event: " .. tostring(event))
+                -- Update immediately when device changes
+                updateMenuBar()
+            end)
+            hs.audiodevice.watcher.start()
         end)
-        hs.audiodevice.watcher.start()
+        
+        if not watcherSuccess then
+            logger.warning("Failed to start audio device watcher: " .. tostring(watcherErr))
+            logger.info("Audio info will still update via timer")
+        end
     end)
-    
-    if not watcherSuccess then
-        logger.warning("Failed to start audio device watcher: " .. tostring(watcherErr))
-        logger.info("Audio info will still update via timer")
-    end
     
     -- Register cleanup
     hs.cleanup = hs.cleanup or {}
