@@ -32,6 +32,7 @@ local modules = {
     "modules.window-management",
     "modules.app-launcher",
     "modules.caffeine",
+    "modules.audio-info",
     
     -- Feature modules
     "modules.shortcut-overlay",
