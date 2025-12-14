@@ -103,8 +103,28 @@ function logger.new(moduleName, logLevel)
             if not level or (type(level) ~= "string" and type(level) ~= "number") then
                 level = "info"  -- Hardcoded safe default
             end
-            self._logger:setLogLevel(level)
-            self._logLevel = level  -- Update stored level
+            
+            -- Double-check level is valid before calling
+            if type(level) == "string" or type(level) == "number" then
+                local success, err = pcall(function()
+                    self._logger:setLogLevel(level)
+                end)
+                if success then
+                    self._logLevel = level  -- Update stored level
+                else
+                    -- If setLogLevel fails, try with "info" as fallback
+                    pcall(function()
+                        self._logger:setLogLevel("info")
+                        self._logLevel = "info"
+                    end)
+                end
+            else
+                -- Last resort: use "info"
+                pcall(function()
+                    self._logger:setLogLevel("info")
+                    self._logLevel = "info"
+                end)
+            end
         end,
         
         -- Get log level
@@ -121,14 +141,24 @@ end
 
 -- Set default log level for all loggers
 function logger.setDefaultLogLevel(level)
-    -- Validate level before using it
-    if not level or (type(level) ~= "string" and type(level) ~= "number") then
+    -- Validate level before using it - be very strict
+    if type(level) ~= "string" and type(level) ~= "number" then
         level = "info"  -- Safe default
+    elseif type(level) == "string" and level == "" then
+        level = "info"  -- Empty string is invalid
     end
+    
     defaultLogLevel = level
-    for _, log in pairs(loggers) do
-        if log and log.setLogLevel then
-            log:setLogLevel(level)
+    
+    -- Only update loggers if level is definitely valid
+    if type(level) == "string" or type(level) == "number" then
+        for _, log in pairs(loggers) do
+            if log and log.setLogLevel then
+                -- Use pcall to protect against any errors
+                pcall(function()
+                    log:setLogLevel(level)
+                end)
+            end
         end
     end
 end
