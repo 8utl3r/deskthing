@@ -15,6 +15,12 @@ if loggingConfig and loggingConfig.defaultLevel then
         logLevel = level
     end
 end
+
+-- Ensure logLevel is definitely valid before using it
+if type(logLevel) ~= "string" and type(logLevel) ~= "number" then
+    logLevel = "info"
+end
+
 local mainLogger = logger.get("hammerspoon", logLevel)
 logger.setDefaultLogLevel(logLevel)
 

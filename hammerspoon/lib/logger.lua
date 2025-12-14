@@ -99,9 +99,9 @@ function logger.new(moduleName, logLevel)
         
         -- Set log level
         setLogLevel = function(self, level)
-            -- Validate level before using it
+            -- Validate level before using it - use hardcoded fallback
             if not level or (type(level) ~= "string" and type(level) ~= "number") then
-                level = defaultLogLevel
+                level = "info"  -- Hardcoded safe default
             end
             self._logger:setLogLevel(level)
             self._logLevel = level  -- Update stored level
