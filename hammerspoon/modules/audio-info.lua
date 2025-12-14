@@ -21,18 +21,53 @@ local function getAudioInfo()
         return nil
     end
     
-    logger.debug("Got audio device: " .. tostring(device:name()))
+    -- Safely get device name
+    local nameSuccess, deviceName = pcall(function()
+        return device:name()
+    end)
+    local deviceName = (nameSuccess and deviceName) or "Unknown"
+    logger.debug("Got audio device: " .. tostring(deviceName))
+    
+    -- Safely get device UID
+    local uidSuccess, deviceUID = pcall(function()
+        return device:uid()
+    end)
+    local deviceUID = (uidSuccess and deviceUID) or "unknown"
     
     local info = {
-        name = device:name() or "Unknown",
-        uid = device:uid() or "unknown",
-        sampleRate = device:sampleRate() or 0,
+        name = deviceName,
+        uid = deviceUID,
+        sampleRate = 0,
         bitDepth = nil,
         channels = nil,
-        volume = device:volume() or 0,
-        muted = device:muted() or false,
+        volume = 0,
+        muted = false,
         device = device
     }
+    
+    -- Safely get sample rate (method may not exist)
+    local srSuccess, sampleRate = pcall(function()
+        return device:sampleRate()
+    end)
+    if srSuccess and sampleRate and type(sampleRate) == "number" then
+        info.sampleRate = sampleRate
+    end
+    
+    -- Safely get volume (method may not exist)
+    local volSuccess, volume = pcall(function()
+        return device:volume()
+    end)
+    if volSuccess and volume and type(volume) == "number" then
+        info.volume = volume
+    end
+    
+    -- Safely get muted status (method may not exist)
+    local muteSuccess, muted = pcall(function()
+        return device:muted()
+    end)
+    if muteSuccess and muted ~= nil then
+        info.muted = muted
+    end
     
     -- Try to get stream format for accurate bit depth and channel info
     -- Note: streamFormat() may not be available in all Hammerspoon versions
