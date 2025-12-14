@@ -96,10 +96,12 @@ local function getAudioInfo()
         end
     end
     
-    -- Fallback: Try to get from device properties
+    -- Fallback: Try to get from device properties (method may not exist)
     if not info.bitDepth or not info.channels then
-        local props = device:properties()
-        if props then
+        local propsSuccess, props = pcall(function()
+            return device:properties()
+        end)
+        if propsSuccess and props and type(props) == "table" then
             if not info.bitDepth then
                 if props["BitDepth"] then
                     info.bitDepth = props["BitDepth"]
