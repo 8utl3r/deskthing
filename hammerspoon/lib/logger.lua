@@ -18,7 +18,10 @@ end
 
 -- Create or retrieve a logger instance for a module
 function logger.new(moduleName, logLevel)
-    logLevel = logLevel or defaultLogLevel
+    -- Ensure logLevel is valid - use default if nil or invalid type
+    if not logLevel or (type(logLevel) ~= "string" and type(logLevel) ~= "number") then
+        logLevel = defaultLogLevel
+    end
     
     -- Return cached logger if it exists, but update log level if different
     if loggers[moduleName] then
@@ -32,11 +35,6 @@ function logger.new(moduleName, logLevel)
         return cachedLogger
     end
     
-    -- Ensure logLevel is valid
-    if type(logLevel) ~= "string" and type(logLevel) ~= "number" then
-        logLevel = defaultLogLevel
-    end
-    
     -- Create new logger instance
     local log = hs.logger.new(moduleName, logLevel)
     
@@ -44,9 +42,8 @@ function logger.new(moduleName, logLevel)
     local logsDir = ensureLogsDir()
     local logFile = logsDir .. "/" .. moduleName .. ".log"
     -- setLogLevel is already set by hs.logger.new, but ensure it's correct
-    if logLevel then
-        log:setLogLevel(logLevel)
-    end
+    -- logLevel is already validated above, so it's safe to use
+    log:setLogLevel(logLevel)
     
     -- Create wrapper with additional functionality
     local wrapper = {
@@ -114,9 +111,15 @@ end
 
 -- Set default log level for all loggers
 function logger.setDefaultLogLevel(level)
+    -- Validate level before using it
+    if not level or (type(level) ~= "string" and type(level) ~= "number") then
+        level = "info"  -- Safe default
+    end
     defaultLogLevel = level
     for _, log in pairs(loggers) do
-        log:setLogLevel(level)
+        if log and log.setLogLevel then
+            log:setLogLevel(level)
+        end
     end
 end
 

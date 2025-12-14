@@ -8,7 +8,13 @@ local debug = require("lib.debug")
 
 -- Set up logging
 local loggingConfig = config.get("logging")
-local logLevel = (loggingConfig and loggingConfig.defaultLevel) or "info"
+local logLevel = "info"  -- Default fallback
+if loggingConfig and loggingConfig.defaultLevel then
+    local level = loggingConfig.defaultLevel
+    if type(level) == "string" or type(level) == "number" then
+        logLevel = level
+    end
+end
 local mainLogger = logger.get("hammerspoon", logLevel)
 logger.setDefaultLogLevel(logLevel)
 
