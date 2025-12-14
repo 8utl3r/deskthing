@@ -100,6 +100,7 @@ local function getAudioInfo()
     
     -- Try to get stream format for accurate bit depth and channel info
     -- Note: streamFormat() may not be available in all Hammerspoon versions
+    -- This would give us the ACTUAL output format, not just device capabilities
     local success, streamFormat = pcall(function()
         -- Try different possible method names
         if device.streamFormat then
@@ -110,13 +111,17 @@ local function getAudioInfo()
         return nil
     end)
     
+    local bitDepthSource = "unknown"  -- Track where bit depth came from
+    
     if success and streamFormat and type(streamFormat) == "table" then
-        -- Get bit depth from stream format
+        -- Get bit depth from stream format (ACTUAL output format)
         if streamFormat.bitsPerChannel then
             info.bitDepth = streamFormat.bitsPerChannel
+            bitDepthSource = "actual"  -- This is the actual output format
         elseif streamFormat.bitsPerFrame and streamFormat.channelsPerFrame then
             -- Calculate bit depth from bits per frame and channels
             info.bitDepth = math.floor(streamFormat.bitsPerFrame / streamFormat.channelsPerFrame)
+            bitDepthSource = "actual"
         end
         
         -- Get channel count
@@ -126,6 +131,7 @@ local function getAudioInfo()
     end
     
     -- Fallback: Try to get from device properties (method may not exist)
+    -- Note: This might be device capability, not actual output format
     if not info.bitDepth or not info.channels then
         local propsSuccess, props = pcall(function()
             return device:properties()
@@ -134,8 +140,10 @@ local function getAudioInfo()
             if not info.bitDepth then
                 if props["BitDepth"] then
                     info.bitDepth = props["BitDepth"]
+                    bitDepthSource = "device_property"  -- Might be capability, not actual
                 elseif props["bitDepth"] then
                     info.bitDepth = props["bitDepth"]
+                    bitDepthSource = "device_property"
                 end
             end
             
@@ -149,16 +157,42 @@ local function getAudioInfo()
         end
     end
     
-    -- If bit depth still not available, infer from sample rate
+    -- If bit depth still not available, try to get from system_profiler or Audio MIDI Setup
     if not info.bitDepth then
-        if info.sampleRate >= 96000 then
-            info.bitDepth = 24  -- High sample rate usually means 24-bit
-        elseif info.sampleRate >= 48000 then
-            info.bitDepth = 24  -- 48kHz+ often uses 24-bit
+        -- Try to get actual format from system_profiler (may not have bit depth info)
+        local spSuccess, spBitDepth = pcall(function()
+            local devName = deviceName or "Unknown"
+            -- system_profiler might show bit depth in some macOS versions
+            local cmd = "system_profiler SPAudioDataType 2>/dev/null | grep -A 15 '" .. devName:gsub("'", "'\\''") .. "' | grep -i 'bit\\|depth\\|format'"
+            local result = hs.execute(cmd, true)
+            if result and result ~= "" then
+                -- Try to extract bit depth from result (e.g., "24-bit", "32-bit")
+                local bitStr = result:match("(%d+)%-?bit")
+                if bitStr then
+                    return tonumber(bitStr)
+                end
+            end
+            return nil
+        end)
+        
+        if spSuccess and spBitDepth and type(spBitDepth) == "number" and spBitDepth > 0 then
+            info.bitDepth = spBitDepth
         else
-            info.bitDepth = 16  -- Default to 16-bit for lower rates
+            -- Last resort: infer from sample rate (not ideal, but better than nothing)
+            -- Note: This is a guess, not the actual output format
+            if info.sampleRate >= 96000 then
+                info.bitDepth = 24  -- High sample rate usually means 24-bit
+            elseif info.sampleRate >= 48000 then
+                info.bitDepth = 24  -- 48kHz+ often uses 24-bit
+            else
+                info.bitDepth = 16  -- Default to 16-bit for lower rates
+            end
+            bitDepthSource = "inferred"  -- This is just a guess
         end
     end
+    
+    -- Store source for tooltip
+    info.bitDepthSource = bitDepthSource
     
     -- Default to stereo (2 channels) if not available
     if not info.channels then
@@ -257,6 +291,15 @@ local function updateMenuBar()
         menuBarItem:setTitle(title)
         
         -- Create detailed tooltip
+        local bitDepthNote = ""
+        if info.bitDepthSource == "inferred" then
+            bitDepthNote = " (estimated from sample rate)"
+        elseif info.bitDepthSource == "device_property" then
+            bitDepthNote = " (device property, may be capability)"
+        elseif info.bitDepthSource == "actual" then
+            bitDepthNote = " (actual output format)"
+        end
+        
         local tooltip = string.format(
             "Audio Output Device\n" ..
             "━━━━━━━━━━━━━━━━━━━━\n" ..
