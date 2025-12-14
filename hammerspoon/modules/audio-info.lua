@@ -59,24 +59,32 @@ local function getAudioInfo()
             local devName = deviceName or "Unknown"
             -- system_profiler shows "Current SampleRate: 192000" format
             local cmd = "system_profiler SPAudioDataType 2>/dev/null | grep -A 10 '" .. devName:gsub("'", "'\\''") .. "' | grep 'Current SampleRate' | awk '{print $3}'"
+            print("[AUDIO-INFO] Executing command: " .. cmd)
             local result = hs.execute(cmd, true)
+            print("[AUDIO-INFO] Command result (raw): '" .. tostring(result) .. "' (type: " .. type(result) .. ")")
             
             if result and result ~= "" then
                 -- Clean up the result (remove newlines, whitespace, trim)
                 result = result:gsub("^%s+", ""):gsub("%s+$", ""):gsub("\n", "")
+                print("[AUDIO-INFO] Cleaned result: '" .. result .. "'")
                 local rate = tonumber(result)
+                print("[AUDIO-INFO] Parsed rate: " .. tostring(rate) .. " (type: " .. type(rate) .. ")")
                 if rate and rate > 0 then
                     return rate
                 end
+            else
+                print("[AUDIO-INFO] Command returned empty or nil result")
             end
             return nil
         end)
         
+        print("[AUDIO-INFO] pcall result - success: " .. tostring(spSuccess) .. ", rate: " .. tostring(spRate) .. " (type: " .. type(spRate) .. ")")
+        
         if spSuccess and spRate and type(spRate) == "number" and spRate > 0 then
             info.sampleRate = spRate
-            logger.info("Retrieved sample rate from system_profiler: " .. tostring(spRate) .. " Hz")
+            print("[AUDIO-INFO] ✓ Successfully set sample rate: " .. tostring(spRate) .. " Hz")
         else
-            logger.warning("Failed to retrieve sample rate from system_profiler (success: " .. tostring(spSuccess) .. ", rate: " .. tostring(spRate) .. ")")
+            print("[AUDIO-INFO] ✗ Failed to retrieve sample rate")
         end
     end
     
@@ -230,8 +238,11 @@ local function updateMenuBar()
     end
     
     -- Add sample rate (only if available and valid)
+    print("[AUDIO-INFO] Display - info.sampleRate: " .. tostring(info.sampleRate) .. " (type: " .. type(info.sampleRate) .. ")")
     local sampleRateStr = formatSampleRate(info.sampleRate)
-    local hasSampleRate = sampleRateStr ~= "N/A" and info.sampleRate > 0
+    print("[AUDIO-INFO] Display - sampleRateStr: '" .. sampleRateStr .. "'")
+    local hasSampleRate = sampleRateStr ~= "N/A" and info.sampleRate and info.sampleRate > 0
+    print("[AUDIO-INFO] Display - hasSampleRate: " .. tostring(hasSampleRate))
     
     if hasSampleRate then
         title = title .. sampleRateStr
