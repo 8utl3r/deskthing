@@ -9,6 +9,9 @@ local logger = require("lib.logger").get("status-dashboard")
 local homeAssistant = nil
 local lgMonitor = nil
 
+-- Store dashboard alert ID for persistent display
+local dashboardAlertID = nil
+
 -- Get Home Assistant status
 local function getHAStatus()
     local haConfig = config.get("homeAssistant")
@@ -102,62 +105,65 @@ local function getSystemStatus()
     }
 end
 
--- Generate dashboard text
+-- Generate dashboard text (compact format to match Hammerflow style)
 function statusDashboard.getDashboardText()
     local haStatus = getHAStatus()
     local lgStatus = getLGMonitorStatus()
     local sysStatus = getSystemStatus()
     
+    -- Compact format matching Hammerflow's key map style
     local lines = {
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        "📊 SYSTEM STATUS DASHBOARD",
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "HOME ASSISTANT",
+        "  Connection: " .. (haStatus.connected and "Connected" or "Disconnected"),
+        "  TV: " .. haStatus.tv_power .. " | Volume: " .. haStatus.tv_volume,
+        "  Docked: " .. (haStatus.docked and "Yes" or "No") .. " | LG Monitor: " .. (haStatus.lg_monitor_connected and "Connected" or "Not detected"),
         "",
-        "🏠 HOME ASSISTANT",
-        "  Connection: " .. (haStatus.connected and "✅ Connected" or "❌ Disconnected"),
-        "  TV State: " .. haStatus.tv_state:upper(),
-        "  TV Power: " .. haStatus.tv_power,
-        "  TV Volume: " .. haStatus.tv_volume,
-        "  Docked: " .. (haStatus.docked and "✅ Yes" or "❌ No"),
-        "  LG Monitor: " .. (haStatus.lg_monitor_connected and "✅ Connected" or "❌ Not detected"),
-        "",
-        "📺 LG MONITOR",
-        "  Server: " .. (lgStatus.server_running and "✅ Running" or "❌ Stopped"),
-        "  Connection: " .. (lgStatus.connected and "✅ Connected" or "❌ Disconnected"),
-        "  Power: " .. lgStatus.power,
-        "  Volume: " .. lgStatus.volume,
-        "  Mute: " .. lgStatus.mute,
+        "LG MONITOR",
+        "  Server: " .. (lgStatus.server_running and "Running" or "Stopped") .. " | Connection: " .. (lgStatus.connected and "Connected" or "Disconnected"),
+        "  Power: " .. lgStatus.power .. " | Volume: " .. lgStatus.volume .. " | Mute: " .. lgStatus.mute,
         "  Input: " .. lgStatus.input,
         "",
-        "💻 SYSTEM",
-        "  Screens: " .. sysStatus.screen_count,
-        "  Docked: " .. (sysStatus.docked and "✅ Yes" or "❌ No"),
-        "  Audio: " .. sysStatus.audio_device,
-        "  Audio Volume: " .. sysStatus.audio_volume .. "%",
-        "",
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        "SYSTEM",
+        "  Screens: " .. sysStatus.screen_count .. " | Docked: " .. (sysStatus.docked and "Yes" or "No"),
+        "  Audio: " .. sysStatus.audio_device .. " | Volume: " .. sysStatus.audio_volume .. "%"
     }
     
     return table.concat(lines, "\n")
 end
 
--- Show dashboard (can be called manually or automatically)
-function statusDashboard.show()
-    local text = statusDashboard.getDashboardText()
-    -- Show at top-left corner so it doesn't interfere with key map UI
-    hs.alert.show(text, {
-        atScreenEdge = 1,  -- Top edge
-        fillColor = { alpha = 0.95, white = 0 },
-        strokeColor = { alpha = 0.95, white = 0.3 },
-        strokeWidth = 2,
+-- Get dashboard format (matches RecursiveBinder style)
+function statusDashboard.getDashboardFormat()
+    -- Use same style as RecursiveBinder but positioned at top
+    return {
+        atScreenEdge = 1,  -- Top edge (RecursiveBinder uses 2 for bottom)
+        strokeColor = { white = 0, alpha = 2 },  -- Same as RecursiveBinder
+        textFont = 'Courier',  -- Same as RecursiveBinder
+        textSize = 14,  -- Slightly smaller than key map (20) for compact display
+        fillColor = { alpha = 0.9, white = 0 },
         textColor = { alpha = 1, white = 0.9 },
-        textFont = "Monaco",
-        textSize = 11,
         radius = 8,
-        padding = 12,
-        fadeInDuration = 0.15,
-        fadeOutDuration = 0.15
-    }, 4)  -- Show for 4 seconds
+        padding = 10
+    }
+end
+
+-- Show dashboard (persistent, matches Hammerflow styling)
+function statusDashboard.show()
+    -- Close existing dashboard if any
+    statusDashboard.hide()
+    
+    local text = statusDashboard.getDashboardText()
+    local format = statusDashboard.getDashboardFormat()
+    
+    -- Show persistent alert (third parameter = true, like RecursiveBinder)
+    dashboardAlertID = hs.alert.show(text, format, true)
+end
+
+-- Hide dashboard
+function statusDashboard.hide()
+    if dashboardAlertID then
+        hs.alert.closeSpecific(dashboardAlertID)
+        dashboardAlertID = nil
+    end
 end
 
 -- Get compact status for inline display

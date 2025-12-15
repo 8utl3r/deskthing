@@ -176,17 +176,36 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                 end
             })
             
-            -- Hook into RecursiveBinder to show dashboard when leader key is pressed
-            -- Override the recursiveBind function to show dashboard on modal enter
+            -- Hook into RecursiveBinder to show/hide dashboard with modal
+            -- Store modals to hook into their exit events
+            local trackedModals = {}
+            
             local originalRecursiveBind = spoon.RecursiveBinder.recursiveBind
+            
+            -- Override recursiveBind to inject dashboard show/hide
             spoon.RecursiveBinder.recursiveBind = function(keymap, modals)
+                if not modals then modals = {} end
                 local result = originalRecursiveBind(keymap, modals)
+                
+                -- Track all modals created by this binding
+                for _, modal in ipairs(modals) do
+                    if modal and not trackedModals[modal] then
+                        trackedModals[modal] = true
+                        -- Hook into modal exit to hide dashboard
+                        local originalExit = modal.exit
+                        modal.exit = function(self)
+                            statusDashboard.hide()
+                            return originalExit(self)
+                        end
+                    end
+                end
+                
                 if type(result) == "function" then
                     local originalFunc = result
                     return function()
-                        -- Show dashboard when leader key is pressed
+                        -- Show dashboard when leader key is pressed (before showing key map)
                         statusDashboard.show()
-                        -- Call original function
+                        -- Call original function (which shows key map helper)
                         originalFunc()
                     end
                 end
