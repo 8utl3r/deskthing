@@ -3,15 +3,11 @@
 
 -- CRITICAL: Set hotkey log level FIRST, before any hotkey operations
 -- This must be done before any extensions use hotkeys to prevent console spam
--- Set global level to warning to suppress info messages
-hs.logger.setGlobalLogLevel("warning")
--- Also try to set hotkey-specific logger to error level (most restrictive)
-pcall(function()
-    local hotkeyLog = hs.logger.new("hotkey", "error")
-    if hotkeyLog then
-        -- Force the hotkey extension to use this logger level
-    end
-end)
+-- The hotkey extension logs every disable/re-enable at info level, causing spam
+-- Set global level to error to suppress all but critical messages
+-- Note: This will suppress info/warning messages from all extensions in console
+-- File logging still uses configured levels per module
+hs.logger.setGlobalLogLevel("error")
 
 -- Load configuration first
 local config = require("config")
@@ -145,16 +141,6 @@ end)
 mainLogger.info("Hammerspoon configuration loaded successfully")
 mainLogger.info("Loaded " .. #modules .. " modules")
 
--- Reduce hotkey logging verbosity before loading Hammerflow
--- The hotkey extension logs every disable/re-enable, which causes spam with leader keys
--- Try to set the hotkey logger level directly
-pcall(function()
-    -- Try to get or create the hotkey logger and set its level
-    local hotkeyLog = hs.logger.new("hotkey")
-    if hotkeyLog then
-        hotkeyLog:setLogLevel("error")  -- Only show errors, suppress info/warning
-    end
-end)
 
 -- Load Hammerflow leader key system
 local hammerflowSuccess, hammerflowErr = pcall(function()
