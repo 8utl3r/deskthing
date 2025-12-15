@@ -145,6 +145,9 @@ mainLogger.info("Loaded " .. #modules .. " modules")
 local hammerflowSuccess, hammerflowErr = pcall(function()
     hs.loadSpoon("Hammerflow")
     if spoon.Hammerflow then
+        -- Increase entry length to allow longer descriptions (default is 20)
+        spoon.RecursiveBinder.helperEntryLengthInChar = 40
+        
         spoon.Hammerflow.loadFirstValidTomlFile({
             "hammerflow.toml",
             "Spoons/Hammerflow.spoon/sample.toml"

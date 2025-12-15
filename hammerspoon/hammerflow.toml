@@ -5,7 +5,7 @@
 leader_key = "f18"        # Leader key (recommend remapping Right Command to f18 in Karabiner)
 auto_reload = true        # Reload when config files change
 show_ui = true            # Show UI with key maps
-key_maps_per_line = 3     # Number of key maps per line in UI
+key_maps_per_line = 2     # Number of key maps per line in UI (reduced to allow longer descriptions)
 
 # App launchers
 t = "WezTerm"
@@ -31,26 +31,26 @@ b = "window:bottom-half"
 # LG Monitor control
 [l]
 label = "[lg-monitor]"
-m = ["cmd: /bin/bash -c 'echo \"$(date): Running lg-monitor\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/lg-monitor 2>&1 >> /tmp/hammerflow.log'", "monitor control"]
-c = ["cmd: /bin/bash -c 'echo \"$(date): Running lg-monitor-connection\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/lg-monitor-connection 2>&1 >> /tmp/hammerflow.log'", "connection status"]
-d = ["cmd: /bin/bash -c 'echo \"$(date): Running dock-detector\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/dock-detector 2>&1 >> /tmp/hammerflow.log'", "dock detector"]
+m = ["cmd: /bin/bash -c 'echo \"$(date): Running lg-monitor\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/lg-monitor 2>&1 >> /tmp/hammerflow.log'", "LG Monitor: Power/Volume/Input control"]
+c = ["cmd: /bin/bash -c 'echo \"$(date): Running lg-monitor-connection\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/lg-monitor-connection 2>&1 >> /tmp/hammerflow.log'", "LG Monitor: Check connection status"]
+d = ["cmd: /bin/bash -c 'echo \"$(date): Running dock-detector\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/dock-detector 2>&1 >> /tmp/hammerflow.log'", "LG Monitor: Detect if MacBook is docked"]
 
 # Home Assistant control
 [a]
 label = "[home-assistant]"
-t = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-test-integration\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-test-integration 2>&1 >> /tmp/hammerflow.log'", "test integration"]
-v = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-tv-volume\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-tv-volume 2>&1 >> /tmp/hammerflow.log'", "TV volume"]
-w = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-tv-wol\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-tv-wol 2>&1 >> /tmp/hammerflow.log'", "TV wake-on-LAN"]
-s = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-sync\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/home-assistant/ha-sync 2>&1 >> /tmp/hammerflow.log'", "sync config"]
-p = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-pull\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/home-assistant/ha-pull 2>&1 >> /tmp/hammerflow.log'", "pull config"]
+t = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-test-integration\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-test-integration 2>&1 >> /tmp/hammerflow.log'", "HA: Test TV integration & API"]
+v = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-tv-volume\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-tv-volume 2>&1 >> /tmp/hammerflow.log'", "HA: Adjust TV volume (+1)"]
+w = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-tv-wol\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-tv-wol 2>&1 >> /tmp/hammerflow.log'", "HA: Wake TV via Wake-on-LAN"]
+s = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-sync\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/home-assistant/ha-sync 2>&1 >> /tmp/hammerflow.log'", "HA: Sync config to remote"]
+p = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-pull\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/home-assistant/ha-pull 2>&1 >> /tmp/hammerflow.log'", "HA: Pull config from remote"]
 
 # System utilities
 [y]
 label = "[system]"
-l = ["cmd: /bin/bash -c 'echo \"$(date): Running link --apply\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/link --apply 2>&1 >> /tmp/hammerflow.log'", "link dotfiles"]
-b = ["cmd: /bin/bash -c 'echo \"$(date): Running bootstrap\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/bootstrap 2>&1 >> /tmp/hammerflow.log'", "bootstrap system"]
-n = ["cmd: /bin/bash -c 'echo \"$(date): Running snapshot\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/snapshot 2>&1 >> /tmp/hammerflow.log'", "snapshot system"]
-u = ["cmd: /bin/bash -c 'echo \"$(date): Running update\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/update 2>&1 >> /tmp/hammerflow.log'", "update system"]
+l = ["cmd: /bin/bash -c 'echo \"$(date): Running link --apply\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/link --apply 2>&1 >> /tmp/hammerflow.log'", "Dotfiles: Apply symlinks"]
+b = ["cmd: /bin/bash -c 'echo \"$(date): Running bootstrap\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/bootstrap 2>&1 >> /tmp/hammerflow.log'", "Dotfiles: Bootstrap system setup"]
+n = ["cmd: /bin/bash -c 'echo \"$(date): Running snapshot\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/snapshot 2>&1 >> /tmp/hammerflow.log'", "Dotfiles: Create system snapshot"]
+u = ["cmd: /bin/bash -c 'echo \"$(date): Running update\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/update 2>&1 >> /tmp/hammerflow.log'", "Dotfiles: Update packages & configs"]
 
 # Quick actions
 [p]
