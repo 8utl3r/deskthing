@@ -24,6 +24,13 @@ end
 local mainLogger = logger.get("hammerspoon", logLevel)
 logger.setDefaultLogLevel(logLevel)
 
+-- Reduce hotkey logging verbosity (suppress RecursiveBinder spam)
+-- This prevents console spam when using leader keys
+-- The hotkey extension logs every disable/re-enable, which is very verbose
+-- Set global log level to warning to filter out info-level hotkey messages
+-- This only affects console output, not file logging
+hs.logger.setGlobalLogLevel("warning")
+
 -- Initialize debug system
 if config.get("debug").enabled then
     debug.setEnabled(true)
