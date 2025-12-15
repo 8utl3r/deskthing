@@ -38,19 +38,19 @@ d = ["cmd: /bin/bash -c 'echo \"$(date): Running dock-detector\" >> /tmp/hammerf
 # Home Assistant control
 [a]
 label = "[home-assistant]"
-t = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-test-integration'", "test integration"]
-v = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-volume'", "TV volume"]
-w = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-wol'", "TV wake-on-LAN"]
-s = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/home-assistant/ha-sync'", "sync config"]
-p = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/home-assistant/ha-pull'", "pull config"]
+t = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-test-integration\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-test-integration 2>&1 >> /tmp/hammerflow.log'", "test integration"]
+v = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-tv-volume\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-tv-volume 2>&1 >> /tmp/hammerflow.log'", "TV volume"]
+w = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-tv-wol\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-tv-wol 2>&1 >> /tmp/hammerflow.log'", "TV wake-on-LAN"]
+s = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-sync\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/home-assistant/ha-sync 2>&1 >> /tmp/hammerflow.log'", "sync config"]
+p = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-pull\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/home-assistant/ha-pull 2>&1 >> /tmp/hammerflow.log'", "pull config"]
 
 # System utilities
 [y]
 label = "[system]"
-l = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/link --apply'", "link dotfiles"]
-b = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/bootstrap'", "bootstrap system"]
-n = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/snapshot'", "snapshot system"]
-u = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/update'", "update system"]
+l = ["cmd: /bin/bash -c 'echo \"$(date): Running link --apply\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/link --apply 2>&1 >> /tmp/hammerflow.log'", "link dotfiles"]
+b = ["cmd: /bin/bash -c 'echo \"$(date): Running bootstrap\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/bootstrap 2>&1 >> /tmp/hammerflow.log'", "bootstrap system"]
+n = ["cmd: /bin/bash -c 'echo \"$(date): Running snapshot\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/snapshot 2>&1 >> /tmp/hammerflow.log'", "snapshot system"]
+u = ["cmd: /bin/bash -c 'echo \"$(date): Running update\" >> /tmp/hammerflow.log && cd ~/dotfiles && ./scripts/system/update 2>&1 >> /tmp/hammerflow.log'", "update system"]
 
 # Quick actions
 [p]
