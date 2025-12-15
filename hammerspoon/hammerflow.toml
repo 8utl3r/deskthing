@@ -36,7 +36,7 @@ c = ["cmd: ~/dotfiles/scripts/lg-c5/lg-monitor-connection", "connection status"]
 d = ["cmd: ~/dotfiles/scripts/lg-c5/dock-detector", "dock detector"]
 
 # Home Assistant control
-[ha]
+[a]
 label = "[home-assistant]"
 t = ["cmd: ~/dotfiles/scripts/home-assistant/ha-test-integration", "test integration"]
 v = ["cmd: ~/dotfiles/scripts/home-assistant/ha-tv-volume", "TV volume"]
@@ -45,7 +45,7 @@ s = ["cmd: cd ~/dotfiles && ./scripts/home-assistant/ha-sync", "sync config"]
 p = ["cmd: cd ~/dotfiles && ./scripts/home-assistant/ha-pull", "pull config"]
 
 # System utilities
-[s]
+[y]
 label = "[system]"
 l = ["cmd: cd ~/dotfiles && ./scripts/system/link --apply", "link dotfiles"]
 b = ["cmd: cd ~/dotfiles && ./scripts/system/bootstrap", "bootstrap system"]

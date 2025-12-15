@@ -161,7 +161,7 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
 end)
 
 if not hammerflowSuccess then
-    mainLogger.warn("Failed to load Hammerflow: " .. tostring(hammerflowErr))
+    mainLogger.warning("Failed to load Hammerflow: " .. tostring(hammerflowErr))
 end
 
 -- Show notification on successful load
