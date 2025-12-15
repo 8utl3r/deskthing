@@ -123,9 +123,12 @@ local function getSystemStatus()
     local screens = hs.screen.allScreens()
     local audioDevice = hs.audiodevice.defaultOutputDevice()
     
+    local docked = #screens > 1
+    logger.debug("System screens: " .. #screens .. ", docked: " .. tostring(docked))
+    
     return {
         screen_count = #screens,
-        docked = #screens > 1,
+        docked = docked,
         audio_device = audioDevice and audioDevice:name() or "unknown",
         audio_volume = audioDevice and math.floor(audioDevice:volume() * 100) or 0
     }

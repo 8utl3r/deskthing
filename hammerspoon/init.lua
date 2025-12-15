@@ -192,11 +192,49 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                     if modal and not modalWatchers[modal] then
                         modalWatchers[modal] = true
                         
-                        -- Store original exit method
+                        -- Use eventtap to capture all keys while modal is active
+                        -- This prevents other apps (like Alfred/Monarch) from receiving keys
+                        local eventTap = nil
+                        local originalEnter = modal.enter
                         local originalExit = modal.exit
-                        -- Wrap exit to hide dashboard
+                        
+                        -- Wrap enter to start eventtap
+                        modal.enter = function(self, ...)
+                            -- Start eventtap to capture all keys except escape
+                            eventTap = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
+                                local keyCode = event:getKeyCode()
+                                local flags = event:getFlags()
+                                
+                                -- Allow escape key to pass through (no modifiers)
+                                local escapeKey = spoon.RecursiveBinder.escapeKey
+                                local escapeKeyCode = hs.keycodes.map[escapeKey[2] or 'escape']
+                                
+                                if keyCode == escapeKeyCode and flags:containExactly({}) then
+                                    return false  -- Let escape through
+                                end
+                                
+                                -- Capture all other keys to prevent other apps from receiving them
+                                return true
+                            end)
+                            
+                            if eventTap then
+                                eventTap:start()
+                            end
+                            
+                            return originalEnter(self, ...)
+                        end
+                        
+                        -- Wrap exit to stop eventtap and hide dashboard
                         modal.exit = function(self, ...)
+                            -- Hide dashboard when modal exits
                             statusDashboard.hide()
+                            
+                            -- Stop eventtap
+                            if eventTap then
+                                eventTap:stop()
+                                eventTap = nil
+                            end
+                            
                             return originalExit(self, ...)
                         end
                         
@@ -212,32 +250,6 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                                 return originalBind(self, mods, key, wrappedFn)
                             else
                                 return originalBind(self, mods, key, fn)
-                            end
-                        end
-                        
-                        -- Add catch-all key binding to capture all input except escape
-                        -- This prevents other apps (like Alfred/Monarch) from receiving keys
-                        local escapeKey = spoon.RecursiveBinder.escapeKey
-                        local escapeKeyCode = escapeKey[2] or 'escape'
-                        
-                        -- Bind all printable keys and common keys to capture them
-                        -- This prevents them from reaching other applications
-                        local keysToCapture = {
-                            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-                            '1','2','3','4','5','6','7','8','9','0',
-                            'space','return','tab','backspace','delete','forwarddelete',
-                            'up','down','left','right','pageup','pagedown','home','end',
-                            'f1','f2','f3','f4','f5','f6','f7','f8','f9','f10','f11','f12',
-                            '`','-','=','[',']','\\',';',"'",',','.','/'
-                        }
-                        
-                        for _, key in ipairs(keysToCapture) do
-                            -- Only bind if it's not the escape key
-                            if key ~= escapeKeyCode then
-                                -- Bind with no modifiers to capture the key (do nothing)
-                                modal:bind({}, key, function()
-                                    -- Do nothing - just capture the key to prevent other apps from receiving it
-                                end)
                             end
                         end
                     end
