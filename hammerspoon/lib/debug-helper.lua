@@ -58,3 +58,4 @@ function debugHelper.traceFunction(moduleName, functionName, func)
 end
 
 return debugHelper
+

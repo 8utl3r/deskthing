@@ -197,3 +197,4 @@ process.on('SIGINT', () => {
     console.log('\n👋 Debug adapter shutting down...');
     process.exit(0);
 });
+

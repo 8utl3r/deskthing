@@ -358,3 +358,4 @@ For large repositories:
 - **Full Git features** - PRs, issues, CI/CD all work normally
 
 Jujutsu's Git compatibility is its killer feature - you get better local workflows while maintaining full compatibility with existing Git infrastructure and teams.
+

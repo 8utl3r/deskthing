@@ -135,12 +135,24 @@ end
 function statusDashboard.getDashboardFormat()
     -- Use same style as RecursiveBinder but positioned at top
     -- Get the actual format from RecursiveBinder if available, otherwise use defaults
-    local rbFormat = spoon.RecursiveBinder and spoon.RecursiveBinder.helperFormat or {
+    local rbFormat = {
         atScreenEdge = 2,
         strokeColor = { white = 0, alpha = 2 },
         textFont = 'Courier',
         textSize = 20
     }
+    
+    -- Try to get format from RecursiveBinder if available
+    local success, result = pcall(function()
+        if spoon and spoon.RecursiveBinder and spoon.RecursiveBinder.helperFormat then
+            return spoon.RecursiveBinder.helperFormat
+        end
+        return nil
+    end)
+    
+    if success and result then
+        rbFormat = result
+    end
     
     -- Clone the format and adjust for top positioning
     local format = {}

@@ -319,3 +319,4 @@ Cursor's debug mode can be enhanced with:
 - Integration with Cursor's AI features for debugging assistance
 
 See `.vscode/launch.json` for debug adapter configuration.
+

@@ -417,3 +417,4 @@ class HammerspoonDebugSession extends DebugSession {
 
 // Start the DAP server
 DebugSession.run(HammerspoonDebugSession);
+
