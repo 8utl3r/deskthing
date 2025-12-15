@@ -4,18 +4,31 @@
 local utils = {}
 
 -- Get dotfiles root directory
--- Assumes hammerspoon config is in ~/.hammerspoon which symlinks to dotfiles/hammerspoon
+-- Handles both cases:
+-- 1. ~/.hammerspoon is a symlink to dotfiles/hammerspoon
+-- 2. Individual files in ~/.hammerspoon are symlinks (current setup)
 function utils.getDotfilesRoot()
     local configDir = hs.configdir  -- ~/.hammerspoon
     local resolvedPath = hs.fs.pathToAbsolute(configDir)
     
-    -- If it's a symlink, resolve it
+    -- Check if ~/.hammerspoon itself is a symlink
     if hs.fs.attributes(resolvedPath, "mode") == "link" then
         resolvedPath = hs.execute("readlink -f " .. resolvedPath):gsub("\n", "")
+        -- If symlink, go up one level to get dotfiles root
+        return hs.fs.pathToAbsolute(resolvedPath .. "/..")
     end
     
-    -- Go up one level to get dotfiles root
-    return hs.fs.pathToAbsolute(resolvedPath .. "/..")
+    -- If not a symlink, check if init.lua is a symlink
+    local initLuaPath = resolvedPath .. "/init.lua"
+    if hs.fs.attributes(initLuaPath, "mode") == "link" then
+        local initLuaTarget = hs.execute("readlink -f " .. initLuaPath):gsub("\n", "")
+        -- init.lua symlink points to dotfiles/hammerspoon/init.lua
+        -- Go up one level to get dotfiles root
+        return hs.fs.pathToAbsolute(initLuaTarget .. "/..")
+    end
+    
+    -- Fallback: assume dotfiles is in ~/dotfiles
+    return os.getenv("HOME") .. "/dotfiles"
 end
 
 -- Resolve a path relative to dotfiles root
