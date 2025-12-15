@@ -18,6 +18,20 @@ Personal dotfiles repository for macOS system configuration and development envi
 
 ## Session Records
 
+### 2025-01-06 - Hammerflow Integration
+- **Key Decisions**: Added Hammerflow leader key system to Hammerspoon setup; configured with F18 as leader key
+- **Actions Taken**:
+  - Cloned Hammerflow repository from GitHub (saml-dev/hammerflow)
+  - Moved to proper Spoon structure: `hammerspoon/Spoons/Hammerflow.spoon/`
+  - Integrated Hammerflow into `init.lua` with auto-reload support
+  - Created `hammerflow.toml` configuration with app launchers, window management, and Hammerspoon config shortcuts
+  - Updated Hammerspoon README documentation to include Hammerflow
+- **Next 3 Specific Steps**:
+  1. Configure Karabiner to remap Right Command to F18 for dedicated leader key
+  2. Customize `hammerflow.toml` with additional shortcuts and groups as needed
+  3. Test Hammerflow leader key sequences and verify all shortcuts work
+- **Blockers/Concerns**: None - Hammerflow is integrated and ready to use; recommend setting up F18 remap in Karabiner for optimal experience
+
 ### 2025-01-06 - FlexiNet and Bloom Integration
 - **Key Decisions**: Added FlexiNet and Bloom to dotfiles; fixed link script repo_root path calculation
 - **Actions Taken**:

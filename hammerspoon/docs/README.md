@@ -34,6 +34,12 @@ This is a modular, well-structured Hammerspoon configuration with centralized co
 - Release Command to hide it
 - Detects left vs right Command key for side-specific display
 
+### Hammerflow Leader Key
+- Press **F18** (recommend remapping Right Command to F18 in Karabiner)
+- Follow with a key sequence to trigger actions
+- See `hammerflow.toml` for configured shortcuts
+- Examples: `F18+t` = WezTerm, `F18+c` = Cursor, `F18+h c` = Open Hammerspoon config in VS Code
+
 ## Architecture
 
 ### Directory Structure
@@ -42,6 +48,7 @@ This is a modular, well-structured Hammerspoon configuration with centralized co
 hammerspoon/
 ├── init.lua                    # Main entry point (minimal)
 ├── config.lua                  # Centralized configuration
+├── hammerflow.toml             # Hammerflow leader key configuration
 ├── lib/
 │   ├── logger.lua              # Structured logging wrapper
 │   ├── debug.lua                # Debugging infrastructure
@@ -53,6 +60,8 @@ hammerspoon/
 │   ├── shortcut-overlay.lua    # Shortcut overlay
 │   ├── lg-monitor.lua          # LG monitor control
 │   └── home-assistant.lua      # Home Assistant integration
+├── Spoons/
+│   └── Hammerflow.spoon/       # Leader key system
 ├── examples/                   # Example/test scripts
 └── docs/
     └── README.md               # This file
@@ -258,6 +267,16 @@ Controls LG TVs via Home Assistant API:
 - TV power, volume, input control
 - Hotkeys: `Cmd+Alt+T` (toggle), `Cmd+Alt+1/2/3/5` (volume), etc.
 - Requires token file at `~/.homeassistant_token`
+
+### Hammerflow
+
+Leader key system for efficient keyboard-driven workflows:
+- Press F18 (or configured leader key) to start sequences
+- Nested key groups for organized shortcuts
+- App launchers, window management, and custom actions
+- Configuration in `hammerflow.toml`
+- Auto-reloads when config files change
+- Visual UI shows available key maps
 
 ## Troubleshooting
 
