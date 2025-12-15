@@ -46,22 +46,55 @@ local function getHAStatus()
     if success and tvState then
         status.connected = true
         status.tv_state = tvState.state or "unknown"
-        status.tv_volume = math.floor((tvState.attributes.volume_level or 0) * 100) .. "%"
+        
+        -- Handle volume_level - it can be 0-1 (decimal) or 0-100 (percentage)
+        -- Check the actual value to determine format
+        local volumeLevel = tvState.attributes.volume_level
+        if volumeLevel then
+            if volumeLevel > 1 then
+                -- Already a percentage (0-100)
+                status.tv_volume = math.floor(volumeLevel) .. "%"
+            else
+                -- Decimal format (0-1), convert to percentage
+                status.tv_volume = math.floor(volumeLevel * 100) .. "%"
+            end
+        else
+            status.tv_volume = "?"
+        end
+        
         status.tv_power = tvState.state == "on" and "ON" or "OFF"
-        logger.debug("HA TV State: " .. status.tv_state .. ", Volume: " .. status.tv_volume)
+        logger.debug("HA TV State: " .. status.tv_state .. ", Volume Level: " .. tostring(volumeLevel) .. ", Volume: " .. status.tv_volume)
     else
         logger.debug("Failed to get HA TV state: " .. tostring(tvState))
     end
     
     -- Check dock status with error handling
+    -- Use direct screen check instead of homeAssistant.isDocked() to ensure accuracy
     local dockSuccess, docked = pcall(function()
-        return homeAssistant.isDocked()
+        local screens = hs.screen.allScreens()
+        local screenCount = #screens
+        local isDocked = screenCount > 1
+        logger.debug("Screen count: " .. screenCount .. ", Docked: " .. tostring(isDocked))
+        if screenCount > 0 then
+            for i, screen in ipairs(screens) do
+                logger.debug("Screen " .. i .. ": " .. (screen:name() or "unknown"))
+            end
+        end
+        return isDocked
     end)
     if dockSuccess then
         status.docked = docked
-        logger.debug("HA Dock status: " .. tostring(docked))
+        logger.debug("Dock status: " .. tostring(docked))
     else
         logger.debug("Failed to get dock status: " .. tostring(docked))
+        -- Fallback to homeAssistant.isDocked() if direct check fails
+        local haDockSuccess, haDocked = pcall(function()
+            return homeAssistant.isDocked()
+        end)
+        if haDockSuccess then
+            status.docked = haDocked
+            logger.debug("Using HA dock status: " .. tostring(haDocked))
+        end
     end
     
     -- Check LG Monitor connection
@@ -120,17 +153,57 @@ end
 
 -- Get system status
 local function getSystemStatus()
-    local screens = hs.screen.allScreens()
-    local audioDevice = hs.audiodevice.defaultOutputDevice()
+    local success, screens = pcall(function()
+        return hs.screen.allScreens()
+    end)
     
-    local docked = #screens > 1
-    logger.debug("System screens: " .. #screens .. ", docked: " .. tostring(docked))
+    if not success or not screens then
+        logger.debug("Failed to get screens")
+        screens = {}
+    end
+    
+    local screenCount = #screens
+    local docked = screenCount > 1
+    
+    logger.debug("System screens: " .. screenCount .. ", docked: " .. tostring(docked))
+    if screenCount > 0 then
+        for i, screen in ipairs(screens) do
+            logger.debug("System Screen " .. i .. ": " .. (screen:name() or "unknown"))
+        end
+    end
+    
+    local audioDevice = nil
+    local audioSuccess, audioResult = pcall(function()
+        return hs.audiodevice.defaultOutputDevice()
+    end)
+    if audioSuccess then
+        audioDevice = audioResult
+    end
+    
+    local audioName = "unknown"
+    local audioVolume = 0
+    if audioDevice then
+        local nameSuccess, name = pcall(function()
+            return audioDevice:name()
+        end)
+        if nameSuccess then
+            audioName = name or "unknown"
+        end
+        
+        local volSuccess, volume = pcall(function()
+            return audioDevice:volume()
+        end)
+        if volSuccess and volume then
+            -- volume() returns 0-1, convert to percentage
+            audioVolume = math.floor(volume * 100)
+        end
+    end
     
     return {
-        screen_count = #screens,
+        screen_count = screenCount,
         docked = docked,
-        audio_device = audioDevice and audioDevice:name() or "unknown",
-        audio_volume = audioDevice and math.floor(audioDevice:volume() * 100) or 0
+        audio_device = audioName,
+        audio_volume = audioVolume
     }
 end
 
