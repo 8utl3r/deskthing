@@ -33,8 +33,8 @@ config.shortcutOverlay = {
 
 -- LG Monitor configuration
 config.lgMonitor = {
-    serverScript = utils.resolvePath("bin/lg-server"),
-    debugScript = utils.resolvePath("bin/lg-debug"),
+    serverScript = utils.resolvePath("scripts/archive/lg-server"),
+    debugScript = utils.resolvePath("scripts/archive/lg-debug"),
     monitorIP = "192.168.0.39",
     statusFile = "/tmp/lg-server-status.json",
     commandFile = "/tmp/lg-server-command.json",
