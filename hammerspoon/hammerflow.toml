@@ -7,6 +7,9 @@ auto_reload = true        # Reload when config files change
 show_ui = true            # Show UI with key maps
 key_maps_per_line = 2     # Number of key maps per line in UI (reduced to allow longer descriptions)
 
+# Status Dashboard (shows when leader key is pressed)
+d = "function:showDashboard"  # Show status dashboard
+
 # App launchers
 t = "WezTerm"
 c = "Cursor"

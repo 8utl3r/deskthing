@@ -140,6 +140,14 @@ end)
 mainLogger.info("Hammerspoon configuration loaded successfully")
 mainLogger.info("Loaded " .. #modules .. " modules")
 
+-- Load status dashboard module
+local statusDashboard = require("modules.status-dashboard")
+local haModule = loadedModules["modules.home-assistant"]
+local lgModule = loadedModules["modules.lg-monitor"]
+if statusDashboard and statusDashboard.init then
+    statusDashboard.init(haModule, lgModule)
+    mainLogger.info("Status dashboard initialized")
+end
 
 -- Load Hammerflow leader key system
 local hammerflowSuccess, hammerflowErr = pcall(function()
@@ -147,6 +155,15 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
     if spoon.Hammerflow then
         -- Increase entry length to allow longer descriptions (default is 20)
         spoon.RecursiveBinder.helperEntryLengthInChar = 40
+        
+        -- Register status dashboard function
+        if statusDashboard then
+            spoon.Hammerflow.registerFunctions({
+                ["showDashboard"] = function()
+                    statusDashboard.show()
+                end
+            })
+        end
         
         spoon.Hammerflow.loadFirstValidTomlFile({
             "hammerflow.toml",
