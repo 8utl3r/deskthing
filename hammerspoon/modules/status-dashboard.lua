@@ -151,10 +151,75 @@ local function getLGMonitorStatus()
     return status
 end
 
+-- Detect dock hardware using ioreg
+local function detectDockHardware()
+    local dockDetected = false
+    local dockName = nil
+    
+    -- Try using the existing dock detector script first
+    local scriptPath = os.getenv("HOME") .. "/dotfiles/scripts/lg-c5/dock-detector-simple"
+    local file = io.open(scriptPath, "r")
+    if file then
+        file:close()
+        -- Script exists, try to run it
+        local success, result = pcall(function()
+            return hs.execute(scriptPath, true)
+        end)
+        if success and result then
+            -- Check exit code (0 = dock connected)
+            local exitCode = result:match("exit code: (%d+)")
+            if exitCode == "0" then
+                dockDetected = true
+                dockName = "ASIX Ethernet (Dock)"
+            end
+        end
+    end
+    
+    -- Fallback: Check directly with ioreg for ASIX Ethernet adapter
+    if not dockDetected then
+        local success, result = pcall(function()
+            return hs.execute("ioreg -p IOUSB -w0 -l | grep -q 'AX88179A' && echo '1' || echo '0'", true)
+        end)
+        if success and result then
+            if result:match("1") then
+                dockDetected = true
+                dockName = "ASIX Ethernet (Dock)"
+            end
+        end
+    end
+    
+    -- Also check for other common dock identifiers via ioreg
+    if not dockDetected then
+        local dockIdentifiers = {
+            {pattern = "AX88179A", name = "ASIX Ethernet (Dock)"},
+            {pattern = "VIA Labs", name = "VIA Labs USB Hub (Dock)"},
+            {pattern = "Terminus", name = "Terminus USB Hub (Dock)"},
+            {pattern = "Genesys", name = "Genesys USB Hub (Dock)"}
+        }
+        
+        for _, dock in ipairs(dockIdentifiers) do
+            local success, result = pcall(function()
+                return hs.execute("ioreg -p IOUSB -w0 -l | grep -qi '" .. dock.pattern .. "' && echo '1' || echo '0'", true)
+            end)
+            if success and result and result:match("1") then
+                dockDetected = true
+                dockName = dock.name
+                break
+            end
+        end
+    end
+    
+    return dockDetected, dockName
+end
+
 -- Get system status
 local function getSystemStatus()
     -- Use print for immediate visibility (bypasses all log level settings)
     print("=== STATUS DASHBOARD: Getting system status ===")
+    
+    -- First, try to detect dock hardware
+    local dockHardwareDetected, dockName = detectDockHardware()
+    print("Dock hardware detected: " .. tostring(dockHardwareDetected) .. (dockName and (" (" .. dockName .. ")") or ""))
     
     local success, screens = pcall(function()
         return hs.screen.allScreens()
@@ -212,11 +277,10 @@ local function getSystemStatus()
     print("Has external display: " .. tostring(hasExternalDisplay))
     print("Has built-in display: " .. tostring(hasBuiltInDisplay))
     
-    -- Dock detection: If we have an external display, we're likely docked
-    -- Even if built-in display is disabled/not showing, having external = docked
-    -- Also check if screen count > 1 (both displays active)
-    local docked = hasExternalDisplay or screenCount > 1
-    print("Docked status: " .. tostring(docked) .. " (external: " .. tostring(hasExternalDisplay) .. ", screens: " .. screenCount .. ")")
+    -- Dock detection: Use hardware detection as primary, fallback to display detection
+    -- Priority: 1) Dock hardware detected, 2) External display present, 3) Multiple screens
+    local docked = dockHardwareDetected or hasExternalDisplay or screenCount > 1
+    print("Docked status: " .. tostring(docked) .. " (hardware: " .. tostring(dockHardwareDetected) .. ", external: " .. tostring(hasExternalDisplay) .. ", screens: " .. screenCount .. ")")
     
     -- Store the results
     screenCount = manualCount > 0 and manualCount or screenCount
