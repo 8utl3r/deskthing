@@ -1526,3 +1526,4 @@ As the project continues to develop and the community grows, Jujutsu may become 
 
 *This guide was compiled from comprehensive research on Jujutsu VCS, including official documentation, community discussions, technical comparisons, and user experiences. Information is current as of December 2025.*
 
+
