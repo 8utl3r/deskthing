@@ -1,12 +1,11 @@
 -- Hammerspoon Configuration
 -- Main entry point that loads configuration and modules
 
--- CRITICAL: Set hotkey log level FIRST, before any hotkey operations
--- This must be done before any extensions use hotkeys to prevent console spam
--- The hotkey extension logs every disable/re-enable at info level, causing spam
--- Set global level to error to suppress all but critical messages
--- Note: This will suppress info/warning messages from all extensions in console
--- File logging still uses configured levels per module
+-- CRITICAL: Set log level to reduce console verbosity
+-- Note: Hotkey disable/re-enable messages from RecursiveBinder modals
+-- are logged at C level and cannot be suppressed from Lua.
+-- These messages are informational and indicate normal operation.
+-- To reduce console clutter: minimize the console window or ignore these messages.
 hs.logger.setGlobalLogLevel("error")
 
 -- Load configuration first

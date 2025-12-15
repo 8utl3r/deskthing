@@ -40,6 +40,8 @@ This is a modular, well-structured Hammerspoon configuration with centralized co
 - See `hammerflow.toml` for configured shortcuts
 - Examples: `F18+t` = WezTerm, `F18+c` = Cursor, `F18+h c` = Open Hammerspoon config in VS Code
 
+**Note**: When using the leader key, you may see "hotkey: Disabled/Re-enabled previous hotkey ESCAPE" messages in the console. This is normal behavior - RecursiveBinder temporarily disables hotkeys to capture the leader key sequence. These messages come from the C-level hotkey extension and cannot be suppressed from Lua. To reduce console clutter, minimize the console window or ignore these informational messages.
+
 ## Architecture
 
 ### Directory Structure
