@@ -25,29 +25,55 @@ local function getHAStatus()
     }
     
     if not homeAssistant then
+        logger.debug("Home Assistant module not available")
         return status
     end
     
     -- Check if token exists
     local tokenFile = io.open(haConfig.tokenFile, "r")
     if not tokenFile then
+        logger.debug("Home Assistant token file not found")
         status.connected = false
         return status
     end
     tokenFile:close()
     
-    -- Try to get TV state
-    local tvState = homeAssistant.getTVState(haConfig.c5TV)
-    if tvState then
+    -- Try to get TV state with error handling
+    local success, tvState = pcall(function()
+        return homeAssistant.getTVState(haConfig.c5TV)
+    end)
+    
+    if success and tvState then
         status.connected = true
         status.tv_state = tvState.state or "unknown"
         status.tv_volume = math.floor((tvState.attributes.volume_level or 0) * 100) .. "%"
         status.tv_power = tvState.state == "on" and "ON" or "OFF"
+        logger.debug("HA TV State: " .. status.tv_state .. ", Volume: " .. status.tv_volume)
+    else
+        logger.debug("Failed to get HA TV state: " .. tostring(tvState))
     end
     
-    -- Check dock status
-    status.docked = homeAssistant.isDocked()
-    status.lg_monitor_connected = homeAssistant.isLGMonitorConnected()
+    -- Check dock status with error handling
+    local dockSuccess, docked = pcall(function()
+        return homeAssistant.isDocked()
+    end)
+    if dockSuccess then
+        status.docked = docked
+        logger.debug("HA Dock status: " .. tostring(docked))
+    else
+        logger.debug("Failed to get dock status: " .. tostring(docked))
+    end
+    
+    -- Check LG Monitor connection
+    local lgSuccess, lgConnected = pcall(function()
+        return homeAssistant.isLGMonitorConnected()
+    end)
+    if lgSuccess then
+        status.lg_monitor_connected = lgConnected
+        logger.debug("HA LG Monitor connected: " .. tostring(lgConnected))
+    else
+        logger.debug("Failed to get LG Monitor status: " .. tostring(lgConnected))
+    end
     
     return status
 end
