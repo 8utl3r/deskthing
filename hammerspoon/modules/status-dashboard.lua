@@ -194,8 +194,18 @@ local function getSystemStatus()
             return audioDevice:volume()
         end)
         if volSuccess and volume then
-            -- volume() returns 0-1, convert to percentage
-            audioVolume = math.floor(volume * 100)
+            -- volume() can return 0-1 (decimal) or 0-100 (percentage) depending on system
+            -- Check the value to determine format
+            if volume > 1 then
+                -- Already a percentage (0-100)
+                audioVolume = math.floor(volume)
+            else
+                -- Decimal format (0-1), convert to percentage
+                audioVolume = math.floor(volume * 100)
+            end
+            logger.debug("Audio volume raw: " .. tostring(volume) .. ", calculated: " .. audioVolume .. "%")
+        else
+            logger.debug("Failed to get audio volume: " .. tostring(volume))
         end
     end
     
