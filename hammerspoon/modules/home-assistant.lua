@@ -277,6 +277,68 @@ function homeAssistant.goBack()
     homeAssistant.sendButton(haConfig.c5TV, "BACK")
 end
 
+-- Health check function
+function homeAssistant.healthCheck()
+    local health = {
+        timestamp = os.time(),
+        healthy = false,
+        details = {},
+        errors = {}
+    }
+    
+    -- Check token
+    if not state.token then
+        if not loadToken() then
+            table.insert(health.errors, "Token not loaded")
+            health.details.token = false
+            return health
+        end
+    end
+    health.details.token = true
+    
+    -- Test API connection
+    local response = request("GET", "/api/")
+    if response and response.statusCode == 200 then
+        health.details.api = "connected"
+        health.healthy = true
+    else
+        table.insert(health.errors, "API connection failed")
+        health.details.api = "disconnected"
+        if response then
+            health.details.statusCode = response.statusCode
+        end
+    end
+    
+    -- Test TV entity access
+    if health.healthy then
+        local tvState = homeAssistant.getTVState(haConfig.c5TV)
+        if tvState then
+            health.details.tvEntity = "accessible"
+            health.details.tvState = tvState.state or "unknown"
+        else
+            table.insert(health.errors, "TV entity not accessible")
+            health.details.tvEntity = "inaccessible"
+            health.healthy = false
+        end
+    end
+    
+    -- Update state
+    state.last_health_check = health.timestamp
+    state.health_status = health.healthy and "healthy" or "unhealthy"
+    state.connection_healthy = health.healthy
+    
+    return health
+end
+
+-- Get health status
+function homeAssistant.getHealthStatus()
+    return {
+        healthy = state.connection_healthy,
+        status = state.health_status,
+        lastCheck = state.last_health_check
+    }
+end
+
 -- Setup hotkeys
 local function setupHotkeys()
     -- Toggle TV power
@@ -353,23 +415,43 @@ function homeAssistant.init()
     
     -- Load token
     if not loadToken() then
-        logger.warning("Home Assistant token not found at " .. haConfig.tokenFile)
+        local err = "Home Assistant token not found at " .. haConfig.tokenFile
+        logger.warning(err)
         logger.warning("Home Assistant module will not function without token")
+        errorHandler.capture("home-assistant", err, {
+            functionName = "init",
+            tokenFile = haConfig.tokenFile
+        })
         return false
     end
     
     -- Test connection
     local response = request("GET", "/api/")
     if not response or response.statusCode ~= 200 then
-        logger.error("Cannot connect to Home Assistant")
-        hs.alert.show("❌ Cannot connect to Home Assistant")
+        local err = "Cannot connect to Home Assistant"
+        logger.error(err)
+        hs.alert.show("❌ " .. err)
+        errorHandler.capture("home-assistant", err, {
+            functionName = "init",
+            statusCode = response and response.statusCode or nil
+        })
         return false
     end
+    
+    -- Run initial health check
+    homeAssistant.healthCheck()
     
     -- Start dock monitoring
     local dockTimer = hs.timer.new(haConfig.dockCheckInterval, homeAssistant.monitorDockStatus)
     dockTimer:start()
     table.insert(resources.timers, dockTimer)
+    
+    -- Start health check monitoring (every 60 seconds)
+    local healthTimer = hs.timer.new(60, function()
+        homeAssistant.healthCheck()
+    end)
+    healthTimer:start()
+    table.insert(resources.timers, healthTimer)
     
     -- Initial dock check
     homeAssistant.monitorDockStatus()

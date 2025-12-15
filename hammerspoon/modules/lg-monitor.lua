@@ -6,6 +6,7 @@ local config = require("config")
 local logger = require("lib.logger").get("lg-monitor")
 local debug = require("lib.debug")
 local utils = require("lib.utils")
+local errorHandler = require("lib.error-handler")
 
 -- Get monitor config
 local monitorConfig = config.get("lgMonitor")
@@ -17,6 +18,10 @@ local serverProcess = nil
 local menuBarItem = nil
 local lastStatus = {}
 local updateTimer = nil
+local healthCheckTimer = nil
+local lastHealthCheck = 0
+local healthStatus = "unknown"
+local serverHealthy = false
 local resources = {
     hotkeys = {}
 }
@@ -62,20 +67,35 @@ local function sendServerCommand(command)
         return hs.json.encode(cmdData)
     end)
     
-    if success then
-        local file = io.open(monitorConfig.commandFile, "w")
-        if file then
-            file:write(jsonStr)
-            file:close()
-            logger.info("Sent command: " .. command)
-            debug.callEnd("lg-monitor", "sendServerCommand", true)
-            return true
-        end
+    if not success then
+        local err = "Failed to encode command: " .. command
+        logger.error(err)
+        errorHandler.capture("lg-monitor", err, {
+            functionName = "sendServerCommand",
+            command = command
+        })
+        debug.callEnd("lg-monitor", "sendServerCommand", false)
+        return false
     end
     
-    logger.error("Failed to send command: " .. command)
-    debug.callEnd("lg-monitor", "sendServerCommand", false)
-    return false
+    local file = io.open(monitorConfig.commandFile, "w")
+    if file then
+        file:write(jsonStr)
+        file:close()
+        logger.info("Sent command: " .. command)
+        debug.callEnd("lg-monitor", "sendServerCommand", true)
+        return true
+    else
+        local err = "Failed to write command file: " .. monitorConfig.commandFile
+        logger.error(err)
+        errorHandler.capture("lg-monitor", err, {
+            functionName = "sendServerCommand",
+            command = command,
+            commandFile = monitorConfig.commandFile
+        })
+        debug.callEnd("lg-monitor", "sendServerCommand", false)
+        return false
+    end
 end
 
 -- Start LG server
@@ -89,7 +109,12 @@ local function startServer()
     
     -- Check if server script exists
     if not utils.fileExists(monitorConfig.serverScript) then
-        logger.error("Server script not found: " .. monitorConfig.serverScript)
+        local err = "Server script not found: " .. monitorConfig.serverScript
+        logger.error(err)
+        errorHandler.capture("lg-monitor", err, {
+            functionName = "startServer",
+            serverScript = monitorConfig.serverScript
+        })
         return false
     end
     
@@ -97,16 +122,36 @@ local function startServer()
         logger.info("Server process ended with code: " .. exitCode)
         serverRunning = false
         serverProcess = nil
+        serverHealthy = false
         
         if exitCode ~= 0 then
-            logger.error("Server error: " .. (stdErr or "Unknown error"))
+            local err = "Server error: " .. (stdErr or "Unknown error") .. " (exit code: " .. exitCode .. ")"
+            logger.error(err)
+            errorHandler.capture("lg-monitor", err, {
+                functionName = "startServer",
+                exitCode = exitCode,
+                stdErr = stdErr
+            })
         end
     end, {monitorConfig.monitorIP})
     
-    serverProcess:start()
-    serverRunning = true
-    logger.info("Server started")
-    return true
+    local startSuccess = pcall(function()
+        serverProcess:start()
+    end)
+    
+    if startSuccess then
+        serverRunning = true
+        logger.info("Server started")
+        return true
+    else
+        local err = "Failed to start server process"
+        logger.error(err)
+        errorHandler.capture("lg-monitor", err, {
+            functionName = "startServer",
+            serverScript = monitorConfig.serverScript
+        })
+        return false
+    end
 end
 
 -- Stop LG server
@@ -410,11 +455,92 @@ local function setupHotkeys()
     logger.info("LG Monitor hotkeys configured")
 end
 
+-- Health check function
+function lgMonitor.healthCheck()
+    local health = {
+        timestamp = os.time(),
+        healthy = false,
+        details = {},
+        errors = {}
+    }
+    
+    -- Check server script exists
+    if not utils.fileExists(monitorConfig.serverScript) then
+        table.insert(health.errors, "Server script not found")
+        health.details.serverScript = false
+        return health
+    end
+    health.details.serverScript = true
+    
+    -- Check if server is running
+    health.details.serverRunning = serverRunning
+    if not serverRunning then
+        table.insert(health.errors, "Server not running")
+        health.details.statusFile = false
+        return health
+    end
+    
+    -- Check status file
+    local statusFile = io.open(monitorConfig.statusFile, "r")
+    if not statusFile then
+        table.insert(health.errors, "Status file not found")
+        health.details.statusFile = false
+        health.healthy = false
+        return health
+    end
+    
+    local content = statusFile:read("*all")
+    statusFile:close()
+    health.details.statusFile = true
+    
+    -- Parse status
+    local success, data = pcall(function()
+        return hs.json.decode(content)
+    end)
+    
+    if success and data then
+        local state = data.state or {}
+        health.details.connectionStatus = state.connection_status or "UNKNOWN"
+        health.details.power = state.power or "unknown"
+        health.details.volume = state.volume or "?"
+        
+        if state.connection_status == "CONNECTED" then
+            health.healthy = true
+        else
+            table.insert(health.errors, "Monitor not connected: " .. (state.connection_status or "UNKNOWN"))
+        end
+    else
+        table.insert(health.errors, "Status file cannot be parsed")
+        health.details.statusFileParsed = false
+    end
+    
+    -- Update state
+    lastHealthCheck = health.timestamp
+    healthStatus = health.healthy and "healthy" or "unhealthy"
+    serverHealthy = health.healthy
+    
+    return health
+end
+
+-- Get health status
+function lgMonitor.getHealthStatus()
+    return {
+        healthy = serverHealthy,
+        status = healthStatus,
+        serverRunning = serverRunning,
+        lastCheck = lastHealthCheck
+    }
+end
+
 -- Cleanup function
 function lgMonitor.cleanup()
     if updateTimer then
         updateTimer:stop()
         updateTimer = nil
+    end
+    if healthCheckTimer then
+        healthCheckTimer:stop()
+        healthCheckTimer = nil
     end
     if serverProcess then
         serverProcess:terminate()
@@ -425,6 +551,7 @@ function lgMonitor.cleanup()
         menuBarItem = nil
     end
     serverRunning = false
+    serverHealthy = false
     logger.debug("LG Monitor cleanup complete")
 end
 
