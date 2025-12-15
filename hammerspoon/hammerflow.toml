@@ -51,7 +51,6 @@ label = "[lg-inputs]"
 label = "[home-assistant]"
 t = ["cmd: /bin/bash -c 'echo \"$(date): Running ha-test-integration\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/home-assistant/ha-test-integration 2>&1 >> /tmp/hammerflow.log'", "HA: Test TV integration & API"]
 p = ["hs:local ha = require('modules.home-assistant'); ha.toggleTV()", "HA: Toggle TV Power"]
-v = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-volume 1'", "HA: Set TV volume to 1%"]
 w = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-volume 5'", "HA: Set TV volume to 5%"]
 e = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-volume 25'", "HA: Set TV volume to 25%"]
 r = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-volume 50'", "HA: Set TV volume to 50%"]
