@@ -134,16 +134,36 @@ end
 -- Get dashboard format (matches RecursiveBinder style)
 function statusDashboard.getDashboardFormat()
     -- Use same style as RecursiveBinder but positioned at top
-    return {
-        atScreenEdge = 1,  -- Top edge (RecursiveBinder uses 2 for bottom)
-        strokeColor = { white = 0, alpha = 2 },  -- Same as RecursiveBinder
-        textFont = 'Courier',  -- Same as RecursiveBinder
-        textSize = 14,  -- Slightly smaller than key map (20) for compact display
-        fillColor = { alpha = 0.9, white = 0 },
-        textColor = { alpha = 1, white = 0.9 },
-        radius = 8,
-        padding = 10
+    -- Get the actual format from RecursiveBinder if available, otherwise use defaults
+    local rbFormat = spoon.RecursiveBinder and spoon.RecursiveBinder.helperFormat or {
+        atScreenEdge = 2,
+        strokeColor = { white = 0, alpha = 2 },
+        textFont = 'Courier',
+        textSize = 20
     }
+    
+    -- Clone the format and adjust for top positioning
+    local format = {}
+    for k, v in pairs(rbFormat) do
+        format[k] = v
+    end
+    format.atScreenEdge = 1  -- Top edge (RecursiveBinder uses 2 for bottom)
+    format.textSize = 14  -- Slightly smaller for compact display
+    -- Ensure we have fill and text colors
+    if not format.fillColor then
+        format.fillColor = { alpha = 0.9, white = 0 }
+    end
+    if not format.textColor then
+        format.textColor = { alpha = 1, white = 0.9 }
+    end
+    if not format.radius then
+        format.radius = 8
+    end
+    if not format.padding then
+        format.padding = 10
+    end
+    
+    return format
 end
 
 -- Show dashboard (persistent, matches Hammerflow styling)

@@ -177,25 +177,24 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
             })
             
             -- Hook into RecursiveBinder to show/hide dashboard with modal
-            -- Store modals to hook into their exit events
-            local trackedModals = {}
-            
             local originalRecursiveBind = spoon.RecursiveBinder.recursiveBind
+            local modalWatchers = {}
             
             -- Override recursiveBind to inject dashboard show/hide
             spoon.RecursiveBinder.recursiveBind = function(keymap, modals)
                 if not modals then modals = {} end
                 local result = originalRecursiveBind(keymap, modals)
                 
-                -- Track all modals created by this binding
-                for _, modal in ipairs(modals) do
-                    if modal and not trackedModals[modal] then
-                        trackedModals[modal] = true
-                        -- Hook into modal exit to hide dashboard
+                -- Hook into all modals to hide dashboard on exit
+                for i, modal in ipairs(modals) do
+                    if modal and not modalWatchers[modal] then
+                        modalWatchers[modal] = true
+                        -- Store original exit method
                         local originalExit = modal.exit
-                        modal.exit = function(self)
+                        -- Wrap exit to hide dashboard
+                        modal.exit = function(self, ...)
                             statusDashboard.hide()
-                            return originalExit(self)
+                            return originalExit(self, ...)
                         end
                     end
                 end
