@@ -4,6 +4,7 @@
 local statusDashboard = {}
 local config = require("config")
 local logger = require("lib.logger").get("status-dashboard")
+local diagnostics = nil  -- Will be set during init
 
 -- Get module references (will be set during init)
 local homeAssistant = nil
@@ -483,9 +484,10 @@ function statusDashboard.getCompactStatus()
 end
 
 -- Initialize (called after modules are loaded)
-function statusDashboard.init(haModule, lgModule)
+function statusDashboard.init(haModule, lgModule, diagnosticsModule)
     homeAssistant = haModule
     lgMonitor = lgModule
+    diagnostics = diagnosticsModule
     logger.info("Status dashboard initialized")
 end
 

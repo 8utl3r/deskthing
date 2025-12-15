@@ -561,14 +561,28 @@ function lgMonitor.init()
     
     -- Check if server script exists
     if not utils.fileExists(monitorConfig.serverScript) then
-        logger.warning("LG Monitor server script not found: " .. monitorConfig.serverScript)
+        local err = "LG Monitor server script not found: " .. monitorConfig.serverScript
+        logger.warning(err)
         logger.warning("LG Monitor module will not function without the server script")
+        errorHandler.capture("lg-monitor", err, {
+            functionName = "init",
+            serverScript = monitorConfig.serverScript
+        })
         return
     end
     
     createMenuBar()
     setupHotkeys()
     startServer()
+    
+    -- Run initial health check
+    lgMonitor.healthCheck()
+    
+    -- Start health check monitoring (every 60 seconds)
+    healthCheckTimer = hs.timer.new(60, function()
+        lgMonitor.healthCheck()
+    end)
+    healthCheckTimer:start()
     
     -- Initial status update
     hs.timer.doAfter(1, updateMenuBar)

@@ -4,6 +4,8 @@
 
 local debug = {}
 local utils = require("lib.utils")
+local diagnostics = nil  -- Will be set during init
+local errorHandler = nil  -- Will be set during init
 
 -- Debug state
 local debugState = {
