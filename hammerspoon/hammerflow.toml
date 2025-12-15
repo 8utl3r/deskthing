@@ -31,6 +31,9 @@ b = "window:bottom-half"
 # Status Dashboard (shows when leader key is pressed)
 s = "function:showDashboard"  # Show status dashboard
 
+# Diagnostics
+d = "function:runDiagnostics"  # Run diagnostic health check
+
 # LG Monitor control
 [l]
 label = "[lg-monitor]"

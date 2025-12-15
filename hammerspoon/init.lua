@@ -32,11 +32,23 @@ local mainLogger = logger.get("hammerspoon", logLevel)
 logger.setDefaultLogLevel(logLevel)
 
 
+-- Initialize error handler first (before other modules)
+local errorHandler = require("lib.error-handler")
+
+-- Initialize diagnostics module
+local diagnostics = require("modules.diagnostics")
+
+-- Initialize error handler with diagnostics
+errorHandler.init(diagnostics)
+
 -- Initialize debug system
 if config.get("debug").enabled then
     debug.setEnabled(true)
     mainLogger.info("Debug mode enabled")
 end
+
+-- Initialize debug system with diagnostics and error handler
+debug.initWithDiagnostics(diagnostics, errorHandler)
 
 -- Initialize cleanup handler as a table before modules load
 -- Store original cleanup if it was a function
@@ -140,12 +152,30 @@ end)
 mainLogger.info("Hammerspoon configuration loaded successfully")
 mainLogger.info("Loaded " .. #modules .. " modules")
 
+-- Initialize diagnostics after modules are loaded
+if diagnostics and diagnostics.init then
+    diagnostics.init()
+    mainLogger.info("Diagnostics system initialized")
+end
+
+-- Register modules with diagnostics
+if diagnostics and diagnostics.registerModule then
+    local haModule = loadedModules["modules.home-assistant"]
+    local lgModule = loadedModules["modules.lg-monitor"]
+    if haModule then
+        diagnostics.registerModule("home-assistant", haModule)
+    end
+    if lgModule then
+        diagnostics.registerModule("lg-monitor", lgModule)
+    end
+end
+
 -- Load status dashboard module
 local statusDashboard = require("modules.status-dashboard")
 local haModule = loadedModules["modules.home-assistant"]
 local lgModule = loadedModules["modules.lg-monitor"]
 if statusDashboard and statusDashboard.init then
-    statusDashboard.init(haModule, lgModule)
+    statusDashboard.init(haModule, lgModule, diagnostics)
     mainLogger.info("Status dashboard initialized")
 end
 
