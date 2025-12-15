@@ -203,6 +203,23 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                         }))
                         file:close()
                     end
+                end,
+                -- Diagnostic function
+                ["runDiagnostics"] = function()
+                    if diagnostics then
+                        local results = diagnostics.runHealthCheck()
+                        local message = "Health Check: " .. (results.overall or "unknown")
+                        if results.errors and #results.errors > 0 then
+                            message = message .. "\nErrors: " .. #results.errors
+                        end
+                        hs.alert.show(message, 5)
+                        
+                        -- Export diagnostics
+                        diagnostics.exportDiagnostics()
+                        mainLogger.info("Diagnostics run complete: " .. (results.overall or "unknown"))
+                    else
+                        hs.alert.show("Diagnostics not available", 2)
+                    end
                 end
             })
             
