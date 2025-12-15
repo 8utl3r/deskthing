@@ -280,6 +280,10 @@ Leader key system for efficient keyboard-driven workflows:
 - Auto-reloads when config files change
 - Visual UI shows available key maps
 
+**📚 Documentation:**
+- **[Command Tree Logic & Explanation](hammerflow-command-tree.md)** - Detailed explanation of how the command tree works, parsing logic, and design principles
+- **[Command Tree Diagram](hammerflow-command-tree-diagram.md)** - Visual diagrams, navigation flow, and quick reference card
+
 ## Troubleshooting
 
 ### "Nothing works!"
