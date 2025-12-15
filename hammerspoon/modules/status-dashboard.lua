@@ -153,29 +153,28 @@ end
 
 -- Get system status
 local function getSystemStatus()
-    -- Use hs.logger for visibility (bypasses global log level)
-    local mainLogger = hs.logger.new("status-dashboard", "info")
+    -- Use print for immediate visibility (bypasses all log level settings)
+    print("=== STATUS DASHBOARD: Getting system status ===")
     
-    mainLogger.i("Getting system status...")
     local success, screens = pcall(function()
         return hs.screen.allScreens()
     end)
     
     if not success or not screens then
-        mainLogger.e("Failed to get screens: " .. tostring(screens))
+        print("ERROR: Failed to get screens: " .. tostring(screens))
         screens = {}
     else
-        mainLogger.i("Successfully got screens, count: " .. (#screens or 0))
+        print("SUCCESS: Got screens table, type: " .. type(screens))
     end
     
     local screenCount = #screens
-    local docked = screenCount > 1
+    print("Screen count (using #): " .. screenCount)
     
-    -- Use hs.logger for visibility (bypasses global log level)
-    local mainLogger = hs.logger.new("status-dashboard", "info")
-    mainLogger.i("System screens: " .. screenCount .. ", docked: " .. tostring(docked))
-    if screenCount > 0 then
+    -- Also try counting manually
+    local manualCount = 0
+    if screens then
         for i, screen in ipairs(screens) do
+            manualCount = manualCount + 1
             local screenName = "unknown"
             local nameSuccess, name = pcall(function()
                 return screen:name()
@@ -183,11 +182,13 @@ local function getSystemStatus()
             if nameSuccess then
                 screenName = name or "unknown"
             end
-            mainLogger.i("System Screen " .. i .. ": " .. screenName)
+            print("Screen " .. i .. ": " .. screenName)
         end
-    else
-        mainLogger.w("No screens detected! This might indicate a problem.")
     end
+    print("Manual count: " .. manualCount)
+    
+    local docked = screenCount > 1
+    print("Docked status: " .. tostring(docked) .. " (screens: " .. screenCount .. ")")
     
     local audioDevice = nil
     local audioSuccess, audioResult = pcall(function()
