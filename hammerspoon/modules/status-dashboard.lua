@@ -183,11 +183,45 @@ function statusDashboard.show()
     -- Close existing dashboard if any
     statusDashboard.hide()
     
-    local text = statusDashboard.getDashboardText()
-    local format = statusDashboard.getDashboardFormat()
+    local success, text = pcall(function()
+        return statusDashboard.getDashboardText()
+    end)
+    
+    if not success then
+        logger.error("Failed to get dashboard text: " .. tostring(text))
+        return
+    end
+    
+    local success2, format = pcall(function()
+        return statusDashboard.getDashboardFormat()
+    end)
+    
+    if not success2 then
+        logger.error("Failed to get dashboard format: " .. tostring(format))
+        -- Use a simple fallback format
+        format = {
+            atScreenEdge = 1,
+            strokeColor = { white = 0, alpha = 2 },
+            textFont = 'Courier',
+            textSize = 14,
+            fillColor = { alpha = 0.9, white = 0 },
+            textColor = { alpha = 1, white = 0.9 },
+            radius = 8,
+            padding = 10
+        }
+    end
     
     -- Show persistent alert (third parameter = true, like RecursiveBinder)
-    dashboardAlertID = hs.alert.show(text, format, true)
+    local success3, alertID = pcall(function()
+        return hs.alert.show(text, format, true)
+    end)
+    
+    if success3 and alertID then
+        dashboardAlertID = alertID
+        logger.debug("Dashboard shown with alert ID: " .. tostring(alertID))
+    else
+        logger.error("Failed to show dashboard alert: " .. tostring(alertID))
+    end
 end
 
 -- Hide dashboard

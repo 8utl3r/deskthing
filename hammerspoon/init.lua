@@ -202,10 +202,13 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                 if type(result) == "function" then
                     local originalFunc = result
                     return function()
-                        -- Show dashboard when leader key is pressed (before showing key map)
-                        statusDashboard.show()
-                        -- Call original function (which shows key map helper)
+                        -- Call original function first (which shows key map helper)
                         originalFunc()
+                        -- Show dashboard after a tiny delay to ensure it appears after helper
+                        -- This also ensures the format is available
+                        hs.timer.doAfter(0.05, function()
+                            statusDashboard.show()
+                        end)
                     end
                 end
                 return result
