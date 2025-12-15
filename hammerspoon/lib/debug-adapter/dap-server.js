@@ -29,6 +29,8 @@ const COMMAND_FILE = path.join(DEBUG_DIR, 'commands.json');
 const STATE_FILE = path.join(DEBUG_DIR, 'current_state.json');
 const TRACE_FILE = path.join(DEBUG_DIR, 'trace.json');
 const RESPONSE_FILE = path.join(DEBUG_DIR, 'command_response.json');
+const DIAGNOSTICS_FILE = path.join(DEBUG_DIR, 'diagnostics.json');
+const ERRORS_FILE = path.join(DEBUG_DIR, 'errors.json');
 
 class HammerspoonDebugSession extends DebugSession {
     static THREAD_ID = 1;
@@ -58,6 +60,9 @@ class HammerspoonDebugSession extends DebugSession {
         
         // Start watching for Hammerspoon state changes
         this.watchHammerspoonState();
+        
+        // Start watching for diagnostic updates
+        this.watchDiagnostics();
     }
     
     initFiles() {
@@ -404,6 +409,160 @@ class HammerspoonDebugSession extends DebugSession {
         this.sendResponse(response);
     }
     
+    watchDiagnostics() {
+        // Watch for diagnostics file updates
+        let lastDiagMod = 0;
+        const diagWatcher = setInterval(() => {
+            try {
+                if (fs.existsSync(DIAGNOSTICS_FILE)) {
+                    const stats = fs.statSync(DIAGNOSTICS_FILE);
+                    if (stats.mtimeMs > lastDiagMod) {
+                        lastDiagMod = stats.mtimeMs;
+                        this.loadDiagnostics();
+                    }
+                }
+            } catch (err) {
+                // Ignore
+            }
+        }, 1000);
+        this.fileWatchers.push(diagWatcher);
+        
+        // Watch for errors file updates
+        let lastErrorsMod = 0;
+        const errorsWatcher = setInterval(() => {
+            try {
+                if (fs.existsSync(ERRORS_FILE)) {
+                    const stats = fs.statSync(ERRORS_FILE);
+                    if (stats.mtimeMs > lastErrorsMod) {
+                        lastErrorsMod = stats.mtimeMs;
+                        this.loadErrors();
+                    }
+                }
+            } catch (err) {
+                // Ignore
+            }
+        }, 1000);
+        this.fileWatchers.push(errorsWatcher);
+    }
+    
+    loadDiagnostics() {
+        try {
+            if (fs.existsSync(DIAGNOSTICS_FILE)) {
+                const content = fs.readFileSync(DIAGNOSTICS_FILE, 'utf8');
+                const diagnostics = JSON.parse(content);
+                
+                // Output diagnostic information to console
+                if (diagnostics.statusReport && diagnostics.statusReport.healthCheck) {
+                    const health = diagnostics.statusReport.healthCheck;
+                    this.sendEvent(new OutputEvent(
+                        `\n🔍 Health Check: ${health.overall}\n`,
+                        'console'
+                    ));
+                    
+                    if (health.errors && health.errors.length > 0) {
+                        this.sendEvent(new OutputEvent(
+                            `  Errors: ${health.errors.join(', ')}\n`,
+                            'stderr'
+                        ));
+                    }
+                    
+                    if (health.integrations) {
+                        for (const [name, integration] of Object.entries(health.integrations)) {
+                            const status = integration.status || 'unknown';
+                            const icon = status === 'connected' ? '✅' : status === 'disconnected' ? '⚠️' : '❌';
+                            this.sendEvent(new OutputEvent(
+                                `  ${icon} ${name}: ${status}\n`,
+                                'console'
+                            ));
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            // Ignore errors
+        }
+    }
+    
+    loadErrors() {
+        try {
+            if (fs.existsSync(ERRORS_FILE)) {
+                const content = fs.readFileSync(ERRORS_FILE, 'utf8');
+                const errors = JSON.parse(content);
+                
+                // Output error summary to console
+                if (errors.errorSummary) {
+                    const summary = errors.errorSummary;
+                    if (summary.recent > 0) {
+                        this.sendEvent(new OutputEvent(
+                            `\n⚠️ Recent Errors: ${summary.recent} (Total: ${summary.total})\n`,
+                            'stderr'
+                        ));
+                        
+                        if (summary.byModule) {
+                            for (const [module, count] of Object.entries(summary.byModule)) {
+                                this.sendEvent(new OutputEvent(
+                                    `  ${module}: ${count} errors\n`,
+                                    'stderr'
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            // Ignore errors
+        }
+    }
+    
+    // Custom request for diagnostics
+    customRequest(request, response) {
+        const command = request.command;
+        
+        if (command === 'diagnostics') {
+            // Load and return diagnostics
+            try {
+                if (fs.existsSync(DIAGNOSTICS_FILE)) {
+                    const content = fs.readFileSync(DIAGNOSTICS_FILE, 'utf8');
+                    const diagnostics = JSON.parse(content);
+                    response.body = diagnostics;
+                } else {
+                    response.body = { error: 'Diagnostics file not found' };
+                }
+            } catch (err) {
+                response.body = { error: err.message };
+            }
+            this.sendResponse(response);
+        } else if (command === 'healthCheck') {
+            // Trigger health check (write command to Hammerspoon)
+            try {
+                const commandData = { command: 'healthCheck' };
+                fs.writeFileSync(COMMAND_FILE, JSON.stringify(commandData));
+                response.body = { success: true, message: 'Health check command sent' };
+            } catch (err) {
+                response.body = { error: err.message };
+            }
+            this.sendResponse(response);
+        } else if (command === 'errors') {
+            // Load and return errors
+            try {
+                if (fs.existsSync(ERRORS_FILE)) {
+                    const content = fs.readFileSync(ERRORS_FILE, 'utf8');
+                    const errors = JSON.parse(content);
+                    response.body = errors;
+                } else {
+                    response.body = { error: 'Errors file not found' };
+                }
+            } catch (err) {
+                response.body = { error: err.message };
+            }
+            this.sendResponse(response);
+        } else {
+            // Unknown command
+            response.body = { error: `Unknown command: ${command}` };
+            this.sendResponse(response);
+        }
+    }
+    
     disconnectRequest(response, args) {
         // Clean up watchers
         for (const watcher of this.fileWatchers) {
@@ -417,5 +576,6 @@ class HammerspoonDebugSession extends DebugSession {
 
 // Start the DAP server
 DebugSession.run(HammerspoonDebugSession);
+
 
 

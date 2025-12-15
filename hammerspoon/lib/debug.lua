@@ -389,7 +389,8 @@ end
 -- Log error
 function debug.logError(module, functionName, errorMessage, stackTrace)
     if not debugState.enabled then
-        return
+        -- Auto-enable debug mode on errors
+        debug.setEnabled(true)
     end
     
     writeTraceEntry(createTraceEntry("error", module, functionName, {
@@ -398,8 +399,21 @@ function debug.logError(module, functionName, errorMessage, stackTrace)
         callStack = utils.deepCopy(debugState.callStack)
     }))
     
+    -- Capture error in error handler if available
+    if errorHandler and errorHandler.capture then
+        errorHandler.capture(module, errorMessage, {
+            functionName = functionName,
+            stackTrace = stackTrace
+        })
+    end
+    
     -- Export state on error
     debug.exportCurrentState()
+    
+    -- Export diagnostics if available
+    if diagnostics and diagnostics.exportDiagnostics then
+        diagnostics.exportDiagnostics()
+    end
 end
 
 -- Log general message
@@ -500,6 +514,13 @@ function debug.close()
             file:close()
         end
     end
+end
+
+-- Initialize debug system with diagnostics and error handler
+function debug.initWithDiagnostics(diagnosticsModule, errorHandlerModule)
+    diagnostics = diagnosticsModule
+    errorHandler = errorHandlerModule
+    debug.init()
 end
 
 -- Initialize on load
