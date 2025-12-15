@@ -192,49 +192,23 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                     if modal and not modalWatchers[modal] then
                         modalWatchers[modal] = true
                         
-                        -- Use eventtap to capture all keys while modal is active
-                        -- This prevents other apps (like Alfred/Monarch) from receiving keys
-                        local eventTap = nil
+                        -- Hook into modal enter/exit to manage dashboard
+                        -- Note: hs.hotkey.modal should already capture input, but it may not
+                        -- prevent other apps from receiving unbound keys. We'll rely on the modal
+                        -- system for now - if blocking other apps is critical, we'd need a more
+                        -- complex solution that doesn't interfere with modal bindings.
                         local originalEnter = modal.enter
                         local originalExit = modal.exit
                         
-                        -- Wrap enter to start eventtap
+                        -- Wrap enter (no eventtap - let modal handle input)
                         modal.enter = function(self, ...)
-                            -- Start eventtap to capture all keys except escape
-                            eventTap = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
-                                local keyCode = event:getKeyCode()
-                                local flags = event:getFlags()
-                                
-                                -- Allow escape key to pass through (no modifiers)
-                                local escapeKey = spoon.RecursiveBinder.escapeKey
-                                local escapeKeyCode = hs.keycodes.map[escapeKey[2] or 'escape']
-                                
-                                if keyCode == escapeKeyCode and flags:containExactly({}) then
-                                    return false  -- Let escape through
-                                end
-                                
-                                -- Capture all other keys to prevent other apps from receiving them
-                                return true
-                            end)
-                            
-                            if eventTap then
-                                eventTap:start()
-                            end
-                            
                             return originalEnter(self, ...)
                         end
                         
-                        -- Wrap exit to stop eventtap and hide dashboard
+                        -- Wrap exit to hide dashboard
                         modal.exit = function(self, ...)
                             -- Hide dashboard when modal exits
                             statusDashboard.hide()
-                            
-                            -- Stop eventtap
-                            if eventTap then
-                                eventTap:stop()
-                                eventTap = nil
-                            end
-                            
                             return originalExit(self, ...)
                         end
                         
