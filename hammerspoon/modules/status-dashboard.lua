@@ -153,23 +153,40 @@ end
 
 -- Get system status
 local function getSystemStatus()
+    -- Use hs.logger for visibility (bypasses global log level)
+    local mainLogger = hs.logger.new("status-dashboard", "info")
+    
+    mainLogger.i("Getting system status...")
     local success, screens = pcall(function()
         return hs.screen.allScreens()
     end)
     
     if not success or not screens then
-        logger.debug("Failed to get screens")
+        mainLogger.e("Failed to get screens: " .. tostring(screens))
         screens = {}
+    else
+        mainLogger.i("Successfully got screens, count: " .. (#screens or 0))
     end
     
     local screenCount = #screens
     local docked = screenCount > 1
     
-    logger.debug("System screens: " .. screenCount .. ", docked: " .. tostring(docked))
+    -- Use hs.logger for visibility (bypasses global log level)
+    local mainLogger = hs.logger.new("status-dashboard", "info")
+    mainLogger.i("System screens: " .. screenCount .. ", docked: " .. tostring(docked))
     if screenCount > 0 then
         for i, screen in ipairs(screens) do
-            logger.debug("System Screen " .. i .. ": " .. (screen:name() or "unknown"))
+            local screenName = "unknown"
+            local nameSuccess, name = pcall(function()
+                return screen:name()
+            end)
+            if nameSuccess then
+                screenName = name or "unknown"
+            end
+            mainLogger.i("System Screen " .. i .. ": " .. screenName)
         end
+    else
+        mainLogger.w("No screens detected! This might indicate a problem.")
     end
     
     local audioDevice = nil
@@ -203,9 +220,12 @@ local function getSystemStatus()
                 -- Decimal format (0-1), convert to percentage
                 audioVolume = math.floor(volume * 100)
             end
-            logger.debug("Audio volume raw: " .. tostring(volume) .. ", calculated: " .. audioVolume .. "%")
+            -- Use hs.logger for visibility
+            local mainLogger = hs.logger.new("status-dashboard", "info")
+            mainLogger.i("Audio volume raw: " .. tostring(volume) .. ", calculated: " .. audioVolume .. "%")
         else
-            logger.debug("Failed to get audio volume: " .. tostring(volume))
+            local mainLogger = hs.logger.new("status-dashboard", "info")
+            mainLogger.w("Failed to get audio volume: " .. tostring(volume))
         end
     end
     
@@ -219,9 +239,15 @@ end
 
 -- Generate dashboard text (compact format to match Hammerflow style)
 function statusDashboard.getDashboardText()
+    -- Use hs.logger for visibility
+    local mainLogger = hs.logger.new("status-dashboard", "info")
+    mainLogger.i("Generating dashboard text...")
+    
     local haStatus = getHAStatus()
     local lgStatus = getLGMonitorStatus()
     local sysStatus = getSystemStatus()
+    
+    mainLogger.i("System status - Screens: " .. sysStatus.screen_count .. ", Docked: " .. tostring(sysStatus.docked) .. ", Audio Volume: " .. sysStatus.audio_volume .. "%")
     
     -- Compact format matching Hammerflow's key map style
     local lines = {
