@@ -1,0 +1,34 @@
+# Hammerflow Configuration
+# Leader key system for Hammerspoon
+
+# Settings
+leader_key = "f18"        # Leader key (recommend remapping Right Command to f18 in Karabiner)
+auto_reload = true        # Reload when config files change
+show_ui = true            # Show UI with key maps
+key_maps_per_line = 3     # Number of key maps per line in UI
+
+# App launchers
+t = "WezTerm"
+c = "Cursor"
+b = "Mullvad Browser"
+f = "Finder"
+
+# Hammerspoon config management
+[h]
+label = "[hammerspoon]"
+c = "code: ~/.hammerspoon"
+r = "reload"
+
+# Window management
+[w]
+label = "[window]"
+h = "window:left-half"
+c = "window:center-half"
+r = "window:right-half"
+t = "window:top-half"
+b = "window:bottom-half"
+
+# Quick actions
+[p]
+label = "[prefixes]"
+r = "reload"              # Reload Hammerspoon config

@@ -132,6 +132,29 @@ end)
 mainLogger.info("Hammerspoon configuration loaded successfully")
 mainLogger.info("Loaded " .. #modules .. " modules")
 
+-- Load Hammerflow leader key system
+local hammerflowSuccess, hammerflowErr = pcall(function()
+    hs.loadSpoon("Hammerflow")
+    if spoon.Hammerflow then
+        spoon.Hammerflow.loadFirstValidTomlFile({
+            "hammerflow.toml",
+            "Spoons/Hammerflow.spoon/sample.toml"
+        })
+        
+        -- Enable auto-reload if configured
+        if spoon.Hammerflow.auto_reload then
+            hs.loadSpoon("ReloadConfiguration")
+            spoon.ReloadConfiguration:start()
+        end
+        
+        mainLogger.info("Hammerflow loaded successfully")
+    end
+end)
+
+if not hammerflowSuccess then
+    mainLogger.warn("Failed to load Hammerflow: " .. tostring(hammerflowErr))
+end
+
 -- Show notification on successful load
 hs.notify.new({
     title = "Hammerspoon",
