@@ -141,21 +141,39 @@ function statusDashboard.getDashboardText()
     return table.concat(lines, "\n")
 end
 
--- Show dashboard
+-- Show dashboard (can be called manually or automatically)
 function statusDashboard.show()
     local text = statusDashboard.getDashboardText()
+    -- Show at top-left corner so it doesn't interfere with key map UI
     hs.alert.show(text, {
-        atScreenEdge = 2,
-        fillColor = { alpha = 0.9, white = 0 },
-        strokeColor = { alpha = 0.9, white = 1 },
+        atScreenEdge = 1,  -- Top edge
+        fillColor = { alpha = 0.95, white = 0 },
+        strokeColor = { alpha = 0.95, white = 0.3 },
         strokeWidth = 2,
-        textColor = { alpha = 1, white = 1 },
+        textColor = { alpha = 1, white = 0.9 },
         textFont = "Monaco",
-        textSize = 12,
+        textSize = 11,
         radius = 8,
-        fadeInDuration = 0.2,
-        fadeOutDuration = 0.2
-    }, 5)  -- Show for 5 seconds
+        padding = 12,
+        fadeInDuration = 0.15,
+        fadeOutDuration = 0.15
+    }, 4)  -- Show for 4 seconds
+end
+
+-- Get compact status for inline display
+function statusDashboard.getCompactStatus()
+    local haStatus = getHAStatus()
+    local lgStatus = getLGMonitorStatus()
+    local sysStatus = getSystemStatus()
+    
+    local parts = {}
+    table.insert(parts, "HA:" .. (haStatus.connected and "✅" or "❌"))
+    table.insert(parts, "TV:" .. haStatus.tv_power)
+    table.insert(parts, "Vol:" .. haStatus.tv_volume)
+    table.insert(parts, "LG:" .. (lgStatus.connected and "✅" or "❌"))
+    table.insert(parts, "Dock:" .. (sysStatus.docked and "✅" or "❌"))
+    
+    return table.concat(parts, " | ")
 end
 
 -- Initialize (called after modules are loaded)

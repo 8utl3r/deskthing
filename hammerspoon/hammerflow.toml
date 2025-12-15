@@ -28,20 +28,23 @@ r = "window:right-half"
 t = "window:top-half"
 b = "window:bottom-half"
 
+# Status Dashboard (shows when leader key is pressed)
+s = "function:showDashboard"  # Show status dashboard
+
 # LG Monitor control
 [l]
 label = "[lg-monitor]"
-p = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='power_on',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Power On"]
-o = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='power_off',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Power Off"]
-u = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='volume_up',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Volume Up"]
-d = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='volume_down',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Volume Down"]
-m = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='mute',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Mute Toggle"]
+p = ["function:sendLGCommand|power_on", "LG: Power On"]
+o = ["function:sendLGCommand|power_off", "LG: Power Off"]
+u = ["function:sendLGCommand|volume_up", "LG: Volume Up"]
+d = ["function:sendLGCommand|volume_down", "LG: Volume Down"]
+m = ["function:sendLGCommand|mute", "LG: Mute Toggle"]
 [l.i]
 label = "[lg-inputs]"
-1 = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='input_hdmi1',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Switch to HDMI 1"]
-2 = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='input_hdmi2',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Switch to HDMI 2"]
-3 = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='input_hdmi3',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Switch to HDMI 3"]
-4 = ["hs:local f = io.open('/tmp/lg-server-command.json', 'w'); if f then f:write(hs.json.encode({command='input_hdmi4',timestamp=os.date('!%Y-%m-%dT%H:%M:%SZ'),source='hammerflow'})); f:close(); end", "LG: Switch to HDMI 4"]
+1 = ["function:sendLGCommand|input_hdmi1", "LG: Switch to HDMI 1"]
+2 = ["function:sendLGCommand|input_hdmi2", "LG: Switch to HDMI 2"]
+3 = ["function:sendLGCommand|input_hdmi3", "LG: Switch to HDMI 3"]
+4 = ["function:sendLGCommand|input_hdmi4", "LG: Switch to HDMI 4"]
 
 # Home Assistant control
 [a]

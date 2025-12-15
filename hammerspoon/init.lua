@@ -156,13 +156,42 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
         -- Increase entry length to allow longer descriptions (default is 20)
         spoon.RecursiveBinder.helperEntryLengthInChar = 40
         
-        -- Register status dashboard function
+        -- Register status dashboard function and helper functions
         if statusDashboard then
             spoon.Hammerflow.registerFunctions({
                 ["showDashboard"] = function()
                     statusDashboard.show()
+                end,
+                -- Helper function to send LG monitor commands
+                ["sendLGCommand"] = function(command)
+                    local file = io.open("/tmp/lg-server-command.json", "w")
+                    if file then
+                        file:write(hs.json.encode({
+                            command = command,
+                            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                            source = "hammerflow"
+                        }))
+                        file:close()
+                    end
                 end
             })
+            
+            -- Hook into RecursiveBinder to show dashboard when leader key is pressed
+            -- Override the recursiveBind function to show dashboard on modal enter
+            local originalRecursiveBind = spoon.RecursiveBinder.recursiveBind
+            spoon.RecursiveBinder.recursiveBind = function(keymap, modals)
+                local result = originalRecursiveBind(keymap, modals)
+                if type(result) == "function" then
+                    local originalFunc = result
+                    return function()
+                        -- Show dashboard when leader key is pressed
+                        statusDashboard.show()
+                        -- Call original function
+                        originalFunc()
+                    end
+                end
+                return result
+            end
         end
         
         spoon.Hammerflow.loadFirstValidTomlFile({
