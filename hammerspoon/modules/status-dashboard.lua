@@ -170,25 +170,56 @@ local function getSystemStatus()
     local screenCount = #screens
     print("Screen count (using #): " .. screenCount)
     
-    -- Also try counting manually
+    -- Also try counting manually and check for external displays
     local manualCount = 0
+    local hasExternalDisplay = false
+    local hasBuiltInDisplay = false
+    
     if screens then
         for i, screen in ipairs(screens) do
             manualCount = manualCount + 1
             local screenName = "unknown"
+            local screenID = "unknown"
             local nameSuccess, name = pcall(function()
                 return screen:name()
             end)
             if nameSuccess then
                 screenName = name or "unknown"
             end
-            print("Screen " .. i .. ": " .. screenName)
+            
+            -- Try to get screen ID to detect built-in vs external
+            local idSuccess, id = pcall(function()
+                return screen:id()
+            end)
+            if idSuccess then
+                screenID = tostring(id)
+            end
+            
+            print("Screen " .. i .. ": " .. screenName .. " (ID: " .. screenID .. ")")
+            
+            -- Check if it's an external display (not built-in)
+            -- Built-in displays typically have "Color LCD" or "Built-in" in the name
+            -- External displays usually have different names
+            if screenName and not string.find(screenName:lower(), "built.in") and 
+               not string.find(screenName:lower(), "color lcd") then
+                hasExternalDisplay = true
+            else
+                hasBuiltInDisplay = true
+            end
         end
     end
     print("Manual count: " .. manualCount)
+    print("Has external display: " .. tostring(hasExternalDisplay))
+    print("Has built-in display: " .. tostring(hasBuiltInDisplay))
     
-    local docked = screenCount > 1
-    print("Docked status: " .. tostring(docked) .. " (screens: " .. screenCount .. ")")
+    -- Dock detection: If we have an external display, we're likely docked
+    -- Even if built-in display is disabled/not showing, having external = docked
+    -- Also check if screen count > 1 (both displays active)
+    local docked = hasExternalDisplay or screenCount > 1
+    print("Docked status: " .. tostring(docked) .. " (external: " .. tostring(hasExternalDisplay) .. ", screens: " .. screenCount .. ")")
+    
+    -- Store the results
+    screenCount = manualCount > 0 and manualCount or screenCount
     
     local audioDevice = nil
     local audioSuccess, audioResult = pcall(function()
