@@ -7,6 +7,7 @@ local config = require("config")
 local logger = require("lib.logger").get("home-assistant")
 local debug = require("lib.debug")
 local utils = require("lib.utils")
+local errorHandler = require("lib.error-handler")
 
 -- Get Home Assistant config
 local haConfig = config.get("homeAssistant")
@@ -17,6 +18,9 @@ local state = {
     tv_on = false,
     last_dock_check = 0,
     token = nil,
+    last_health_check = 0,
+    health_status = "unknown",
+    connection_healthy = false
 }
 
 -- Resources to clean up
@@ -50,7 +54,12 @@ local function request(method, endpoint, data)
     
     if not state.token then
         if not loadToken() then
-            hs.alert.show("❌ Home Assistant token not found")
+            local err = "Home Assistant token not found"
+            hs.alert.show("❌ " .. err)
+            errorHandler.capture("home-assistant", err, {
+                functionName = "request",
+                endpoint = endpoint
+            })
             debug.callEnd("home-assistant", "request", nil)
             return nil
         end
@@ -67,13 +76,41 @@ local function request(method, endpoint, data)
         body = hs.json.encode(data)
     end
     
-    local statusCode, responseBody, responseHeaders = hs.http.doRequest(url, method, body, headers)
+    local success, statusCode, responseBody, responseHeaders = pcall(function()
+        return hs.http.doRequest(url, method, body, headers)
+    end)
+    
+    if not success then
+        local err = "HTTP request failed: " .. tostring(statusCode)
+        errorHandler.capture("home-assistant", err, {
+            functionName = "request",
+            endpoint = endpoint,
+            method = method
+        })
+        state.connection_healthy = false
+        debug.callEnd("home-assistant", "request", nil)
+        return nil
+    end
     
     local result = {
         statusCode = statusCode,
         body = responseBody,
         headers = responseHeaders
     }
+    
+    -- Update connection health
+    if statusCode == 200 then
+        state.connection_healthy = true
+    else
+        state.connection_healthy = false
+        if statusCode ~= 200 then
+            errorHandler.capture("home-assistant", "API returned status " .. tostring(statusCode), {
+                functionName = "request",
+                endpoint = endpoint,
+                statusCode = statusCode
+            })
+        end
+    end
     
     debug.callEnd("home-assistant", "request", result)
     return result
