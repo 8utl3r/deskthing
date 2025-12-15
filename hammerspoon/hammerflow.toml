@@ -31,26 +31,26 @@ b = "window:bottom-half"
 # LG Monitor control
 [l]
 label = "[lg-monitor]"
-m = ["cmd: ~/dotfiles/scripts/lg-c5/lg-monitor", "monitor control"]
-c = ["cmd: ~/dotfiles/scripts/lg-c5/lg-monitor-connection", "connection status"]
-d = ["cmd: ~/dotfiles/scripts/lg-c5/dock-detector", "dock detector"]
+m = ["cmd: /bin/bash -c 'echo \"$(date): Running lg-monitor\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/lg-monitor 2>&1 >> /tmp/hammerflow.log'", "monitor control"]
+c = ["cmd: /bin/bash -c 'echo \"$(date): Running lg-monitor-connection\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/lg-monitor-connection 2>&1 >> /tmp/hammerflow.log'", "connection status"]
+d = ["cmd: /bin/bash -c 'echo \"$(date): Running dock-detector\" >> /tmp/hammerflow.log && ~/dotfiles/scripts/lg-c5/dock-detector 2>&1 >> /tmp/hammerflow.log'", "dock detector"]
 
 # Home Assistant control
 [a]
 label = "[home-assistant]"
-t = ["cmd: ~/dotfiles/scripts/home-assistant/ha-test-integration", "test integration"]
-v = ["cmd: ~/dotfiles/scripts/home-assistant/ha-tv-volume", "TV volume"]
-w = ["cmd: ~/dotfiles/scripts/home-assistant/ha-tv-wol", "TV wake-on-LAN"]
-s = ["cmd: cd ~/dotfiles && ./scripts/home-assistant/ha-sync", "sync config"]
-p = ["cmd: cd ~/dotfiles && ./scripts/home-assistant/ha-pull", "pull config"]
+t = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-test-integration'", "test integration"]
+v = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-volume'", "TV volume"]
+w = ["cmd: /bin/bash -c '~/dotfiles/scripts/home-assistant/ha-tv-wol'", "TV wake-on-LAN"]
+s = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/home-assistant/ha-sync'", "sync config"]
+p = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/home-assistant/ha-pull'", "pull config"]
 
 # System utilities
 [y]
 label = "[system]"
-l = ["cmd: cd ~/dotfiles && ./scripts/system/link --apply", "link dotfiles"]
-b = ["cmd: cd ~/dotfiles && ./scripts/system/bootstrap", "bootstrap system"]
-n = ["cmd: cd ~/dotfiles && ./scripts/system/snapshot", "snapshot system"]
-u = ["cmd: cd ~/dotfiles && ./scripts/system/update", "update system"]
+l = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/link --apply'", "link dotfiles"]
+b = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/bootstrap'", "bootstrap system"]
+n = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/snapshot'", "snapshot system"]
+u = ["cmd: /bin/bash -c 'cd ~/dotfiles && ./scripts/system/update'", "update system"]
 
 # Quick actions
 [p]
