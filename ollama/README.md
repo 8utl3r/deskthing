@@ -93,6 +93,47 @@ Useful aliases are available in `.zshrc`:
 - `ollama-ps` - Show running models
 - `ollama-pull` - Pull a model (usage: `ollama-pull llama3.2`)
 
+### Atlas - Private Life Manager
+
+**Status**: ✅ Configured and ready to use
+
+Atlas is a custom-configured Dolphin-Mistral-Nemo 12B model optimized for private life management with ADHD-friendly communication.
+
+**Model Details**:
+- **Base**: Dolphin-2.9.3-Mistral-Nemo 12B (Q6_K quantization)
+- **Context Window**: 32k tokens (leverages 128k native support)
+- **Temperature**: 0.2 (low randomness for reliable scheduling)
+- **RAM Usage**: ~9-11GB (leaves ~7GB overhead on 18GB system)
+
+**Quick Start**:
+```bash
+# Run Atlas
+atlas
+
+# Edit system prompt
+atlas-prompt
+
+# Reload model after prompt changes
+atlas-reload
+```
+
+**Configuration Files**:
+- `system_prompt.txt` - Modular system prompt (edit to customize behavior)
+- `Modelfile.dolphin-mistral-nemo` - Model configuration
+
+**Features**:
+- Direct, factual communication (no filler or apologies)
+- ADHD accommodations (brevity, structure, scannable responses)
+- Life management focus (scheduling, task prioritization, organization)
+- Large context window for memory retention across sessions
+
+**Customization**:
+1. Edit `system_prompt.txt` to adjust communication style or add requirements
+2. Run `atlas-reload` to apply changes
+3. Test with `atlas` to verify behavior
+
+See `private_life_manager_architecture.md` for detailed architecture and rationale.
+
 ## Desktop GUI App
 
 The Ollama desktop app (`ollama-app`) provides:

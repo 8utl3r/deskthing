@@ -37,11 +37,21 @@ fi
 # Aliases and safe wrappers
 alias ll="ls -lah"
 
-# Ollama aliases (if installed)
+# Ollama configuration (if installed)
 if command -v ollama >/dev/null 2>&1; then
+  # Optimize memory usage for 18GB RAM system
+  export OLLAMA_KV_CACHE_TYPE=q8_0
+  # Keep model loaded for instant responses
+  export OLLAMA_KEEP_ALIVE=24h
+  
+  # Aliases
   alias ollama-list="ollama list"
   alias ollama-ps="ollama ps"
   alias ollama-pull="ollama pull"
+  # Atlas (Private Life Manager) aliases
+  alias atlas="ollama run atlas"
+  alias atlas-prompt="$EDITOR $HOME/dotfiles/ollama/system_prompt.txt"
+  alias atlas-reload="cd $HOME/dotfiles/ollama && ollama create atlas -f Modelfile.dolphin-mistral-nemo"
 fi
 
 cat() {
