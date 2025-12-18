@@ -18,6 +18,24 @@ Personal dotfiles repository for macOS system configuration and development envi
 
 ## Session Records
 
+### 2025-01-06 - Ollama Installation and Setup
+- **Key Decisions**: Added Ollama to dotfiles for local LLM management; installed both CLI and desktop GUI app via Homebrew, configured with shell aliases
+- **Actions Taken**:
+  - Added `brew "ollama"` to Brewfile (alphabetically ordered after mise)
+  - Installed Ollama CLI via Homebrew (version 0.13.4)
+  - Added `cask "ollama-app"` to Brewfile (alphabetically ordered after netspot)
+  - Installed Ollama desktop GUI app via Homebrew (version 0.13.4)
+  - Created `ollama/` directory in dotfiles with comprehensive README documentation
+  - Added useful shell aliases to `.zshrc`: `ollama-list`, `ollama-ps`, `ollama-pull`
+  - Documented common commands, popular models, API usage, environment variables, and GUI app features
+  - Updated wiki/Development-Tools.md with Ollama section including GUI app details
+  - Verified no separate config files needed (app uses same backend service as CLI)
+- **Next 3 Specific Steps**:
+  1. Start Ollama service: `brew services start ollama`
+  2. Pull a test model: `ollama pull llama3.2` or use GUI app
+  3. Test both CLI and GUI interfaces to verify installation
+- **Blockers/Concerns**: None - Both Ollama CLI and desktop GUI app are installed and ready to use; service needs to be started before first use; app available in Applications folder
+
 ### 2025-01-06 - Hammerflow Integration
 - **Key Decisions**: Added Hammerflow leader key system to Hammerspoon setup; configured with F18 as leader key
 - **Actions Taken**:
@@ -67,9 +85,9 @@ Personal dotfiles repository for macOS system configuration and development envi
 See `session_records.md` for detailed session documentation.
 
 ## Next Steps
-1. Install and configure ActiveDock 2
-2. Test Ice menu bar configuration and functionality
-3. Verify all rule compliance mechanisms are working
+1. Start Ollama service and test with a model
+2. Install and configure ActiveDock 2
+3. Test Ice menu bar configuration and functionality
 
 ## Notes
 - Repository follows lowercase naming convention with underscores

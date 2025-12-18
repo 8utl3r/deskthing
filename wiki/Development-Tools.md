@@ -407,6 +407,124 @@ rm ~/.android/adbkey*
 adb start-server
 ```
 
+## Ollama
+
+**Installation**: `brew install ollama` (CLI) and `brew install --cask ollama-app` (GUI, optional)  
+**Purpose**: Run large language models locally
+
+### Desktop GUI App
+
+The Ollama desktop app (`ollama-app`) provides a graphical interface:
+
+- **Chat Interface**: Clean, modern chat UI for interacting with models
+- **Model Management**: Download, delete, and switch between models visually
+- **File Support**: Drag and drop text, Markdown, PDFs, and code files
+- **Streaming Responses**: Real-time streaming of model responses
+- **Multimodal Support**: Context-aware conversations with file attachments
+
+Launch from Applications or:
+```bash
+open -a Ollama
+```
+
+Both CLI and GUI share the same backend service - you can use either or both.
+
+### Configuration
+
+**Directory**: `ollama/` in dotfiles  
+**Documentation**: `ollama/README.md`
+
+Ollama stores models and data in `~/.ollama/` (created automatically). No symlinks needed as this is data storage, not configuration.
+
+### Shell Aliases
+
+Available in `.zshrc`:
+- `ollama-list`: List all installed models
+- `ollama-ps`: Show running models
+- `ollama-pull`: Pull a model (usage: `ollama-pull llama3.2`)
+
+### Service Management
+
+```bash
+# Start as background service
+brew services start ollama
+
+# Stop service
+brew services stop ollama
+
+# Run manually (without service)
+ollama serve
+```
+
+### Common Commands
+
+```bash
+# List installed models
+ollama list
+
+# Pull a model
+ollama pull llama3.2
+
+# Run a model interactively
+ollama run llama3.2
+
+# Show model information
+ollama show llama3.2
+
+# List running models
+ollama ps
+
+# Stop a running model
+ollama stop llama3.2
+
+# Remove a model
+ollama rm llama3.2
+```
+
+### Popular Models
+
+- `llama3.2` - Meta's Llama 3.2 (3B parameters, fast)
+- `llama3.1` - Meta's Llama 3.1 (8B parameters)
+- `mistral` - Mistral AI's 7B model
+- `codellama` - Code-focused Llama variant
+- `phi3` - Microsoft's Phi-3 (small, fast)
+- `gemma2` - Google's Gemma 2
+
+### API Access
+
+Ollama runs a local API server on `http://localhost:11434` by default.
+
+```bash
+# Example API call
+curl http://localhost:11434/api/generate -d '{
+  "model": "llama3.2",
+  "prompt": "Why is the sky blue?",
+  "stream": false
+}'
+```
+
+### Environment Variables
+
+- `OLLAMA_HOST` - Set the host and port (default: `localhost:11434`)
+- `OLLAMA_MODELS` - Set custom models directory
+- `OLLAMA_FLASH_ATTENTION` - Enable flash attention (set to `1`)
+- `OLLAMA_KV_CACHE_TYPE` - Set KV cache type (e.g., `q8_0`)
+
+### Integration
+
+Ollama can be integrated with:
+- **Cursor IDE**: Use Ollama as a local AI assistant
+- **Command line**: Direct CLI access for quick queries
+- **API clients**: Any HTTP client can interact with the API
+- **Other tools**: Many tools support Ollama as a backend
+
+### Notes
+
+- Models are stored in `~/.ollama/models/` and can be large (several GB each)
+- The service runs on port 11434 by default
+- First model pull may take time depending on internet speed
+- GPU acceleration is automatically used if available
+
 ## EditorConfig
 
 **File**: `.editorconfig`  

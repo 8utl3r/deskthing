@@ -19,6 +19,8 @@ brew "httpie"
 brew "jq"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Run large language models locally
+brew "ollama"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Cross-shell prompt for astronauts
@@ -65,6 +67,8 @@ cask "lm-studio"
 cask "logi-options+"
 # WiFi site survey software and WiFi scanner
 cask "netspot"
+# Desktop GUI for Ollama (local LLM management)
+cask "ollama-app"
 # Imaging utility to install operating systems to a microSD card
 cask "raspberry-pi-imager"
 # Replacement for the volume, brightness and keyboard backlight HUDs

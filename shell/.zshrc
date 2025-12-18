@@ -37,6 +37,13 @@ fi
 # Aliases and safe wrappers
 alias ll="ls -lah"
 
+# Ollama aliases (if installed)
+if command -v ollama >/dev/null 2>&1; then
+  alias ollama-list="ollama list"
+  alias ollama-ps="ollama ps"
+  alias ollama-pull="ollama pull"
+fi
+
 cat() {
   if command -v bat >/dev/null 2>&1; then
     bat --paging=never "$@"
