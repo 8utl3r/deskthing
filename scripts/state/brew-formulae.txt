@@ -59,6 +59,7 @@ nettle
 npth
 nspr
 nss
+ollama
 oniguruma
 openjpeg
 openssl@3

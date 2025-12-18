@@ -19,6 +19,8 @@ brew "httpie"
 brew "jq"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Create, run, and share large language models (LLMs)
+brew "ollama"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Search tool like grep and The Silver Searcher
@@ -64,6 +66,8 @@ cask "lm-studio"
 cask "logi-options+"
 # WiFi site survey software and WiFi scanner
 cask "netspot"
+# Get up and running with large language models locally
+cask "ollama-app"
 # Imaging utility to install operating systems to a microSD card
 cask "raspberry-pi-imager"
 # Replacement for the volume, brightness and keyboard backlight HUDs
