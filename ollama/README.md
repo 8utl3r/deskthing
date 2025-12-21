@@ -149,6 +149,24 @@ Launch the app from Applications or via:
 open -a Ollama
 ```
 
+## Remote Access via Tailscale
+
+Access Atlas from other devices on your Tailscale network:
+
+**Quick Setup:**
+1. Set `OLLAMA_HOST=0.0.0.0:11434` in your environment
+2. Restart Ollama: `brew services restart ollama`
+3. Get your Tailscale IP: `tailscale ip -4`
+4. Connect from remote device: `export OLLAMA_HOST=http://<your-tailscale-ip>:11434`
+
+**Full Guide**: See `tailscale_access.md` for detailed instructions, security considerations, and troubleshooting.
+
+**Security Notes:**
+- ✅ All processing remains local on your Mac
+- ✅ Traffic encrypted via Tailscale (WireGuard)
+- ✅ Only accessible to devices on your Tailscale network
+- ⚠️ No built-in authentication (rely on Tailscale ACLs)
+
 ## Integration
 
 Ollama can be integrated with:
@@ -158,6 +176,7 @@ Ollama can be integrated with:
 - **API clients**: Any HTTP client can interact with the API
 - **Web UIs**: Third-party web interfaces like Open WebUI
 - **Other tools**: Many tools support Ollama as a backend
+- **Tailscale Network**: Access from remote devices securely (see `tailscale_access.md`)
 
 ## Notes
 

@@ -93,3 +93,4 @@ Or use the Cursor task: `Cmd+Shift+P` → "Tasks: Run Task" → "Hammerspoon: Wa
 For detailed documentation, see [DEBUGGING.md](DEBUGGING.md).
 
 
+

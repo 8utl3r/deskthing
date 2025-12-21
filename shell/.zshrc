@@ -44,6 +44,10 @@ if command -v ollama >/dev/null 2>&1; then
   # Keep model loaded for instant responses
   export OLLAMA_KEEP_ALIVE=24h
   
+  # Enable Tailscale/network access (uncomment to allow remote connections)
+  # export OLLAMA_HOST=0.0.0.0:11434
+  # See: ~/dotfiles/ollama/tailscale_access.md for setup instructions
+  
   # Aliases
   alias ollama-list="ollama list"
   alias ollama-ps="ollama ps"
