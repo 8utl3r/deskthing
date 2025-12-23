@@ -35,5 +35,6 @@
   "autoCommitWatcher.aiCommitPrompt": "You are a git commit message generator. Analyze the code changes and generate a concise commit message following Conventional Commits format. Focus on what changed and why it matters to the user or codebase.",
   "autoCommitWatcher.autoStartWithCursor": true,
   "autoCommitWatcher.statusFile": "~/.auto_commit_watcher_status.json",
-  "cursor.inlineDiff.mode": "unified"
+  "cursor.inlineDiff.mode": "unified",
+  "workbench.editor.enablePreview": false
 }

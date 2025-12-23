@@ -44,6 +44,7 @@ LINK_PAIRS=(
   "alfred/Alfred.alfredpreferences|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences"
   "activedock/com.sergey-gerasimenko.ActiveDock-2|$HOME/Library/Application Support/com.sergey-gerasimenko.ActiveDock-2"
   "activedock/com.sergey-gerasimenko.ActiveDock-2.plist|$HOME/Library/Preferences/com.sergey-gerasimenko.ActiveDock-2.plist"
+  "antinote/com.antinote.Antinote.plist|$HOME/Library/Preferences/com.antinote.Antinote.plist"
   "bloom/com.asiafu.Bloom.plist|$HOME/Library/Preferences/com.asiafu.Bloom.plist"
   "cheatsheet/com.mediaatelier.CheatSheet.plist|$HOME/Library/Preferences/com.mediaatelier.CheatSheet.plist"
   "flexinet/com.macplus-software.FlexiNet.plist|$HOME/Library/Preferences/com.macplus-software.FlexiNet.plist"

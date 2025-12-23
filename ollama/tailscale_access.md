@@ -272,3 +272,5 @@ const PROXY_HOST = '0.0.0.0'; // or your Tailscale IP
 - ⚠️ No built-in authentication (rely on Tailscale security)
 - ⚠️ Remote inference will be slower than local
 
+
+

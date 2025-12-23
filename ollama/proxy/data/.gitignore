@@ -1,0 +1,17 @@
+# Ignore all user files but keep directory structure
+# Keep .gitkeep files to preserve empty directories
+!.gitkeep
+
+# Ignore all files in subdirectories
+files/notes/*
+!files/notes/.gitkeep
+files/docs/*
+!files/docs/.gitkeep
+files/archive/*
+!files/archive/.gitkeep
+history/*
+!history/.gitkeep
+
+# Keep variables.json as it's a system file
+!variables.json
+

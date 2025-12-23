@@ -1,0 +1,20 @@
+# Ignore user-generated files but keep directory structure
+# Keep: variables.json, .gitkeep files
+# Ignore: user files in subdirectories
+
+# User files in notes, docs, archive
+data/files/notes/*
+!data/files/notes/.gitkeep
+
+data/files/docs/*
+!data/files/docs/.gitkeep
+
+data/files/archive/*
+!data/files/archive/.gitkeep
+
+# History files
+data/history/*
+!data/history/.gitkeep
+
+# Keep variables.json
+!data/variables.json
