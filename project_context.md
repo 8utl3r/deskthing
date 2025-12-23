@@ -18,6 +18,20 @@ Personal dotfiles repository for macOS system configuration and development envi
 
 ## Session Records
 
+### 2025-01-06 - Antinote Integration
+- **Key Decisions**: Added Antinote to dotfiles with license key storage; configured for symlink management following existing app patterns
+- **Actions Taken**:
+  - Created `antinote/` directory structure in dotfiles
+  - Created `antinote/README.md` with configuration documentation
+  - Created `antinote/license-key.txt` with personal license key (GE9P-ZRN3-4ECW-ZWXZ)
+  - Added symlink mapping to `scripts/system/link` for preferences plist file
+  - Configured to symlink `com.antinote.Antinote.plist` once app is installed and configured
+- **Next 3 Specific Steps**:
+  1. Install Antinote from antinote.io
+  2. Activate with license key GE9P-ZRN3-4ECW-ZWXZ
+  3. Run `scripts/system/link --apply` to symlink preferences after first configuration
+- **Blockers/Concerns**: None - Antinote structure is ready; bundle identifier may need verification after installation
+
 ### 2025-12-17 - Atlas Private Life Manager Implementation
 - **Key Decisions**: Implemented Dolphin-Mistral-Nemo 12B as "Atlas" private life manager; configured for ADHD-friendly direct communication with 32k context window and low temperature (0.2) for reliable scheduling
 - **Actions Taken**:
