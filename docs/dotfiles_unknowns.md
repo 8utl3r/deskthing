@@ -16,6 +16,18 @@ Record dotfiles repo changes that need guidance before committing or cleaning up
 - `project_context.md`: unknown change.
 - `scripts/system/link`: unknown change.
 - `shell/.zshrc`: unknown change.
+- `scripts/Brewfile`: auto-updated Homebrew snapshot.
+- `scripts/state/apps-system.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/apps-user.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/brew-casks.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/brew-formulae.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/tailscale-version.txt`: auto-updated Homebrew snapshot.
+- `scripts/Brewfile`: auto-updated Homebrew snapshot.
+- `scripts/state/apps-system.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/apps-user.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/brew-casks.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/brew-formulae.txt`: auto-updated Homebrew snapshot.
+- `scripts/state/tailscale-version.txt`: auto-updated Homebrew snapshot.
 
 ## Unknown Untracked Areas (need decision)
 - `alfred/Alfred.alfredpreferences/preferences/**`: new preferences data.
