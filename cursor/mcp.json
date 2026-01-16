@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "atlas-kb": {
+      "command": "/Users/pete/atlas/.venv/bin/python",
+      "args": [
+        "/Users/pete/atlas/src/mcp_kb_server.py"
+      ],
+      "cwd": "/Users/pete/atlas"
+    },
     "sand-graphics": {
       "command": "python3",
       "args": [
@@ -9,9 +16,29 @@
       "env": {
         "RUST_LOG": "info"
       }
+    },
+    "godot": {
+      "command": "python3",
+      "args": [
+        "/Users/pete/discarded/junkyard/addons/gdai-mcp-plugin-godot/gdai_mcp_server.py"
+      ],
+      "cwd": "/Users/pete/discarded/junkyard",
+      "env": {
+        "GODOT_PROJECT_PATH": "/Users/pete/discarded/junkyard",
+        "GDAI_MCP_SERVER_PORT": "3571",
+        "GDAI_RUNTIME_SERVER_PORT": "3572"
+      }
+},
+    "n8n-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "supergateway",
+        "--streamableHttp",
+        "http://localhost:5678/mcp-server/http",
+        "--header",
+        "authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNmQ5YWM0OC03ZmMwLTQ4YjUtYjhhZi03YTUxOWNmM2I5NTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6Ijc4OTIwMmZjLTU0YmUtNDcyMi1iNDU4LTYzOWQ1OTkyYzBkMSIsImlhdCI6MTc2NzQyNzQyNH0.9UlgxrblthXHwC7k4HKJQlndjSCVam1fTQyaA0i_feg"
+      ]
     }
   }
 }
-
-
-
