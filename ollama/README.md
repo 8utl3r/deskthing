@@ -167,6 +167,23 @@ Access Atlas from other devices on your Tailscale network:
 - ✅ Only accessible to devices on your Tailscale network
 - ⚠️ No built-in authentication (rely on Tailscale ACLs)
 
+## Atlas Proxy
+
+The Atlas Proxy (`proxy/`) adds persistence, file operations, and context injection to Atlas:
+
+- **Variable Persistence**: Variables persist across sessions
+- **File Operations**: Create, read, update, delete, move, copy, search, list, and archive files
+- **Context Injection**: Automatic injection of file listings and variables into prompts
+- **Conversation Logging**: Daily JSON logs of all conversations
+
+**Setup**: See `proxy/README.md` for installation and usage instructions.
+
+**Service Management**:
+- Start: `atlas-proxy-start`
+- Stop: `atlas-proxy-stop`
+- Status: `atlas-proxy-status`
+- Logs: `atlas-proxy-logs`
+
 ## Integration
 
 Ollama can be integrated with:
@@ -175,6 +192,7 @@ Ollama can be integrated with:
 - **Command line**: Direct CLI access for quick queries
 - **API clients**: Any HTTP client can interact with the API
 - **Web UIs**: Third-party web interfaces like Open WebUI
+- **Atlas Proxy**: Enhanced Atlas with persistence and file operations (see `proxy/README.md`)
 - **Other tools**: Many tools support Ollama as a backend
 - **Tailscale Network**: Access from remote devices securely (see `tailscale_access.md`)
 

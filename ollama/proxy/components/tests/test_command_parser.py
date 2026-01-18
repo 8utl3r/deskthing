@@ -453,3 +453,6 @@ class TestEdgeCases:
         assert len(commands) == 1
         assert commands[0]["path"] == "path/with-dots.file.txt"
 
+
+
+

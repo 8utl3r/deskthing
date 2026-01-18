@@ -36,7 +36,9 @@ config = Config()
 variable_manager = VariableManager(config.data_dir)
 context_injector = ContextInjector(
     config.files_dir,
-    max_context_size=config.max_context_size
+    max_context_size=config.max_context_size,
+    max_context_tokens=config.max_context_tokens,
+    dynamic_context=config.dynamic_context
 )
 command_parser = CommandParser()
 file_ops = FileOperationsManager(
@@ -103,12 +105,16 @@ async def chat_endpoint(request: Request):
         variables = variable_manager.load_variables()
         logger.debug(f"Loaded {len(variables)} variables")
         
-        # Step 2: Load file context
-        file_context = context_injector.load_file_context()
+        # Step 2: Load file context (keyword-based, only relevant files)
+        file_context = context_injector.load_file_context(messages=messages)
         
-        # Step 3: Format context
-        formatted_context = context_injector.format_context(file_context, variables)
-        logger.debug(f"Formatted context ({len(formatted_context)} chars)")
+        # Step 3: Format context (only includes relevant files that matched keywords)
+        # Pass messages for dynamic context size calculation
+        formatted_context = context_injector.format_context(file_context, variables, messages=messages)
+        if formatted_context:
+            logger.debug(f"Formatted context ({len(formatted_context)} chars) - keywords: {list(file_context.get('keywords', {}).keys())[:5]}")
+        else:
+            logger.debug("No context to inject (no keyword matches)")
         
         # Step 4: Inject context into messages
         enhanced_messages = context_injector.inject_into_messages(messages, formatted_context)

@@ -126,8 +126,35 @@ class Config:
 
     @property
     def max_context_size(self) -> int:
-        """Maximum context size in characters."""
+        """Maximum context size in characters (used when dynamic_context=False).
+        
+        Default: 2000 (conservative, but too small for practical RAG)
+        Recommended: 10000-20000 for referencing full files or substantial sections.
+        Can be set via ATLAS_MAX_CONTEXT_SIZE environment variable.
+        Note: Ignored if dynamic_context=True (default).
+        """
         return self._get_value("max_context_size", 2000)
+    
+    @property
+    def max_context_tokens(self) -> int:
+        """Total context window size in tokens.
+        
+        Default: 32768 (from Modelfile)
+        Can be set via ATLAS_MAX_CONTEXT_TOKENS environment variable.
+        Used for dynamic context size calculation.
+        """
+        return self._get_value("max_context_tokens", 32768)
+    
+    @property
+    def dynamic_context(self) -> bool:
+        """Whether to use dynamic context sizing.
+        
+        Default: True (automatically calculates available space)
+        Can be set via ATLAS_DYNAMIC_CONTEXT environment variable.
+        When True, max_context_size is ignored and context size is calculated
+        based on available space in the context window.
+        """
+        return self._get_value("dynamic_context", True)
 
     @property
     def log_retention_days(self) -> int:

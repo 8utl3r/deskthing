@@ -1,0 +1,303 @@
+{
+  "operation": "create",
+  "name": "Silly Excuse Generator v1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-excuse",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "generate-excuse"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "excuse_types",
+              "name": "excuse_types",
+              "value": "=[\"My dog ate my\", \"I was abducted by\", \"My cat is stuck in\", \"Aliens stole my\", \"I'm being chased by\", \"My house is full of\", \"I can't because of\", \"My neighbor's\", \"A time traveler\", \"My pet rock\"]",
+              "type": "array"
+            },
+            {
+              "id": "excuse_endings",
+              "name": "excuse_endings",
+              "value": "=[\"homework\", \"car keys\", \"motivation\", \"common sense\", \"patience\", \"coffee\", \"will to live\", \"dignity\", \"left me\", \"demanded I stay home\"]",
+              "type": "array"
+            },
+            {
+              "id": "random_number",
+              "name": "random_number",
+              "value": "={{ Math.floor(Math.random() * 10) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "setup-excuse-parts",
+      "name": "Setup Excuse Parts",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "excuse_type",
+              "name": "excuse_type",
+              "value": "={{ $json.excuse_types[$json.random_number] }}",
+              "type": "string"
+            },
+            {
+              "id": "excuse_ending",
+              "name": "excuse_ending",
+              "value": "={{ $json.excuse_endings[Math.floor(Math.random() * $json.excuse_endings.length)] }}",
+              "type": "string"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "generate-excuse",
+      "name": "Generate Excuse",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.quotable.io/random",
+        "options": {}
+      },
+      "id": "fetch-inspiration",
+      "name": "Fetch Random Quote",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "final_excuse",
+              "name": "final_excuse",
+              "value": "={{ $('Generate Excuse').item.json.excuse_type + ' ' + $('Generate Excuse').item.json.excuse_ending }}",
+              "type": "string"
+            },
+            {
+              "id": "credibility_score",
+              "name": "credibility_score",
+              "value": "={{ Math.floor(Math.random() * 100) }}",
+              "type": "number"
+            },
+            {
+              "id": "inspirational_quote",
+              "name": "inspirational_quote",
+              "value": "={{ $json.content + ' - ' + $json.author }}",
+              "type": "string"
+            },
+            {
+              "id": "excuse_package",
+              "name": "excuse_package",
+              "value": "={{ {\n  \"excuse\": $('Generate Excuse').item.json.excuse_type + ' ' + $('Generate Excuse').item.json.excuse_ending,\n  \"credibility\": Math.floor(Math.random() * 100),\n  \"generated_at\": $('Generate Excuse').item.json.timestamp,\n  \"inspirational_backup\": $json.content + ' - ' + $json.author,\n  \"severity\": $('Generate Excuse').item.json.excuse_ending.length > 10 ? \"critical\" : \"moderate\",\n  \"emoji\": credibility_score > 50 ? \"😅\" : \"🤷\",\n  \"recommendation\": credibility_score > 70 ? \"Use this one!\" : \"Maybe try again...\"\n} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "package-excuse",
+      "name": "Package Excuse",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.credibility_score }}",
+              "operation": "largerEqual",
+              "value2": 50
+            }
+          ]
+        }
+      },
+      "id": "check-credibility",
+      "name": "Check Credibility",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "final_response",
+              "name": "final_response",
+              "value": "={{ {\n  \"status\": \"success\",\n  \"excuse\": $json.excuse_package.excuse,\n  \"credibility_score\": $json.excuse_package.credibility,\n  \"emoji\": $json.excuse_package.emoji,\n  \"recommendation\": $json.excuse_package.recommendation,\n  \"inspirational_backup\": $json.excuse_package.inspirational_backup,\n  \"generated_at\": $json.excuse_package.generated_at,\n  \"message\": \"Your excuse is ready! \" + $json.excuse_package.emoji\n} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-success",
+      "name": "Format Success Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "final_response",
+              "name": "final_response",
+              "value": "={{ {\n  \"status\": \"low_credibility\",\n  \"excuse\": $json.excuse_package.excuse,\n  \"credibility_score\": $json.excuse_package.credibility,\n  \"emoji\": \"🤦\",\n  \"recommendation\": \"This excuse is too weak. Try generating another one!\",\n  \"inspirational_backup\": $json.excuse_package.inspirational_backup,\n  \"generated_at\": $json.excuse_package.generated_at,\n  \"message\": \"Your excuse needs work... \" + \"🤦\"\n} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-low-cred",
+      "name": "Format Low Credibility",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.final_response }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1650, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Setup Excuse Parts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Excuse Parts": {
+      "main": [
+        [
+          {
+            "node": "Generate Excuse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Excuse": {
+      "main": [
+        [
+          {
+            "node": "Fetch Random Quote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Random Quote": {
+      "main": [
+        [
+          {
+            "node": "Package Excuse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Package Excuse": {
+      "main": [
+        [
+          {
+            "node": "Check Credibility",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Credibility": {
+      "main": [
+        [
+          {
+            "node": "Format Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Low Credibility",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Success Response": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Low Credibility": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}
+

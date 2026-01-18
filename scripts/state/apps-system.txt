@@ -12,28 +12,26 @@ Discord.app
 Docker.app
 FlexiNet.app
 FreeTube.app
+Godot.app
+Google Chrome.app
 Hammerspoon.app
 Home Assistant.app
-Ice.app
 IINA.app
-iStatistica Pro.app
-iStatistica Sensors.app
+Ice.app
 Itsycal.app
 Karabiner-Elements.app
 Karabiner-EventViewer.app
-kindaVim.app
+LM Studio.app
 LanScan.app
 Lasso.app
-LM Studio.app
-logioptionsplus.app
 MiniDSP Device Console.app
 Monarch.app
 NetSpot.app
 Ollama.app
 Pokit.app
+REW
 Raspberry Pi Imager.app
 RemotePlay.app
-REW
 Safari.app
 Savant Application Manager.app
 SlimHUD.app
@@ -45,9 +43,13 @@ Telegram.app
 Termius.app
 TestFlight.app
 Typinator.app
-Utilities
 UTM.app
+Utilities
 WezTerm.app
 WiiM Home.app
 Xcode.app
 Zen.app
+iStatistica Pro.app
+iStatistica Sensors.app
+kindaVim.app
+logioptionsplus.app

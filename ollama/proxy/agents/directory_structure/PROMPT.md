@@ -44,3 +44,6 @@ You are setting up the directory structure and initial data files for Atlas prox
 - Variables.json has valid JSON
 - Gitignore prevents committing user data
 
+
+
+

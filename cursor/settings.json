@@ -36,5 +36,8 @@
   "autoCommitWatcher.autoStartWithCursor": true,
   "autoCommitWatcher.statusFile": "~/.auto_commit_watcher_status.json",
   "cursor.inlineDiff.mode": "unified",
+  "workbench.editorAssociations": {
+    "*.md": "default"
+  },
   "workbench.editor.enablePreview": false
 }

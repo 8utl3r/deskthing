@@ -1,0 +1,6 @@
+# Environment file with secrets
+.env
+
+# Local data directory (if created here)
+.n8n/
+

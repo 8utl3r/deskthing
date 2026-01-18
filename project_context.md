@@ -114,6 +114,23 @@ Personal dotfiles repository for macOS system configuration and development envi
   3. Customize ActiveDock 2 appearance and features as desired
 - **Blockers/Concerns**: None - default dock is hidden, ActiveDock 2 is ready to use
 
+### 2025-01-06 - n8n Setup and Installation
+- **Key Decisions**: Set up n8n workflow automation tool using Docker Compose; configured with basic authentication for security
+- **Actions Taken**:
+  - Created `n8n/` directory structure in dotfiles following existing patterns
+  - Created `docker-compose.yml` with production-ready configuration (health checks, restart policy, volume persistence)
+  - Created `.env.example` template and `.env` file for environment variables
+  - Created `.gitignore` to exclude `.env` file with secrets
+  - Created comprehensive `README.md` with setup instructions, usage, and security notes
+  - Started Docker Desktop and launched n8n container
+  - Verified n8n is running and accessible at `http://localhost:5678`
+  - Fixed docker-compose.yml to remove obsolete `version` field
+- **Next 3 Specific Steps**:
+  1. Access n8n web interface at `http://localhost:5678` and log in (username: admin, password from `.env`)
+  2. Update `.env` file with secure password (currently using default from `.env.example`)
+  3. Create first test workflow to verify functionality
+- **Blockers/Concerns**: None - n8n is running and ready to use; default password should be changed in `.env` file for security
+
 See `session_records.md` for detailed session documentation.
 
 ## Next Steps

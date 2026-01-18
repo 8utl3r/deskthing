@@ -8,6 +8,7 @@ crossover
 discord
 docker-desktop
 font-jetbrains-mono-nerd-font
+godot
 hammerspoon
 home-assistant
 iina

@@ -55,7 +55,8 @@ if command -v ollama >/dev/null 2>&1; then
   # Atlas (Private Life Manager) aliases
   alias atlas="ollama run atlas"
   alias atlas-prompt="$EDITOR $HOME/dotfiles/ollama/system_prompt.txt"
-  alias atlas-reload="cd $HOME/dotfiles/ollama && ollama create atlas -f Modelfile.dolphin-mistral-nemo"
+  alias atlas-reload="cd $HOME/dotfiles/ollama && ollama rm atlas 2>/dev/null; ollama create atlas -f Modelfile.dolphin-mistral-nemo"
+  alias atlas-cli="$HOME/dotfiles/ollama/atlas-cli.sh"
 fi
 
 cat() {
@@ -77,3 +78,12 @@ ls() {
 # Completion and keybindings
 autoload -Uz compinit && compinit -i
 bindkey -e
+
+# Atlas Proxy configuration
+if [ -f "$HOME/Library/LaunchAgents/homebrew.mxcl.atlas-proxy.plist" ]; then
+  alias atlas-proxy-start="launchctl load -w $HOME/Library/LaunchAgents/homebrew.mxcl.atlas-proxy.plist 2>/dev/null || launchctl bootstrap gui/$(id -u) $HOME/Library/LaunchAgents/homebrew.mxcl.atlas-proxy.plist"
+  alias atlas-proxy-stop="launchctl unload -w $HOME/Library/LaunchAgents/homebrew.mxcl.atlas-proxy.plist 2>/dev/null || launchctl bootout gui/$(id -u)/homebrew.mxcl.atlas-proxy"
+  alias atlas-proxy-restart="atlas-proxy-stop && sleep 1 && atlas-proxy-start"
+  alias atlas-proxy-status="launchctl list | grep atlas-proxy || echo 'Atlas proxy not running'"
+  alias atlas-proxy-logs="tail -f /opt/homebrew/var/log/atlas-proxy.log"
+fi

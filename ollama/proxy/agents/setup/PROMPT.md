@@ -81,3 +81,6 @@ You are setting up the Atlas proxy project structure. Create all directories and
 - .gitignore prevents committing user data
 - Project structure is ready for component development
 
+
+
+

@@ -58,3 +58,6 @@ All tests passing ✅
 
 The implementation uses a custom quote-finding algorithm (`_find_closing_quote`) to properly handle escaped quotes in multi-line content. The parser correctly identifies command boundaries even when commands are embedded in regular text.
 
+
+
+

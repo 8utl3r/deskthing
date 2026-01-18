@@ -1,0 +1,28 @@
+#!/bin/bash
+# Helper script to configure Docker Desktop memory
+# Note: This requires Docker Desktop to be restarted manually
+
+echo "🐳 Docker Desktop Memory Configuration Helper"
+echo ""
+echo "Docker Desktop doesn't expose a CLI for memory settings."
+echo "You need to configure it through the UI:"
+echo ""
+echo "Steps:"
+echo "  1. Open Docker Desktop"
+echo "  2. Click Settings (gear icon ⚙️) in top-right"
+echo "  3. Go to Resources → Advanced"
+echo "  4. Find 'Memory' slider"
+echo "  5. Set to 3GB (3072 MB) - recommended for 18GB system"
+echo "  6. Click 'Apply & Restart'"
+echo ""
+echo "Current allocation (from process):"
+ps aux | grep "com.docker.virtualization" | grep -o "memoryMiB [0-9]*" | head -1 || echo "  Could not detect current setting"
+echo ""
+echo "Recommended settings for 18GB system:"
+echo "  • Docker VM: 3GB"
+echo "  • Ollama: 8GB"
+echo "  • Open WebUI: 2GB"
+echo "  • OS overhead: ~5GB"
+echo "  Total: ~18GB"
+echo ""
+echo "After changing, Docker will restart automatically."

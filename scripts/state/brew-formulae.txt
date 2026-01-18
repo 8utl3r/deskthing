@@ -24,8 +24,10 @@ graphite2
 harfbuzz
 httpie
 icu4c@77
+icu4c@78
 jpeg-turbo
 jq
+krb5
 leptonica
 libarchive
 libassuan
@@ -69,6 +71,7 @@ pcre2
 pinentry
 pixman
 poppler
+postgresql@16
 python@3.13
 readline
 ripgrep

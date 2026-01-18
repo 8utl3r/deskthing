@@ -1,16 +1,16 @@
 {
 	"window-state-dashboard": {
 		"windowBounds": {
-			"x": 3030,
-			"y": 33,
-			"width": 802,
-			"height": 2118
+			"x": 265,
+			"y": 169,
+			"width": 1270,
+			"height": 720
 		},
 		"displayBounds": {
 			"x": 0,
 			"y": 0,
-			"width": 3840,
-			"height": 2160
+			"width": 1800,
+			"height": 1169
 		},
 		"isFullScreen": false,
 		"isMaximized": false

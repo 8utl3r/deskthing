@@ -1,0 +1,508 @@
+{
+  "operation": "update",
+  "workflowId": "OYY1csZg9aE2JFqu",
+  "name": "Silly Decision Maker v2 (Fixed)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "make-decision",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "make-decision"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "question",
+              "name": "question",
+              "value": "={{ $json.body.question || 'Should I do this?' }}",
+              "type": "string"
+            },
+            {
+              "id": "options",
+              "name": "options",
+              "value": "={{ $json.body.options || [\"Yes\", \"No\", \"Maybe\", \"Ask a cat\", \"Flip a coin\", \"Consult the stars\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "parse-input",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.quotable.io/random",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "fetch-quote",
+      "name": "Fetch Random Quote",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [650, 200],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.chucknorris.io/jokes/random",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "fetch-joke",
+      "name": "Fetch Chuck Norris Joke",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [650, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.agify.io?name={{ $json.question.split(' ')[0] }}",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "fetch-age-data",
+      "name": "Fetch Age Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [650, 400],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "random_seed",
+              "name": "random_seed",
+              "value": "={{ Math.floor(Math.random() * 10000) }}",
+              "type": "number"
+            },
+            {
+              "id": "hour_of_day",
+              "name": "hour_of_day",
+              "value": "={{ $now.toFormat('HH') }}",
+              "type": "number"
+            },
+            {
+              "id": "question_length",
+              "name": "question_length",
+              "value": "={{ $('Parse Input').item.json.question.length }}",
+              "type": "number"
+            },
+            {
+              "id": "options_count",
+              "name": "options_count",
+              "value": "={{ $('Parse Input').item.json.options.length }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "calculate-factors",
+      "name": "Calculate Decision Factors",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "decision_index",
+              "name": "decision_index",
+              "value": "={{ Math.floor(($json.random_seed + $json.hour_of_day + $json.question_length) % $('Parse Input').item.json.options.length) }}",
+              "type": "number"
+            },
+            {
+              "id": "selected_option",
+              "name": "selected_option",
+              "value": "={{ $('Parse Input').item.json.options[$json.decision_index] }}",
+              "type": "string"
+            },
+            {
+              "id": "confidence_score",
+              "name": "confidence_score",
+              "value": "={{ Math.floor(Math.random() * 100) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "make-decision",
+      "name": "Make Decision",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.confidence_score }}",
+              "operation": "largerEqual",
+              "value2": 70
+            }
+          ]
+        }
+      },
+      "id": "check-confidence",
+      "name": "Check Confidence",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "reasoning",
+              "name": "reasoning",
+              "value": "={{ [\n  \"The stars aligned perfectly for this decision.\",\n  \"My advanced AI calculations determined this is optimal.\",\n  \"After consulting with 42 parallel universes, this was the consensus.\",\n  \"The cosmic energy levels support this choice.\",\n  \"I asked a magic 8-ball and it agreed.\",\n  \"This decision has been blessed by the algorithm gods.\"\n][Math.floor(Math.random() * 6)] }}",
+              "type": "string"
+            },
+            {
+              "id": "emoji",
+              "name": "emoji",
+              "value": "={{ [\"✨\", \"🌟\", \"🎯\", \"💫\", \"🔥\", \"⚡\"][Math.floor(Math.random() * 6)] }}",
+              "type": "string"
+            },
+            {
+              "id": "question",
+              "name": "question",
+              "value": "={{ $('Parse Input').item.json.question }}",
+              "type": "string"
+            },
+            {
+              "id": "selected_option",
+              "name": "selected_option",
+              "value": "={{ $('Make Decision').item.json.selected_option }}",
+              "type": "string"
+            },
+            {
+              "id": "confidence_score",
+              "name": "confidence_score",
+              "value": "={{ $('Make Decision').item.json.confidence_score }}",
+              "type": "number"
+            },
+            {
+              "id": "random_seed",
+              "name": "random_seed",
+              "value": "={{ $('Calculate Decision Factors').item.json.random_seed }}",
+              "type": "number"
+            },
+            {
+              "id": "hour_of_day",
+              "name": "hour_of_day",
+              "value": "={{ $('Calculate Decision Factors').item.json.hour_of_day }}",
+              "type": "number"
+            },
+            {
+              "id": "question_length",
+              "name": "question_length",
+              "value": "={{ $('Calculate Decision Factors').item.json.question_length }}",
+              "type": "number"
+            },
+            {
+              "id": "options_count",
+              "name": "options_count",
+              "value": "={{ $('Parse Input').item.json.options.length }}",
+              "type": "number"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ $('Parse Input').item.json.timestamp }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "high-confidence-reasoning",
+      "name": "High Confidence Reasoning",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "reasoning",
+              "name": "reasoning",
+              "value": "={{ [\n  \"I'm not entirely sure, but this feels right... maybe?\",\n  \"The data is inconclusive, so I'm going with my gut.\",\n  \"After much deliberation, I'm 60% sure this is correct.\",\n  \"The tea leaves were unclear, but this seems reasonable.\",\n  \"I asked my pet rock and it didn't object.\",\n  \"This decision is based on vibes and vibes alone.\"\n][Math.floor(Math.random() * 6)] }}",
+              "type": "string"
+            },
+            {
+              "id": "emoji",
+              "name": "emoji",
+              "value": "={{ [\"🤷\", \"🤔\", \"😅\", \"🙃\", \"🤪\", \"😬\"][Math.floor(Math.random() * 6)] }}",
+              "type": "string"
+            },
+            {
+              "id": "question",
+              "name": "question",
+              "value": "={{ $('Parse Input').item.json.question }}",
+              "type": "string"
+            },
+            {
+              "id": "selected_option",
+              "name": "selected_option",
+              "value": "={{ $('Make Decision').item.json.selected_option }}",
+              "type": "string"
+            },
+            {
+              "id": "confidence_score",
+              "name": "confidence_score",
+              "value": "={{ $('Make Decision').item.json.confidence_score }}",
+              "type": "number"
+            },
+            {
+              "id": "random_seed",
+              "name": "random_seed",
+              "value": "={{ $('Calculate Decision Factors').item.json.random_seed }}",
+              "type": "number"
+            },
+            {
+              "id": "hour_of_day",
+              "name": "hour_of_day",
+              "value": "={{ $('Calculate Decision Factors').item.json.hour_of_day }}",
+              "type": "number"
+            },
+            {
+              "id": "question_length",
+              "name": "question_length",
+              "value": "={{ $('Calculate Decision Factors').item.json.question_length }}",
+              "type": "number"
+            },
+            {
+              "id": "options_count",
+              "name": "options_count",
+              "value": "={{ $('Parse Input').item.json.options.length }}",
+              "type": "number"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ $('Parse Input').item.json.timestamp }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "low-confidence-reasoning",
+      "name": "Low Confidence Reasoning",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "final_decision",
+              "name": "final_decision",
+              "value": "={{ {\n  \"question\": $json.question,\n  \"decision\": $json.selected_option,\n  \"confidence\": $json.confidence_score,\n  \"reasoning\": $json.reasoning,\n  \"emoji\": $json.emoji,\n  \"factors\": {\n    \"random_seed\": $json.random_seed,\n    \"hour_of_day\": $json.hour_of_day,\n    \"question_length\": $json.question_length,\n    \"options_considered\": $json.options_count\n  },\n  \"external_influences\": {\n    \"inspirational_quote\": $('Fetch Random Quote').item.json.content ? ($('Fetch Random Quote').item.json.content + \" - \" + $('Fetch Random Quote').item.json.author) : \"The universe works in mysterious ways.\",\n    \"chuck_norris_wisdom\": $('Fetch Chuck Norris Joke').item.json.value || \"Chuck Norris doesn't need APIs.\",\n    \"age_data\": $('Fetch Age Data').item.json.age || \"unknown\"\n  },\n  \"timestamp\": $json.timestamp,\n  \"message\": $json.emoji + \" Decision: \" + $json.selected_option + \" (Confidence: \" + $json.confidence_score + \"%)\"\n} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "package-decision",
+      "name": "Package Decision",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1650, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.final_decision }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "Fetch Random Quote",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Chuck Norris Joke",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Age Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Random Quote": {
+      "main": [
+        [
+          {
+            "node": "Calculate Decision Factors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Chuck Norris Joke": {
+      "main": [
+        [
+          {
+            "node": "Calculate Decision Factors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Age Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Decision Factors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Decision Factors": {
+      "main": [
+        [
+          {
+            "node": "Make Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make Decision": {
+      "main": [
+        [
+          {
+            "node": "Check Confidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Confidence": {
+      "main": [
+        [
+          {
+            "node": "High Confidence Reasoning",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Low Confidence Reasoning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "High Confidence Reasoning": {
+      "main": [
+        [
+          {
+            "node": "Package Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Low Confidence Reasoning": {
+      "main": [
+        [
+          {
+            "node": "Package Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Package Decision": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}
+
