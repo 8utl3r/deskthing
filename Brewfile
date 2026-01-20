@@ -89,6 +89,8 @@ cask "telegram"
 cask "termius"
 # Virtual machines UI using QEMU
 cask "utm"
+# Network monitoring and UniFi Teleport VPN client
+cask "wifiman"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
 vscode "anysphere.cursorpyright"

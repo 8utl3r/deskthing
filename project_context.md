@@ -18,6 +18,21 @@ Personal dotfiles repository for macOS system configuration and development envi
 
 ## Session Records
 
+### 2025-01-06 - WiFiman Desktop Installation
+- **Date/Time**: 2025-01-06
+- **Key Decisions**: Added WiFiman Desktop to dotfiles for UniFi Teleport VPN client; documented via Homebrew Cask in Brewfile
+- **Actions Taken**:
+  - Added `cask "wifiman"` to Brewfile (alphabetically ordered before wezterm)
+  - Created comprehensive `docs/unifi-teleport-macos.md` guide with installation, setup, and troubleshooting
+  - Created `docs/ugreen-kvm-keyboard-issues.md` guide covering KVM keyboard problems and IPMI watchdog disable methods
+  - Updated `docs/unifi-teleport-macos.md` to note Homebrew Cask installation method
+  - Verified WiFiman Desktop is available via Homebrew Cask (version 1.2.8)
+- **Next 3 Specific Steps**:
+  1. Install WiFiman Desktop: `brew install --cask wifiman` (requires password for installer)
+  2. Enable Teleport in UniFi Network: `Settings → VPN → Teleport` → On
+  3. Generate invitation link and connect via WiFiman Desktop
+- **Blockers/Concerns**: Installation requires sudo password (interactive prompt needed); WiFiman Desktop requires Cloud Gateway or Next-Gen Gateway for Teleport feature
+
 ### 2025-01-06 - Antinote Integration
 - **Key Decisions**: Added Antinote to dotfiles with license key storage; configured for symlink management following existing app patterns
 - **Actions Taken**:
