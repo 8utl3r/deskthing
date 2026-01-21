@@ -18,6 +18,20 @@ Personal dotfiles repository for macOS system configuration and development envi
 
 ## Session Records
 
+### 2025-01-20 - Copyparty Installation
+- **Date/Time**: 2025-01-20
+- **Key Decisions**: Installed copyparty via Homebrew for HTTP file sharing hub with WebDAV, SFTP, FTP, SMB support; complements Seafile for quick file sharing use cases
+- **Actions Taken**:
+  - Installed copyparty via Homebrew (version 1.20.2)
+  - Added `brew "copyparty"` to Brewfile (alphabetically ordered after immich-cli)
+  - Verified installation: `/opt/homebrew/bin/copyparty` available
+  - Noted optional dependencies: ffmpeg for video/audio thumbnails, cfssl for CA/server-cert generation
+- **Next 3 Specific Steps**:
+  1. Create copyparty configuration file if needed (uses `-c PATH` flag for config files)
+  2. Test copyparty server startup with basic configuration
+  3. Configure volumes and accounts as needed for file sharing use cases
+- **Blockers/Concerns**: None - copyparty is installed and ready to use; configuration is done via command-line options or config files; documented use cases already exist in `docs/copyparty-capabilities-analysis.md` and `docs/seafile-copyparty-together.md`
+
 ### 2025-01-06 - WiFiman Desktop Installation
 - **Date/Time**: 2025-01-06
 - **Key Decisions**: Added WiFiman Desktop to dotfiles for UniFi Teleport VPN client; documented via Homebrew Cask in Brewfile
@@ -129,22 +143,20 @@ Personal dotfiles repository for macOS system configuration and development envi
   3. Customize ActiveDock 2 appearance and features as desired
 - **Blockers/Concerns**: None - default dock is hidden, ActiveDock 2 is ready to use
 
-### 2025-01-06 - n8n Setup and Installation
-- **Key Decisions**: Set up n8n workflow automation tool using Docker Compose; configured with basic authentication for security
+### 2025-01-20 - n8n Setup on TrueNAS Scale NAS
+- **Key Decisions**: Installed n8n on TrueNAS Scale 25.04.2.6 NAS (Ugreen DXP2800) as production instance; removed local MacBook setup
 - **Actions Taken**:
-  - Created `n8n/` directory structure in dotfiles following existing patterns
-  - Created `docker-compose.yml` with production-ready configuration (health checks, restart policy, volume persistence)
-  - Created `.env.example` template and `.env` file for environment variables
-  - Created `.gitignore` to exclude `.env` file with secrets
-  - Created comprehensive `README.md` with setup instructions, usage, and security notes
-  - Started Docker Desktop and launched n8n container
-  - Verified n8n is running and accessible at `http://localhost:5678`
-  - Fixed docker-compose.yml to remove obsolete `version` field
+  - Installed n8n app via TrueNAS Apps (community train)
+  - Configured storage mounts: Host Path `/mnt/tank/apps/n8n` for n8n data, `/mnt/tank/apps/n8n-postgres` for PostgreSQL
+  - Fixed permissions: set `/mnt/tank/apps/n8n` ownership to `apps:apps` (UID/GID 568) via `midclt call filesystem.chown`
+  - Started n8n app successfully; verified running at `http://192.168.0.158:30109`
+  - Removed local MacBook setup: deleted `~/.n8n` directory and `docker-compose.yml`
+  - Updated dotfiles documentation to reflect NAS instance only
 - **Next 3 Specific Steps**:
-  1. Access n8n web interface at `http://localhost:5678` and log in (username: admin, password from `.env`)
-  2. Update `.env` file with secure password (currently using default from `.env.example`)
-  3. Create first test workflow to verify functionality
-- **Blockers/Concerns**: None - n8n is running and ready to use; default password should be changed in `.env` file for security
+  1. Access n8n web interface at `http://192.168.0.158:30109` and complete setup wizard
+  2. Import workflows from `n8n/workflows/` directory to NAS instance
+  3. Configure n8n settings and create first workflows
+- **Blockers/Concerns**: None - n8n is running on NAS and ready to use
 
 See `session_records.md` for detailed session documentation.
 

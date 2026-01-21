@@ -27,6 +27,10 @@ brew "ripgrep"
 brew "starship"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# Immich CLI for bulk photo uploads to self-hosted Immich instance
+brew "immich-cli"
+# HTTP file sharing hub with WebDAV, SFTP, FTP, SMB support
+brew "copyparty"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "aerospace"
 # Customizable dock replacement with enhanced features
@@ -91,6 +95,8 @@ cask "termius"
 cask "utm"
 # Network monitoring and UniFi Teleport VPN client
 cask "wifiman"
+# Seafile desktop client for file sync with self-hosted Seafile server
+cask "seafile-client"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
 vscode "anysphere.cursorpyright"
