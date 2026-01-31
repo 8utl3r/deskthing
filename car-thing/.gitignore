@@ -1,0 +1,6 @@
+# DeskThing app
+deskthing-app/node_modules/
+deskthing-app/dist/
+
+# User-specific macro config (macros.example.json is the template)
+config/macros.json

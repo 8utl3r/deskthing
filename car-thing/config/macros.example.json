@@ -1,0 +1,22 @@
+{
+  "macros": [
+    {
+      "id": "mute-teams",
+      "label": "Mute Teams",
+      "type": "applescript",
+      "payload": "tell application \"Microsoft Teams\" to activate"
+    },
+    {
+      "id": "focus-mode",
+      "label": "Focus mode",
+      "type": "shortcut",
+      "payload": "Focus Mode"
+    },
+    {
+      "id": "add-inbox",
+      "label": "Add to inbox",
+      "type": "applescript",
+      "payload": "tell application \"Notes\" to make new note"
+    }
+  ]
+}

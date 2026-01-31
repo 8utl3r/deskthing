@@ -1,0 +1,41 @@
+/**
+ * Design tokens for Car Thing app.
+ * See docs/DESIGN_BIBLE.md for usage.
+ */
+:root {
+  /* Colors - base */
+  --color-bg-base: #0f172a;
+  --color-bg-elevated: #1e293b;
+  --color-bg-subtle: #334155;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #64748b;
+  --color-border-subtle: #475569;
+
+  /* Colors - semantic */
+  --color-accent: #3b82f6;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-muted-active: #94a3b8;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  /* Typography */
+  --text-display: 20px;
+  --text-title: 16px;
+  --text-body: 14px;
+  --text-caption: 12px;
+  --text-micro: 11px;
+
+  /* Touch */
+  --touch-min: 44px;
+  --radius-lg: 8px;
+  --radius-md: 6px;
+}
