@@ -57,7 +57,7 @@ const start = async () => {
 
   // Register actions so they appear in DeskThing Desktop → Button/Key mapping. User maps hardware to these IDs.
   // Include source, version_code, tag so the mapping UI has full action shape (may prevent "unknown error").
-  const APP_ID = 'deskthingapp'
+  const APP_ID = 'deskthing-dashboard'
   const actionList = [
     { id: ACTIONS.VOLUME_UP, name: 'Volume up (wheel)', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'media' as const },
     { id: ACTIONS.VOLUME_DOWN, name: 'Volume down (wheel)', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'media' as const },
