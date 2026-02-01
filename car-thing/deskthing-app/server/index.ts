@@ -2,8 +2,17 @@ import { createRequire } from 'node:module'
 import { DeskThing } from '@deskthing/server'
 import { DESKTHING_EVENTS } from '@deskthing/types'
 
+// Read version from manifest.json (in packaged app zip); package.json is not in the zip.
 const require = createRequire(import.meta.url)
-const pkg = require('../package.json') as { version: string; version_code: number }
+let appVersion = '0.1.3'
+let appVersionCode = 3
+try {
+  const manifest = require('../manifest.json') as { version?: string; version_code?: number }
+  if (manifest.version) appVersion = manifest.version
+  if (typeof manifest.version_code === 'number') appVersionCode = manifest.version_code
+} catch {
+  // Fallback so server never crashes when manifest is missing
+}
 const BRIDGE_URL = process.env.CAR_THING_BRIDGE_URL || 'http://127.0.0.1:8765'
 
 const VOLUME_WHEEL_STEP = 5
@@ -61,8 +70,6 @@ const start = async () => {
   // Register actions so they appear in DeskThing Desktop → Button/Key mapping. User maps hardware to these IDs.
   // Include source, version_code, tag so the mapping UI has full action shape (may prevent "unknown error").
   const APP_ID = 'deskthing-dashboard'
-  const appVersion = pkg.version
-  const appVersionCode = pkg.version_code
   const actionList = [
     { id: ACTIONS.VOLUME_UP, name: 'Volume up (wheel)', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'media' as const },
     { id: ACTIONS.VOLUME_DOWN, name: 'Volume down (wheel)', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'media' as const },

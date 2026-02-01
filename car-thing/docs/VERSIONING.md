@@ -17,7 +17,7 @@ We started at **0.1.1**. Until MVP, MAJOR stays 0. **At MVP** we set version to 
 
 Keep these in sync on every version bump:
 
-1. **`deskthing-app/package.json`** → `"version": "X.Y.Z"`, `"version_code": N` (server reads these)
+1. **`deskthing-app/package.json`** → `"version": "X.Y.Z"`, `"version_code": N` (source of truth; server reads from manifest.json in the packaged zip)
 2. **`deskthing-app/deskthing/manifest.json`** → `"version": "X.Y.Z"`, `"version_code": N`
 3. **`deskthing-app/manifest.json`** (root copy) → same as above
 

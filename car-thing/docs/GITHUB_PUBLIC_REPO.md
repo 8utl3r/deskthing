@@ -98,6 +98,30 @@ If you develop in **dotfiles** but publish from a **separate public repo**:
 
 ---
 
+## Quick push (dotfiles → 8utl3r/deskthing)
+
+When you’ve made changes in dotfiles and want to publish to the public repo:
+
+1. **Bump version** in `deskthing-app/package.json` and both `manifest.json` files (and `version_code`). See `docs/VERSIONING.md`.
+2. **Commit** in dotfiles:
+   ```bash
+   cd /path/to/dotfiles
+   git add car-thing/
+   git commit -m "car-thing: <short description>"
+   ```
+3. **Subtree split and push** app to GitHub:
+   ```bash
+   git subtree split -P car-thing/deskthing-app -b deskthing-split
+   git push deskthing deskthing-split:main
+   ```
+4. **Build and create release** (zip + latest.json):
+   ```bash
+   ./car-thing/scripts/release-to-github.sh 8utl3r/deskthing
+   ```
+   Uses version from `package.json` for the tag (e.g. `v0.1.3`). DeskThing users get the update from the repo.
+
+---
+
 ## Summary
 
 | Step | Action |
