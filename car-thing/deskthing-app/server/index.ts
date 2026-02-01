@@ -1,6 +1,9 @@
+import { createRequire } from 'node:module'
 import { DeskThing } from '@deskthing/server'
 import { DESKTHING_EVENTS } from '@deskthing/types'
 
+const require = createRequire(import.meta.url)
+const pkg = require('../package.json') as { version: string; version_code: number }
 const BRIDGE_URL = process.env.CAR_THING_BRIDGE_URL || 'http://127.0.0.1:8765'
 
 const VOLUME_WHEEL_STEP = 5
@@ -58,13 +61,15 @@ const start = async () => {
   // Register actions so they appear in DeskThing Desktop → Button/Key mapping. User maps hardware to these IDs.
   // Include source, version_code, tag so the mapping UI has full action shape (may prevent "unknown error").
   const APP_ID = 'deskthing-dashboard'
+  const appVersion = pkg.version
+  const appVersionCode = pkg.version_code
   const actionList = [
-    { id: ACTIONS.VOLUME_UP, name: 'Volume up (wheel)', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'media' as const },
-    { id: ACTIONS.VOLUME_DOWN, name: 'Volume down (wheel)', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'media' as const },
-    { id: ACTIONS.TAB_AUDIO, name: 'Tab: Audio', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'nav' as const },
-    { id: ACTIONS.TAB_MACROS, name: 'Tab: Macros', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'nav' as const },
-    { id: ACTIONS.TAB_NOTIFICATIONS, name: 'Tab: Notifications', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'nav' as const },
-    { id: ACTIONS.BUTTON_4, name: 'Button 4', version: '0.11.1', version_code: 11, enabled: true, source: APP_ID, tag: 'basic' as const },
+    { id: ACTIONS.VOLUME_UP, name: 'Volume up (wheel)', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'media' as const },
+    { id: ACTIONS.VOLUME_DOWN, name: 'Volume down (wheel)', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'media' as const },
+    { id: ACTIONS.TAB_AUDIO, name: 'Tab: Audio', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
+    { id: ACTIONS.TAB_MACROS, name: 'Tab: Macros', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
+    { id: ACTIONS.TAB_NOTIFICATIONS, name: 'Tab: Notifications', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
+    { id: ACTIONS.BUTTON_4, name: 'Button 4', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'basic' as const },
   ]
   actionList.forEach((a) => {
     try {
