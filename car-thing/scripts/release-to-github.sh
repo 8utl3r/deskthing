@@ -33,6 +33,13 @@ if [[ ! -f "${ZIP[0]:-}" ]]; then
   exit 1
 fi
 
-echo "Creating release $TAG in $REPO with $(basename "${ZIP[0]}")..."
-gh release create "$TAG" "${ZIP[@]}" --repo "$REPO" --notes "Release $TAG"
-echo "Done. Update manifest repository/updateUrl to https://github.com/$REPO if not already set."
+# DeskThing needs BOTH latest.json and the zip in the release to add/update the app.
+LATEST_JSON="$DIST_DIR/latest.json"
+if [[ ! -f "$LATEST_JSON" ]]; then
+  echo "No latest.json in dist. DeskThing needs it for Add from GitHub." >&2
+  exit 1
+fi
+
+echo "Creating release $TAG in $REPO with $(basename "${ZIP[0]}") + latest.json..."
+gh release create "$TAG" "${ZIP[@]}" "$LATEST_JSON" --repo "$REPO" --notes "Release $TAG"
+echo "Done. DeskThing can add/update from https://github.com/$REPO"

@@ -6,75 +6,75 @@
   "version_code": 9.4,
   "mapping": {
     "Scroll": {
-      "ScrollUp": { "id": "carthing-volume-up", "source": "deskthingapp", "enabled": true },
-      "ScrollDown": { "id": "carthing-volume-down", "source": "deskthingapp", "enabled": true },
-      "ScrollLeft": { "id": "carthing-volume-down", "source": "deskthingapp", "enabled": true },
-      "ScrollRight": { "id": "carthing-volume-up", "source": "deskthingapp", "enabled": true }
+      "ScrollUp": { "id": "carthing-volume-up", "source": "deskthing-dashboard", "enabled": true },
+      "ScrollDown": { "id": "carthing-volume-down", "source": "deskthing-dashboard", "enabled": true },
+      "ScrollLeft": { "id": "carthing-volume-down", "source": "deskthing-dashboard", "enabled": true },
+      "ScrollRight": { "id": "carthing-volume-up", "source": "deskthing-dashboard", "enabled": true }
     },
     "Digit1": {
-      "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true }
     },
     "Digit2": {
-      "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true }
     },
     "Digit3": {
-      "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true }
     },
     "Digit4": {
-      "KeyDown": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true }
     },
-    "Wheel1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true } },
-    "Wheel2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true } },
-    "Wheel3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true } },
-    "Wheel4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true } },
-    "Tray1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true } },
-    "Tray2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true } },
-    "Tray3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true } },
-    "Tray4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true } },
-    "Tray5": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true } },
-    "Tray6": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true } },
-    "DynamicAction1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true } },
-    "DynamicAction2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true } },
-    "DynamicAction3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true } },
-    "DynamicAction4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true } },
-    "Action5": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true } },
-    "Action6": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true } },
-    "Action7": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true } },
+    "Wheel1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
+    "Wheel2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
+    "Wheel3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true } },
+    "Wheel4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true } },
+    "Tray1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
+    "Tray2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
+    "Tray3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true } },
+    "Tray4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true } },
+    "Tray5": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
+    "Tray6": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
+    "DynamicAction1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
+    "DynamicAction2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
+    "DynamicAction3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true } },
+    "DynamicAction4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true } },
+    "Action5": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
+    "Action6": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
+    "Action7": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true } },
     "Enter": {
-      "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true }
     },
     "Escape": {
-      "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true }
     },
     "KeyM": {
-      "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true },
-      "PressShort": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true },
-      "PressLong": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true },
-      "KeyUp": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true }
+      "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true },
+      "PressShort": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true },
+      "PressLong": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true },
+      "KeyUp": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true }
     },
     "Swipe": {
-      "SwipeUp": { "id": "carthing-volume-up", "source": "deskthingapp", "enabled": true },
-      "SwipeDown": { "id": "carthing-volume-down", "source": "deskthingapp", "enabled": true },
-      "SwipeLeft": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true },
-      "SwipeRight": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true }
+      "SwipeUp": { "id": "carthing-volume-up", "source": "deskthing-dashboard", "enabled": true },
+      "SwipeDown": { "id": "carthing-volume-down", "source": "deskthing-dashboard", "enabled": true },
+      "SwipeLeft": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true },
+      "SwipeRight": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true }
     }
   }
 }

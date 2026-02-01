@@ -15,6 +15,8 @@ Our app registers **actions** with DeskThing. You map those actions to the Car T
 | `carthing-tab-notifications` | Tab: Notifications | Top button 3 |
 | `carthing-button-4` | Button 4 | Top button 4 (currently → Notifications) |
 
+Our app **id** is `deskthing-dashboard` (source in mappings).
+
 ---
 
 ## Walkthrough: Map All Hardware in DeskThing Desktop

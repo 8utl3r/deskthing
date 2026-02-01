@@ -61,7 +61,7 @@ Each file under `mappings/<id>.json` is a **ButtonMapping**: `id`, `name`, `desc
 - **Inner keys** = event mode (e.g. `KeyDown`, `ScrollUp`, `ScrollDown`, `PressShort`, `PressLong`). DeskThing may store these as numbers (enum) or strings; match what you already have in your existing `default.json`.
 - **Values** = action reference: `{ "id": "<actionId>", "source": "<appSource>", "enabled": true }` (optional: `"value": "..."`).
 
-Our app’s **source** is `deskthingapp`. Our action IDs are in `docs/HARDWARE_MAPPING.md`.
+Our app’s **source** is `deskthing-dashboard`. Our action IDs are in `docs/HARDWARE_MAPPING.md`.
 
 ---
 
@@ -92,13 +92,13 @@ Snippet shape (adapt key names/numbers to match your existing file):
 
 ```json
 "Scroll": {
-  "ScrollUp": { "id": "carthing-volume-up", "source": "deskthingapp", "enabled": true },
-  "ScrollDown": { "id": "carthing-volume-down", "source": "deskthingapp", "enabled": true }
+  "ScrollUp": { "id": "carthing-volume-up", "source": "deskthing-dashboard", "enabled": true },
+  "ScrollDown": { "id": "carthing-volume-down", "source": "deskthing-dashboard", "enabled": true }
 },
-"Digit1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthingapp", "enabled": true } },
-"Digit2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthingapp", "enabled": true } },
-"Digit3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthingapp", "enabled": true } },
-"Digit4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthingapp", "enabled": true } }
+"Digit1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
+"Digit2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
+"Digit3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true } },
+"Digit4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true } }
 ```
 
 If your file uses **numeric** event modes, replace `"KeyDown"` / `"ScrollUp"` / `"ScrollDown"` with the same numbers you see elsewhere in that file for those modes.
@@ -120,4 +120,4 @@ If your file uses **numeric** event modes, replace `"KeyDown"` / `"ScrollUp"` / 
 
 - DeskThing mapping store: `mappingStore.ts`, `addProfile`, `setCurrentProfile`, `addButton`.
 - File paths: `fileMaps.ts` (`mappings/mappings.json`, `mappings/<id>.json`), `fileService.ts` (`app.getPath('userData')`).
-- Our actions: `car-thing/docs/HARDWARE_MAPPING.md`, `car-thing/deskthing-app/server/index.ts` (ACTIONS, APP_ID `deskthingapp`).
+- Our actions: `car-thing/docs/HARDWARE_MAPPING.md`, `car-thing/deskthing-app/server/index.ts` (ACTIONS, APP_ID `deskthing-dashboard`).

@@ -15,7 +15,7 @@ DIST_DIR="$APP_DIR/dist"
 
 # DeskThing userData on macOS
 DESKTHING_APPS="${HOME}/Library/Application Support/deskthing/apps"
-APP_ID="deskthingapp"
+APP_ID="deskthing-dashboard"
 
 cd "$APP_DIR"
 echo "Building app..."

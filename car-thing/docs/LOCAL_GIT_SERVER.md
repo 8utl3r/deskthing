@@ -65,7 +65,7 @@ Example (from repo root):
 # Build once, serve the zip on port 8766
 (cd car-thing/deskthing-app && npm run build)
 (cd car-thing/deskthing-app/dist && python3 -m http.server 8766)
-# Download: http://localhost:8766/deskthingapp-v0.11.x.zip (exact name from dist/)
+# Download: http://localhost:8766/deskthing-dashboard-v0.1.x.zip (exact name from dist/)
 ```
 
 **Script:** `car-thing/scripts/serve-app-zip.sh` builds from the current tree and serves `dist/` on port 8766 (or `./serve-app-zip.sh 8080`). Open `http://localhost:8766/<zipname>` in a browser to download, then Upload App in DeskThing. Latest always comes from our git (current tree).

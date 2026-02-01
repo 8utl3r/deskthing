@@ -50,8 +50,6 @@ Then on device: LiteClient → Settings → Dev Mode → Developer App → port 
 
 **Public GitHub repo:** See `docs/GITHUB_PUBLIC_REPO.md` for making the app install/update from a public GitHub repo (manifest `repository`/`updateUrl`, releases with .zip). Repo: **8utl3r/deskthing**. Run `./car-thing/scripts/release-to-github.sh 8utl3r/deskthing [tag]` to build and publish a release.
 
-**Versioning:** Before each release, bump the app version in **both** places (keep them in sync):
-- `deskthing-app/package.json` → `"version": "0.11.x"`
-- `deskthing-app/deskthing/manifest.json` → `"version": "0.11.x"` and `"version_code": 11.x` (no leading `v` in `version`; the CLI adds `v` when naming the zip, so `v0.11.0` in manifest produced `vv0.11.0.zip`). The zip will be `deskthing-app-v0.11.x.zip`.
+**Versioning:** See `docs/VERSIONING.md`. Summary: **0.1.1** start; third digit = any code change, second = feature, **1.0.0** = MVP complete. Bump in **both** `package.json` and `deskthing/manifest.json` (and root `manifest.json`); set `version_code` to an integer (e.g. 1, 2, 3…).
 
 See `docs/hardware/car-thing-app-development.md` for full guide.

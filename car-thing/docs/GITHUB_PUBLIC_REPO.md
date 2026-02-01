@@ -60,15 +60,15 @@ DeskThing installs/updates from **GitHub Releases** and expects the app **.zip**
 ```bash
 cd car-thing/deskthing-app
 npm run build
-# Produces dist/deskthingapp-vX.Y.Z.zip (version from package.json / manifest)
+# Produces dist/deskthing-dashboard-vX.Y.Z.zip (version from package.json / manifest)
 ```
 
 **Create a release and attach the zip:**
 
-- **GitHub website:** Repo → Releases → “Draft a new release” → choose tag (e.g. `v0.11.1`) → upload `dist/deskthingapp-v0.11.1.zip` as an asset → Publish.
+- **GitHub website:** Repo → Releases → “Draft a new release” → choose tag (e.g. `v0.11.1`) → upload **both** `dist/deskthing-dashboard-v0.1.1.zip` and `dist/latest.json` as assets → Publish.
 - **GitHub CLI:** From `car-thing/deskthing-app` after build:
   ```bash
-  gh release create v0.11.1 dist/deskthingapp-v*.zip --notes "Release v0.11.1"
+  ./car-thing/scripts/release-to-github.sh 8utl3r/deskthing   # uploads zip + latest.json
   ```
 
 Repeat for each version (tag + zip asset).
