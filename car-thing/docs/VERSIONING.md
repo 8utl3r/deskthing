@@ -13,6 +13,8 @@
 
 We started at **0.1.1**. Until MVP, MAJOR stays 0. **At MVP** we set version to **1.x.x** where **x** are the current aggregate values: e.g. if we’re at 0.3.7 when we declare MVP, we release as **1.3.7** so the version forever reflects “3 features, 7 changes” to that point.
 
+**Never reset the change count.** When bumping MINOR (new feature), keep PATCH and add 1 for the current release. E.g. 0.1.3 → 0.2.4 (not 0.2.0).
+
 ## Where to update
 
 Keep these in sync on every version bump:

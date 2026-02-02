@@ -4,8 +4,8 @@ import { DESKTHING_EVENTS } from '@deskthing/types'
 
 // Read version from manifest.json (in packaged app zip); package.json is not in the zip.
 const require = createRequire(import.meta.url)
-let appVersion = '0.2.0'
-let appVersionCode = 4
+let appVersion = '0.2.4'
+let appVersionCode = 5
 try {
   const manifest = require('../manifest.json') as { version?: string; version_code?: number }
   if (manifest.version) appVersion = manifest.version
