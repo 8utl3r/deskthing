@@ -17,6 +17,9 @@ const BRIDGE_URL = process.env.CAR_THING_BRIDGE_URL || 'http://127.0.0.1:8765'
 
 const VOLUME_WHEEL_STEP = 5
 
+/** Track active tab for context-aware wheel (volume in Audio, scroll in Feed). */
+let activeTab = 'control'
+
 /** Action IDs we register; user maps these to hardware in DeskThing Desktop. */
 const ACTIONS = {
   VOLUME_UP: 'carthing-volume-up',
@@ -25,6 +28,7 @@ const ACTIONS = {
   TAB_MACROS: 'carthing-tab-macros',
   TAB_FEED: 'carthing-tab-feed',
   BUTTON_4: 'carthing-button-4',
+  UNASSIGNED: 'carthing-unassigned',
 } as const
 
 async function getBridge(path: string): Promise<Record<string, unknown> | null> {
@@ -77,6 +81,7 @@ const start = async () => {
     { id: ACTIONS.TAB_MACROS, name: 'Tab: Macros', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
     { id: ACTIONS.TAB_FEED, name: 'Tab: Feed', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
     { id: ACTIONS.BUTTON_4, name: 'Button 4', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'basic' as const },
+    { id: ACTIONS.UNASSIGNED, name: 'Unassigned (show notification)', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'basic' as const },
   ]
   actionList.forEach((a) => {
     try {
@@ -139,23 +144,36 @@ const start = async () => {
     console.log('[action]', id, JSON.stringify(data.payload || {}))
 
     if (id === ACTIONS.TAB_AUDIO) {
+      activeTab = 'control'
       DeskThing.send({ type: 'tab', payload: 'control' })
       return
     }
     if (id === ACTIONS.TAB_MACROS) {
+      activeTab = 'macros'
       DeskThing.send({ type: 'tab', payload: 'macros' })
       return
     }
     if (id === ACTIONS.TAB_FEED) {
+      activeTab = 'feed'
       DeskThing.send({ type: 'tab', payload: 'feed' })
       return
     }
     if (id === ACTIONS.BUTTON_4) {
+      activeTab = 'feed'
       DeskThing.send({ type: 'tab', payload: 'feed' })
       return
     }
 
+    if (id === ACTIONS.UNASSIGNED) {
+      callBridge('/notify', { message: 'unassigned' })
+      return
+    }
+
     if (id === ACTIONS.VOLUME_UP || id === ACTIONS.VOLUME_DOWN) {
+      if (activeTab === 'feed') {
+        DeskThing.send({ type: 'scroll', payload: id === ACTIONS.VOLUME_UP ? 'up' : 'down' })
+        return
+      }
       const step = id === ACTIONS.VOLUME_UP ? VOLUME_WHEEL_STEP : -VOLUME_WHEEL_STEP
       getBridge('/audio/volume')
         .then((json) => {
@@ -165,6 +183,11 @@ const start = async () => {
         })
         .catch(() => {})
     }
+  })
+
+  DeskThing.on('tab-changed', (data: { payload?: string }) => {
+    const tab = data.payload
+    if (tab && ['control', 'macros', 'feed'].includes(tab)) activeTab = tab
   })
 
   DeskThing.on('input', (data: { payload?: Record<string, unknown> }) => {

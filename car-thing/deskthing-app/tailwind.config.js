@@ -43,6 +43,9 @@ export default {
       },
       fontSize: {
         'dt-touch': 'var(--text-touch)',
+        'dt-tab': 'var(--text-tab)',
+        'dt-feed': 'var(--text-feed)',
+        'dt-body': 'var(--text-body)',
       },
     },
   },

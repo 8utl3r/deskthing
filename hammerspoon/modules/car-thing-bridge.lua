@@ -16,6 +16,19 @@ local function handleRequest(method, path, headers, body)
         return '{"ok":true}', 200, { ["Content-Type"] = "application/json" }
     end
 
+    -- POST /notify - show macOS notification (e.g. "unassigned" when control has no function)
+    if method == "POST" and path == "/notify" then
+        local msg = "unassigned"
+        if body and body ~= "" then
+            local ok, decoded = pcall(hs.json.decode, body)
+            if ok and decoded and type(decoded.message) == "string" and decoded.message ~= "" then
+                msg = decoded.message
+            end
+        end
+        hs.notify.new({ title = "Car Thing", informativeText = msg }):send()
+        return '{"ok":true}', 200, { ["Content-Type"] = "application/json" }
+    end
+
     -- GET/POST /reload - reload Hammerspoon config (respond first, then reload)
     if (method == "GET" or method == "POST") and path and path:match("^/reload") then
         hs.timer.doAfter(0.3, hs.reload)

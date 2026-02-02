@@ -1,6 +1,6 @@
 import React from 'react'
 import { DeskThing } from '@deskthing/client'
-import { Card, ControlRow, Dropdown, SectionHeader, Switch } from '@/design/components'
+import { Dropdown, SectionHeader, Switch, Tile } from '@/design/components'
 
 const VOLUME_SEND_THROTTLE_MS = 50 // ~20 updates/sec during drag to avoid flooding the pipe
 
@@ -115,76 +115,79 @@ export const ControlTab: React.FC = () => {
   return (
     <div className="space-y-dt-4">
       <SectionHeader title="Audio" />
-      <ControlRow label="Mic mute">
-        <Switch
-          checked={micMuted}
-          onCheckedChange={handleMicToggle}
-          variant="danger"
-        />
-      </ControlRow>
-      <div className="flex items-center gap-dt-4 p-dt-4 bg-dt-elevated rounded-lg">
-        <div className="flex flex-col items-center gap-dt-2 shrink-0">
-          <span className="text-dt-touch text-dt-text-primary font-medium">Volume</span>
-          <span className="text-dt-touch text-dt-text-muted">{volume}%</span>
-        </div>
-        <div
-          className="flex-1 flex justify-center items-center min-h-[200px]"
-          style={{ width: 'var(--slider-thumb-width)' }}
-        >
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={volume}
-            onChange={handleVolumeChange}
-            onPointerUp={handleVolumePointerUp}
-            onPointerCancel={handleVolumePointerUp}
-            className="
-              bg-dt-subtle rounded-full
-              appearance-none cursor-pointer accent-dt-accent
-              [&::-webkit-slider-thumb]:appearance-none
-              [&::-webkit-slider-thumb]:w-6
-              [&::-webkit-slider-thumb]:h-slider-thumb
-              [&::-webkit-slider-thumb]:rounded-lg
-              [&::-webkit-slider-thumb]:bg-dt-accent
-              [&::-webkit-slider-thumb]:cursor-pointer
-              [&::-webkit-slider-thumb]:shadow-md
-              [&::-moz-range-thumb]:w-6
-              [&::-moz-range-thumb]:h-slider-thumb
-              [&::-moz-range-thumb]:rounded-lg
-              [&::-moz-range-thumb]:bg-dt-accent
-              [&::-moz-range-thumb]:cursor-pointer
-              [&::-moz-range-thumb]:border-0
-            "
-            style={{
-              transform: 'rotate(90deg)',
-              width: 200,
-              height: 'var(--slider-thumb-width)',
-              minWidth: 200,
-              minHeight: 'var(--slider-thumb-width)',
-            } as React.CSSProperties}
+      <div className="grid grid-cols-2 gap-dt-3">
+        <Tile className="flex-row justify-between items-center">
+          <span className="text-dt-touch text-dt-text-primary">Mic mute</span>
+          <Switch
+            checked={micMuted}
+            onCheckedChange={handleMicToggle}
+            variant="danger"
           />
-        </div>
+        </Tile>
+        <Tile className="items-center">
+          <div className="flex flex-col items-center gap-dt-2 w-full">
+            <span className="text-dt-touch text-dt-text-primary font-medium">Volume</span>
+            <div
+              className="flex justify-center items-center min-h-[160px] shrink-0"
+              style={{ width: 'var(--slider-thumb-width)' }}
+            >
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={volume}
+                onChange={handleVolumeChange}
+                onPointerUp={handleVolumePointerUp}
+                onPointerCancel={handleVolumePointerUp}
+                className="
+                  bg-dt-subtle rounded-full
+                  appearance-none cursor-pointer accent-dt-accent
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-6
+                  [&::-webkit-slider-thumb]:h-slider-thumb
+                  [&::-webkit-slider-thumb]:rounded-lg
+                  [&::-webkit-slider-thumb]:bg-dt-accent
+                  [&::-webkit-slider-thumb]:cursor-pointer
+                  [&::-webkit-slider-thumb]:shadow-md
+                  [&::-moz-range-thumb]:w-6
+                  [&::-moz-range-thumb]:h-slider-thumb
+                  [&::-moz-range-thumb]:rounded-lg
+                  [&::-moz-range-thumb]:bg-dt-accent
+                  [&::-moz-range-thumb]:cursor-pointer
+                  [&::-moz-range-thumb]:border-0
+                "
+                style={{
+                  transform: 'rotate(90deg)',
+                  width: 160,
+                  height: 'var(--slider-thumb-width)',
+                  minWidth: 160,
+                  minHeight: 'var(--slider-thumb-width)',
+                } as React.CSSProperties}
+              />
+            </div>
+            <span className="text-dt-touch text-dt-text-muted">{volume}%</span>
+          </div>
+        </Tile>
+        <Tile fullWidth>
+          <Dropdown
+            label="Output device"
+            options={devices.map((d) => ({ id: d.id, label: d.name }))}
+            value={selectedDeviceId}
+            onSelect={(id) => {
+              setSelectedDeviceId(id)
+              DeskThing.send({
+                type: 'control',
+                payload: { action: 'output-device', value: id },
+              })
+            }}
+            placeholder="No devices"
+            disabled={devices.length === 0}
+          />
+        </Tile>
+        <Tile fullWidth className="border border-dashed border-dt-subtle bg-dt-elevated/50">
+          <p className="text-dt-touch text-dt-text-muted">miniDSP presets — coming soon</p>
+        </Tile>
       </div>
-      <div className="space-y-dt-2">
-        <Dropdown
-          label="Output device"
-          options={devices.map((d) => ({ id: d.id, label: d.name }))}
-          value={selectedDeviceId}
-          onSelect={(id) => {
-            setSelectedDeviceId(id)
-            DeskThing.send({
-              type: 'control',
-              payload: { action: 'output-device', value: id },
-            })
-          }}
-          placeholder="No devices"
-          disabled={devices.length === 0}
-        />
-      </div>
-      <Card placeholder>
-        <p className="text-dt-touch text-dt-text-muted">miniDSP presets — coming soon</p>
-      </Card>
     </div>
   )
 }

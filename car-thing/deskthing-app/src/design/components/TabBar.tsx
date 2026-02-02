@@ -27,12 +27,12 @@ export const TabBar: React.FC<TabBarProps> = ({
       : { defaultValue: defaultValue ?? tabs[0]?.value })}
     className="flex flex-col flex-1"
   >
-    <RadixTabs.List className="flex gap-1 p-1 bg-dt-elevated rounded-lg shrink-0">
+    <RadixTabs.List className="grid grid-cols-3 gap-dt-2 shrink-0">
       {tabs.map((tab) => (
         <RadixTabs.Trigger
           key={tab.value}
           value={tab.value}
-          className="px-dt-3 py-1.5 text-sm rounded-md data-[state=active]:bg-dt-subtle text-dt-text-secondary data-[state=active]:text-dt-text-primary transition-colors"
+          className="flex flex-col items-center justify-center min-h-touch py-dt-3 px-dt-2 text-dt-tab rounded-lg data-[state=active]:bg-dt-subtle text-dt-text-secondary data-[state=active]:text-dt-text-primary transition-colors font-semibold"
         >
           {tab.label}
         </RadixTabs.Trigger>

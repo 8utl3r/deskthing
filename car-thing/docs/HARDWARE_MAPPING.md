@@ -13,7 +13,8 @@ Our app registers **actions** with DeskThing. You map those actions to the Car T
 | `carthing-tab-audio` | Tab: Audio | Top button 1 |
 | `carthing-tab-macros` | Tab: Macros | Top button 2 |
 | `carthing-tab-feed` | Tab: Feed | Top button 3 |
-| `carthing-button-4` | Button 4 | Top button 4 (currently → Notifications) |
+| `carthing-button-4` | Button 4 | Top button 4 (→ Feed) |
+| `carthing-unassigned` | Unassigned (show notification) | Any control you want to leave as placeholder |
 
 Our app **id** is `deskthing-dashboard` (source in mappings).
 
@@ -31,17 +32,26 @@ Our app **id** is `deskthing-dashboard` (source in mappings).
    - **Top button 1** → **Tab: Audio** / `carthing-tab-audio`
    - **Top button 2** → **Tab: Macros** / `carthing-tab-macros`
    - **Top button 3** → **Tab: Feed** / `carthing-tab-feed`
-   - **Top button 4** → **Button 4** / `carthing-button-4` (or leave unmapped)
+   - **Top button 4** → **Button 4** / `carthing-button-4`
+   - **Any control** you want as placeholder → **Unassigned (show notification)** / `carthing-unassigned` (shows "unassigned" on Mac)
 5. **Save** and ensure our app (“Dotfiles Car Thing App”) is the one running on the device.
 
 After this, every wheel turn and button press that you mapped will send the corresponding action to our app; we handle them by **action ID** (e.g. `carthing-volume-up` → step volume up and send new volume to the client).
 
 ---
 
+## Context-Aware Wheel
+
+The wheel (mapped to volume-up/volume-down) is **context-aware**:
+- **Audio tab:** Wheel controls Mac volume and updates the slider.
+- **Feed tab:** Wheel scrolls the feed list.
+
+The server tracks the active tab and interprets wheel actions accordingly.
+
 ## Two-Way Communication
 
 - **Device → Mac:** Slider, macros, mic toggle, and **mapped hardware** (wheel, buttons) send control/macro/action events to our server → bridge.
-- **Mac → Device:** Server sends `volume` and `tab` to the client so the UI stays in sync (e.g. wheel changes volume on Mac and updates the slider; server sends current volume when you open the Audio tab or on app start).
+- **Mac → Device:** Server sends `volume`, `tab`, and `scroll` (when on Feed) to the client so the UI stays in sync.
 
 ---
 
