@@ -28,6 +28,7 @@ export default {
         'dt-4': 'var(--space-4)',
         'dt-5': 'var(--space-5)',
         'dt-6': 'var(--space-6)',
+        'dt-wheel': 'var(--space-wheel)',
       },
       minHeight: {
         touch: 'var(--touch-min)',

@@ -26,6 +26,8 @@
   --space-4: 16px;
   --space-5: 20px;
   --space-6: 24px;
+  /* Car Thing: wheel is on the right of the 4" screen; keep content away from it */
+  --space-wheel: 36px;
 
   /* Typography */
   --text-display: 20px;
