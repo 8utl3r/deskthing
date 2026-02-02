@@ -24,7 +24,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     <span className="text-2xl mb-dt-2" aria-hidden>
       {icon}
     </span>
-    <p className="text-sm text-dt-text-secondary">{message}</p>
-    {hint && <p className="text-xs text-dt-text-muted mt-dt-2">{hint}</p>}
+    <p className="text-dt-feed text-dt-text-secondary">{message}</p>
+    {hint && <p className="text-dt-body text-dt-text-muted mt-dt-2">{hint}</p>}
   </div>
 )

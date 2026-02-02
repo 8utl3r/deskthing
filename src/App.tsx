@@ -22,10 +22,14 @@ const App: React.FC = () => {
     return () => (typeof unsub === 'function' ? unsub() : undefined)
   }, [])
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab)
+    DeskThing.send({ type: 'tab-changed', payload: tab })
+  }
+
   return (
     <div className="min-h-screen bg-dt-base pl-dt-4 pr-dt-wheel pt-dt-4 pb-dt-4 overflow-auto text-dt-text-primary flex flex-col">
-      <h1 className="text-xl font-bold mb-dt-4 shrink-0">Deskthing Dashboard</h1>
-      <TabBar tabs={TABS} value={activeTab} onValueChange={setActiveTab}>
+      <TabBar tabs={TABS} value={activeTab} onValueChange={handleTabChange}>
       <TabContent
         value="control"
         className="mt-dt-3 flex-1 min-h-0 data-[state=active]:flex data-[state=active]:flex-col"

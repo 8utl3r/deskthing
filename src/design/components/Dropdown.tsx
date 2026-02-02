@@ -32,7 +32,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <div className="relative">
       {label && (
-        <p className="text-dt-touch text-dt-text-muted mb-dt-2">{label}</p>
+        <p className="text-dt-tab text-dt-text-muted mb-dt-2">{label}</p>
       )}
       <button
         type="button"
@@ -41,7 +41,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         className="
           w-full min-h-touch-target px-dt-4 py-dt-3
           bg-dt-elevated rounded-lg
-          text-dt-touch text-dt-text-primary text-left font-medium
+          text-dt-tab text-dt-text-primary text-left font-medium
           border border-dt-subtle
           hover:bg-dt-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-dt-accent
           flex items-center justify-between gap-dt-2
@@ -75,7 +75,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 }}
                 className={`
                   w-full min-h-touch-target px-dt-4 py-dt-3
-                  text-dt-touch text-left
+                  text-dt-tab text-left
                   first:rounded-t-lg last:rounded-b-lg
                   transition-colors
                   ${value === opt.id

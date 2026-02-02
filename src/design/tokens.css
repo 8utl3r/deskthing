@@ -46,5 +46,8 @@
   --radius-md: 8px;
 
   /* Typography - larger for touchscreen readability */
-  --text-touch: 18px;
+  --text-touch: 20px;
+  --text-tab: 22px;
+  --text-feed: 22px;
+  --text-body: 20px;
 }
