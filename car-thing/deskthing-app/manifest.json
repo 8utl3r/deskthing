@@ -3,8 +3,8 @@
   "isWebApp": true,
   "requires": [],
   "label": "Deskthing Dashboard",
-  "version": "0.4.8",
-  "version_code": 9,
+  "version": "0.4.9",
+  "version_code": 10,
   "compatible_server": [11],
   "compatible_client": [11],
   "description": "DeskThing app for Car Thing (volume, macros, feed). Connects to Hammerspoon on Mac.",
@@ -13,7 +13,7 @@
   "homepage": "https://github.com/8utl3r/deskthing#readme",
   "repository": "https://github.com/8utl3r/deskthing",
   "tags": ["webappOnly"],
-  "requiredVersions": { "server": ">=0.11.0", "client": ">=0.11.0" },
+  "requiredVersions": { "server": "0.11.0", "client": "0.11.0" },
   "updateUrl": "https://github.com/8utl3r/deskthing",
   "template": "full"
 }
