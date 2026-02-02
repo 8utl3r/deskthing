@@ -5,6 +5,7 @@
 local bridge = {}
 local logger = nil  -- set in init()
 local server = nil
+local watcher = nil  -- pathwatcher for self-reload on edit
 
 local function handleRequest(method, path, headers, body)
     if logger then logger.debug("Request: %s %s", method or "?", path or "?") end
@@ -12,6 +13,12 @@ local function handleRequest(method, path, headers, body)
 
     -- GET /health
     if method == "GET" and path == "/health" then
+        return '{"ok":true}', 200, { ["Content-Type"] = "application/json" }
+    end
+
+    -- GET/POST /reload - reload Hammerspoon config (respond first, then reload)
+    if (method == "GET" or method == "POST") and path and path:match("^/reload") then
+        hs.timer.doAfter(0.3, hs.reload)
         return '{"ok":true}', 200, { ["Content-Type"] = "application/json" }
     end
 
@@ -43,6 +50,64 @@ local function handleRequest(method, path, headers, body)
             if type(m) == "boolean" then muted = m end
         end
         return string.format('{"muted":%s}', tostring(muted)), 200, { ["Content-Type"] = "application/json" }
+    end
+
+    -- GET /feed - aggregated feed items from RSS URLs in config
+    if method == "GET" and (path == "/feed" or path == "/notifications") then
+        local items = {}
+        local function unescape(s)
+            if not s or s == "" then return "" end
+            s = s:gsub("<!%[CDATA%[(.-)%]%]>", "%1")  -- strip CDATA
+            return s:gsub("&amp;", "&"):gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&quot;", '"'):gsub("&#39;", "'")
+        end
+        local function parseRss(xml, source)
+            for itemBlock in (xml or ""):gmatch("<item>(.-)</item>") do
+                local title = unescape(itemBlock:match("<title>(.-)</title>"))
+                local link = unescape(itemBlock:match("<link>(.-)</link>"))
+                local desc = unescape(itemBlock:match("<description>(.-)</description>"))
+                if title and title ~= "" then
+                    table.insert(items, {
+                        id = link or ("feed-" .. #items + 1),
+                        title = title,
+                        summary = (desc and #desc > 0) and desc:gsub("<[^>]+>", ""):sub(1, 120) .. "..." or nil,
+                        url = link,
+                        source = source or "rss",
+                        timestamp = itemBlock:match("<pubDate>(.-)</pubDate>") or ""
+                    })
+                end
+            end
+        end
+        local configPath = hs.configdir .. "/../car-thing/config/feed.json"
+        local f = io.open(configPath, "r")
+        if not f then
+            configPath = (os.getenv("HOME") or "~") .. "/dotfiles/car-thing/config/feed.json"
+            f = io.open(configPath, "r")
+        end
+        if not f then
+            configPath = hs.configdir .. "/../car-thing/config/feed.example.json"
+            f = io.open(configPath, "r")
+        end
+        if not f then
+            configPath = (os.getenv("HOME") or "~") .. "/dotfiles/car-thing/config/feed.example.json"
+            f = io.open(configPath, "r")
+        end
+        if f then
+            local raw = f:read("*a")
+            f:close()
+            local okConfig, config = pcall(hs.json.decode, raw)
+            if okConfig and config and config.urls and type(config.urls) == "table" then
+                for _, url in ipairs(config.urls) do
+                    if type(url) == "string" and url ~= "" then
+                        local okHttp, status, body = pcall(function() return hs.http.get(url, nil) end)
+                        if okHttp and status == 200 and body then
+                            local src = url:match("([^/]+)/?$") or "rss"
+                            parseRss(body, src)
+                        end
+                    end
+                end
+            end
+        end
+        return hs.json.encode({ items = items }), 200, { ["Content-Type"] = "application/json" }
     end
 
     -- GET /audio/volume - current system output volume (0-100), native API (no osascript)
@@ -185,6 +250,13 @@ function bridge.init()
         server:setCallback(handleRequest)
         server:start()
         table.insert(hs.cleanup, bridge.cleanup)
+        -- Watch this file so touch triggers reload (for reload-hammerspoon.sh)
+        local bridgePath = hs.configdir .. "/modules/car-thing-bridge.lua"
+        watcher = hs.pathwatcher.new(bridgePath, function()
+            if logger then logger.info("Bridge file changed, reloading...") end
+            hs.timer.doAfter(0.5, hs.reload)
+        end)
+        watcher:start()
         logger.info("Car Thing bridge listening on 127.0.0.1:8765")
         hs.notify.new({ title = "Car Thing bridge", informativeText = "Listening on port 8765" }):send()
     end)
@@ -195,6 +267,10 @@ function bridge.init()
 end
 
 function bridge.cleanup()
+    if watcher then
+        watcher:stop()
+        watcher = nil
+    end
     if server then
         server:stop()
         server = nil

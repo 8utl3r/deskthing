@@ -16,7 +16,7 @@ Logs live at `car-thing/deskthing-logs/` (symlinked from `~/Library/Application 
 - Different firmware (stock Spotify vs Thing Labs)
 - A Car Thing with non-standard firmware
 
-**Action:** If RFCWC0PXXYV is a second Car Thing, ensure it’s flashed with Thing Labs OS. If it’s another device type, you can ignore or disconnect it; device `8557R08RQ01Q` works.
+**Action:** If RFCWC0PXXYV is a second Car Thing, ensure it’s flashed with Thing Labs OS. If it’s another device type, you can ignore or disconnect it. Run `./car-thing/scripts/fix-device-connection.sh` — blacklists RFCWC0PXXYV, resets ADB, restarts DeskThing. Car Thing: `8557R08RQ01Q`.
 
 ---
 

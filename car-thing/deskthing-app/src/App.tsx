@@ -3,12 +3,12 @@ import { DeskThing } from '@deskthing/client'
 import { TabBar, TabContent } from '@/design/components'
 import { ControlTab } from './tabs/ControlTab'
 import { MacrosTab } from './tabs/MacrosTab'
-import { NotificationsTab } from './tabs/NotificationsTab'
+import { FeedTab } from './tabs/FeedTab'
 
 const TABS = [
   { value: 'control', label: 'Audio' },
   { value: 'macros', label: 'Macros' },
-  { value: 'notifications', label: 'Notifications' },
+  { value: 'feed', label: 'Feed' },
 ]
 
 const App: React.FC = () => {
@@ -39,10 +39,10 @@ const App: React.FC = () => {
         <MacrosTab />
       </TabContent>
       <TabContent
-        value="notifications"
+        value="feed"
         className="mt-dt-3 flex-1 min-h-0 data-[state=active]:flex data-[state=active]:flex-col"
       >
-        <NotificationsTab />
+        <FeedTab />
       </TabContent>
       </TabBar>
     </div>

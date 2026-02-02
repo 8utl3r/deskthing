@@ -25,14 +25,18 @@ if ! command -v node &>/dev/null; then
   exit 1
 fi
 
-SETTINGS_ESC="${SETTINGS//\'/\\\'}"
+export DESKTHING_SETTINGS="$SETTINGS"
+export BLACKLIST_DEVICE="$BLACKLIST_DEVICE"
 node -e "
 const fs = require('fs');
 const path = process.env.DESKTHING_SETTINGS;
+const device = process.env.BLACKLIST_DEVICE;
+if (!path || !device) {
+  console.error('Missing DESKTHING_SETTINGS or BLACKLIST_DEVICE');
+  process.exit(1);
+}
 let s = JSON.parse(fs.readFileSync(path, 'utf8'));
 
-// Add device to blacklist if not present
-const device = process.env.BLACKLIST_DEVICE;
 s.adb_blacklist = s.adb_blacklist || [];
 if (!s.adb_blacklist.includes(device)) {
   s.adb_blacklist.push(device);
@@ -41,12 +45,11 @@ if (!s.adb_blacklist.includes(device)) {
   console.log(device + ' already in adb_blacklist');
 }
 
-// Disable stats (stops 403 Forbidden)
 s.flag_collectStats = false;
 console.log('Set flag_collectStats = false');
 
 fs.writeFileSync(path, JSON.stringify(s, null, 2));
-" DESKTHING_SETTINGS="$SETTINGS" BLACKLIST_DEVICE="$BLACKLIST_DEVICE"
+"
 
 echo ""
 echo "Done. Restart DeskThing for changes to take effect."

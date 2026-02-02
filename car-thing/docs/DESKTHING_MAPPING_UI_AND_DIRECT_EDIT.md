@@ -97,7 +97,7 @@ Snippet shape (adapt key names/numbers to match your existing file):
 },
 "Digit1": { "KeyDown": { "id": "carthing-tab-audio", "source": "deskthing-dashboard", "enabled": true } },
 "Digit2": { "KeyDown": { "id": "carthing-tab-macros", "source": "deskthing-dashboard", "enabled": true } },
-"Digit3": { "KeyDown": { "id": "carthing-tab-notifications", "source": "deskthing-dashboard", "enabled": true } },
+"Digit3": { "KeyDown": { "id": "carthing-tab-feed", "source": "deskthing-dashboard", "enabled": true } },
 "Digit4": { "KeyDown": { "id": "carthing-button-4", "source": "deskthing-dashboard", "enabled": true } }
 ```
 

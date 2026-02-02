@@ -12,7 +12,7 @@ Our app registers **actions** with DeskThing. You map those actions to the Car T
 | `carthing-volume-down` | Volume down (wheel) | Wheel turn other way |
 | `carthing-tab-audio` | Tab: Audio | Top button 1 |
 | `carthing-tab-macros` | Tab: Macros | Top button 2 |
-| `carthing-tab-notifications` | Tab: Notifications | Top button 3 |
+| `carthing-tab-feed` | Tab: Feed | Top button 3 |
 | `carthing-button-4` | Button 4 | Top button 4 (currently → Notifications) |
 
 Our app **id** is `deskthing-dashboard` (source in mappings).
@@ -30,7 +30,7 @@ Our app **id** is `deskthing-dashboard` (source in mappings).
      - Other direction → **Volume down (wheel)** / `carthing-volume-down`
    - **Top button 1** → **Tab: Audio** / `carthing-tab-audio`
    - **Top button 2** → **Tab: Macros** / `carthing-tab-macros`
-   - **Top button 3** → **Tab: Notifications** / `carthing-tab-notifications`
+   - **Top button 3** → **Tab: Feed** / `carthing-tab-feed`
    - **Top button 4** → **Button 4** / `carthing-button-4` (or leave unmapped)
 5. **Save** and ensure our app (“Dotfiles Car Thing App”) is the one running on the device.
 

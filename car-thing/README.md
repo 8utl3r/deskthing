@@ -48,9 +48,15 @@ Then on device: LiteClient → Settings → Dev Mode → Developer App → port 
 
 **Verify bridge:** `./car-thing/scripts/verify-bridge.sh` — checks port 8765, GET /health, POST /control, and bridge file (no self-symlink).
 
+**Reload Hammerspoon:** `./car-thing/scripts/reload-hammerspoon.sh` — reloads config so the bridge picks up changes (e.g. after editing car-thing-bridge.lua). Uses bridge POST /reload or touches init.lua.
+
+**Device not connecting?** Run `./car-thing/scripts/fix-device-connection.sh` — blacklists the Samsung phone (RFCWC0PXXYV) that causes ADB errors, resets ADB, and restarts DeskThing. See `docs/DESKTHING_LOG_ISSUES.md`.
+
 **Local git server:** See `docs/LOCAL_GIT_SERVER.md` for serving the repo (or built app zip) from our git so build/deploy always targets dotfiles. `./car-thing/scripts/serve-app-zip.sh` builds and serves the zip for Upload App.
 
-**Public GitHub repo:** See `docs/GITHUB_PUBLIC_REPO.md` for making the app install/update from a public GitHub repo (manifest `repository`/`updateUrl`, releases with .zip). Repo: **8utl3r/deskthing**. Run `./car-thing/scripts/release-to-github.sh 8utl3r/deskthing [tag]` to build and publish a release.
+**Public GitHub repo:** See `docs/GITHUB_PUBLIC_REPO.md` for making the app install/update from a public GitHub repo (manifest `repository`/`updateUrl`, releases with .zip). Repo: **8utl3r/deskthing**.
+
+**Commit and release (one command):** After making car-thing changes, run `./car-thing/scripts/commit-and-release.sh [message]` to commit, push to origin, subtree-push to 8utl3r/deskthing, build, and create a GitHub release. The Cursor rule in `.cursor/rules/car-thing-release.mdc` reminds the agent to run this when editing car-thing.
 
 **Versioning:** See `docs/VERSIONING.md`. Summary: **0.1.1** start; third digit = any code change, second = feature, **1.0.0** = MVP complete. Bump in **both** `package.json` and `deskthing/manifest.json` (and root `manifest.json`); set `version_code` to an integer (e.g. 1, 2, 3…).
 

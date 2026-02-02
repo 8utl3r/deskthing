@@ -1,5 +1,9 @@
 # Car Thing config
 
+## Feed (`feed.json`)
+
+RSS feeds shown in the Feed tab. **First time:** `cp feed.example.json feed.json`. Edit `feed.json` and add RSS URLs to the `urls` array. The bridge fetches and parses them.
+
 ## Macros (`macros.json`)
 
 Macros run on your Mac when you tap a macro button on the Car Thing. **First time:** `cp macros.example.json macros.json`. Then edit `macros.json` to add or change macros.
@@ -24,12 +28,12 @@ Macros run on your Mac when you tap a macro button on the Car Thing. **First tim
 | Control | Mapped to |
 |--------|------------|
 | **Scroll** (wheel) | ScrollUp/Right → volume up; ScrollDown/Left → volume down |
-| **Digit1–4** (top buttons) | Tab Audio, Tab Macros, Tab Notifications, Button 4 (all modes: KeyDown, KeyUp, PressShort, PressLong) |
-| **Wheel1–4** | Tab Audio, Tab Macros, Tab Notifications, Button 4 |
-| **Tray1–6** | Tab Audio/Macros/Notifications/Button 4 (reused) |
+| **Digit1–4** (top buttons) | Tab Audio, Tab Macros, Tab Feed, Button 4 (all modes: KeyDown, KeyUp, PressShort, PressLong) |
+| **Wheel1–4** | Tab Audio, Tab Macros, Tab Feed, Button 4 |
+| **Tray1–6** | Tab Audio/Macros/Feed/Button 4 (reused) |
 | **DynamicAction1–4, Action5–7** | Our tabs + Button 4 |
-| **Enter, Escape, KeyM** | Tab Audio/Notifications/Macros + Button 4 on long press |
-| **Swipe** | SwipeUp/Down → volume; SwipeLeft/Right → Tab Macros/Notifications |
+| **Enter, Escape, KeyM** | Tab Audio/Feed/Macros + Button 4 on long press |
+| **Swipe** | SwipeUp/Down → volume; SwipeLeft/Right → Tab Macros/Feed |
 
 ### Install (direct edit)
 

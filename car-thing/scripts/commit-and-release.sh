@@ -56,6 +56,9 @@ if git remote get-url deskthing &>/dev/null; then
   git branch -D deskthing-split 2>/dev/null || true
 fi
 
+echo "Reloading Hammerspoon (bridge picks up changes)..."
+"$CAR_THING_DIR/scripts/reload-hammerspoon.sh" 2>/dev/null || true
+
 echo "Building and creating release..."
 "$CAR_THING_DIR/scripts/release-to-github.sh" "$REPO"
 

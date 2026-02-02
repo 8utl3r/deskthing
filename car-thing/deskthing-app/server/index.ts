@@ -4,8 +4,8 @@ import { DESKTHING_EVENTS } from '@deskthing/types'
 
 // Read version from manifest.json (in packaged app zip); package.json is not in the zip.
 const require = createRequire(import.meta.url)
-let appVersion = '0.3.5'
-let appVersionCode = 6
+let appVersion = '0.4.6'
+let appVersionCode = 7
 try {
   const manifest = require('../manifest.json') as { version?: string; version_code?: number }
   if (manifest.version) appVersion = manifest.version
@@ -23,7 +23,7 @@ const ACTIONS = {
   VOLUME_DOWN: 'carthing-volume-down',
   TAB_AUDIO: 'carthing-tab-audio',
   TAB_MACROS: 'carthing-tab-macros',
-  TAB_NOTIFICATIONS: 'carthing-tab-notifications',
+  TAB_FEED: 'carthing-tab-feed',
   BUTTON_4: 'carthing-button-4',
 } as const
 
@@ -75,7 +75,7 @@ const start = async () => {
     { id: ACTIONS.VOLUME_DOWN, name: 'Volume down (wheel)', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'media' as const },
     { id: ACTIONS.TAB_AUDIO, name: 'Tab: Audio', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
     { id: ACTIONS.TAB_MACROS, name: 'Tab: Macros', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
-    { id: ACTIONS.TAB_NOTIFICATIONS, name: 'Tab: Notifications', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
+    { id: ACTIONS.TAB_FEED, name: 'Tab: Feed', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'nav' as const },
     { id: ACTIONS.BUTTON_4, name: 'Button 4', version: appVersion, version_code: appVersionCode, enabled: true, source: APP_ID, tag: 'basic' as const },
   ]
   actionList.forEach((a) => {
@@ -127,6 +127,13 @@ const start = async () => {
     })
   })
 
+  DeskThing.on('get-feed', () => {
+    getBridge('/feed').then((json) => {
+      const items = json && Array.isArray(json.items) ? json.items : []
+      DeskThing.send({ type: 'feed', payload: items })
+    })
+  })
+
   DeskThing.on('action', (data: { payload?: Record<string, unknown> }) => {
     const id = data.payload?.id as string | undefined
     console.log('[action]', id, JSON.stringify(data.payload || {}))
@@ -139,12 +146,12 @@ const start = async () => {
       DeskThing.send({ type: 'tab', payload: 'macros' })
       return
     }
-    if (id === ACTIONS.TAB_NOTIFICATIONS) {
-      DeskThing.send({ type: 'tab', payload: 'notifications' })
+    if (id === ACTIONS.TAB_FEED) {
+      DeskThing.send({ type: 'tab', payload: 'feed' })
       return
     }
     if (id === ACTIONS.BUTTON_4) {
-      DeskThing.send({ type: 'tab', payload: 'notifications' })
+      DeskThing.send({ type: 'tab', payload: 'feed' })
       return
     }
 
