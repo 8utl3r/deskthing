@@ -18,8 +18,8 @@ const variantClasses: Record<ButtonVariant, string> = {
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
-  md: 'min-h-touch px-dt-4 py-dt-2 text-sm',
-  lg: 'min-h-touch px-dt-5 py-dt-3 text-base',
+  md: 'min-h-touch px-dt-4 py-dt-3 text-dt-touch',
+  lg: 'min-h-touch px-dt-5 py-dt-4 text-dt-touch',
 }
 
 export const Button: React.FC<ButtonProps> = ({

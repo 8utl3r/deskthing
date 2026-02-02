@@ -1,8 +1,8 @@
 {
   "name": "deskthing-dashboard",
   "private": true,
-  "version": "0.4.6",
-  "version_code": 7,
+  "version": "0.4.7",
+  "version_code": 8,
   "type": "module",
   "main": "dist/index.js",
   "scripts": {

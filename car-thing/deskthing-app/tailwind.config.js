@@ -32,6 +32,17 @@ export default {
       },
       minHeight: {
         touch: 'var(--touch-min)',
+        'touch-target': 'var(--touch-target)',
+      },
+      width: {
+        'slider-thumb': 'var(--slider-thumb-width)',
+      },
+      height: {
+        'slider-thumb': 'var(--slider-thumb-width)',
+        'slider-track': 'var(--slider-track-height)',
+      },
+      fontSize: {
+        'dt-touch': 'var(--text-touch)',
       },
     },
   },

@@ -36,8 +36,15 @@
   --text-caption: 12px;
   --text-micro: 11px;
 
-  /* Touch */
-  --touch-min: 44px;
-  --radius-lg: 8px;
-  --radius-md: 6px;
+  /* Touch - Car Thing: forefinger covers "LG TV SSCR2" with room to spare; targets must be larger */
+  --touch-min: 64px;
+  --touch-target: 64px;
+  /* Slider interactive area: wider than forefinger by a few mm (~120px on 4" screen) */
+  --slider-thumb-width: 120px;
+  --slider-track-height: 24px;
+  --radius-lg: 10px;
+  --radius-md: 8px;
+
+  /* Typography - larger for touchscreen readability */
+  --text-touch: 18px;
 }

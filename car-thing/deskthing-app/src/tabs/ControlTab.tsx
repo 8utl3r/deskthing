@@ -1,6 +1,6 @@
 import React from 'react'
 import { DeskThing } from '@deskthing/client'
-import { Card, ControlRow, SectionHeader, Switch } from '@/design/components'
+import { Card, ControlRow, Dropdown, SectionHeader, Switch } from '@/design/components'
 
 const VOLUME_SEND_THROTTLE_MS = 50 // ~20 updates/sec during drag to avoid flooding the pipe
 
@@ -122,51 +122,68 @@ export const ControlTab: React.FC = () => {
           variant="danger"
         />
       </ControlRow>
-      <div className="flex items-center justify-between min-h-touch p-dt-3 bg-dt-elevated rounded-lg gap-dt-4">
-        <span className="text-sm text-dt-text-primary shrink-0">Volume</span>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={volume}
-          onChange={handleVolumeChange}
-          onPointerUp={handleVolumePointerUp}
-          onPointerCancel={handleVolumePointerUp}
-          className="flex-1 h-2 bg-dt-subtle rounded-full appearance-none cursor-pointer accent-dt-accent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-dt-accent [&::-webkit-slider-thumb]:cursor-pointer"
-        />
-        <span className="text-sm text-dt-text-muted w-8 shrink-0">{volume}%</span>
+      <div className="flex items-center gap-dt-4 p-dt-4 bg-dt-elevated rounded-lg">
+        <div className="flex flex-col items-center gap-dt-2 shrink-0">
+          <span className="text-dt-touch text-dt-text-primary font-medium">Volume</span>
+          <span className="text-dt-touch text-dt-text-muted">{volume}%</span>
+        </div>
+        <div
+          className="flex-1 flex justify-center items-center min-h-[200px]"
+          style={{ width: 'var(--slider-thumb-width)' }}
+        >
+          <input
+            type="range"
+            min={0}
+            max={100}
+            value={volume}
+            onChange={handleVolumeChange}
+            onPointerUp={handleVolumePointerUp}
+            onPointerCancel={handleVolumePointerUp}
+            className="
+              bg-dt-subtle rounded-full
+              appearance-none cursor-pointer accent-dt-accent
+              [&::-webkit-slider-thumb]:appearance-none
+              [&::-webkit-slider-thumb]:w-6
+              [&::-webkit-slider-thumb]:h-slider-thumb
+              [&::-webkit-slider-thumb]:rounded-lg
+              [&::-webkit-slider-thumb]:bg-dt-accent
+              [&::-webkit-slider-thumb]:cursor-pointer
+              [&::-webkit-slider-thumb]:shadow-md
+              [&::-moz-range-thumb]:w-6
+              [&::-moz-range-thumb]:h-slider-thumb
+              [&::-moz-range-thumb]:rounded-lg
+              [&::-moz-range-thumb]:bg-dt-accent
+              [&::-moz-range-thumb]:cursor-pointer
+              [&::-moz-range-thumb]:border-0
+            "
+            style={{
+              transform: 'rotate(90deg)',
+              width: 200,
+              height: 'var(--slider-thumb-width)',
+              minWidth: 200,
+              minHeight: 'var(--slider-thumb-width)',
+            } as React.CSSProperties}
+          />
+        </div>
       </div>
       <div className="space-y-dt-2">
-        <p className="text-xs text-dt-text-muted">Output device</p>
-        {devices.length === 0 ? (
-          <p className="text-sm text-dt-text-muted py-dt-2">No devices</p>
-        ) : (
-          <div className="flex flex-col gap-dt-2">
-            {devices.map((d) => (
-              <button
-                key={d.id}
-                type="button"
-                onClick={() => {
-                  setSelectedDeviceId(d.id)
-                  DeskThing.send({
-                    type: 'control',
-                    payload: { action: 'output-device', value: d.id },
-                  })
-                }}
-                className={`min-h-touch px-dt-3 py-dt-2 rounded-lg text-left text-sm font-medium transition-colors ${
-                  selectedDeviceId === d.id
-                    ? 'bg-dt-accent text-white'
-                    : 'bg-dt-elevated text-dt-text-primary hover:bg-dt-subtle'
-                }`}
-              >
-                {d.name}
-              </button>
-            ))}
-          </div>
-        )}
+        <Dropdown
+          label="Output device"
+          options={devices.map((d) => ({ id: d.id, label: d.name }))}
+          value={selectedDeviceId}
+          onSelect={(id) => {
+            setSelectedDeviceId(id)
+            DeskThing.send({
+              type: 'control',
+              payload: { action: 'output-device', value: id },
+            })
+          }}
+          placeholder="No devices"
+          disabled={devices.length === 0}
+        />
       </div>
       <Card placeholder>
-        <p className="text-xs text-dt-text-muted">miniDSP presets — coming soon</p>
+        <p className="text-dt-touch text-dt-text-muted">miniDSP presets — coming soon</p>
       </Card>
     </div>
   )
