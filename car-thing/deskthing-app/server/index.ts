@@ -4,8 +4,8 @@ import { DESKTHING_EVENTS } from '@deskthing/types'
 
 // Read version from manifest.json (in packaged app zip); package.json is not in the zip.
 const require = createRequire(import.meta.url)
-let appVersion = '0.2.4'
-let appVersionCode = 5
+let appVersion = '0.3.5'
+let appVersionCode = 6
 try {
   const manifest = require('../manifest.json') as { version?: string; version_code?: number }
   if (manifest.version) appVersion = manifest.version
@@ -109,6 +109,21 @@ const start = async () => {
     getBridge('/audio/volume').then((json) => {
       const v = json && typeof json.volume === 'number' ? json.volume : null
       if (v !== null) sendVolumeToClient(v)
+    })
+  })
+
+  DeskThing.on('get-audio-devices', () => {
+    getBridge('/audio/devices').then((json) => {
+      const devices = json && Array.isArray(json.devices) ? json.devices : []
+      const defaultId = json && typeof json.defaultId === 'string' ? json.defaultId : null
+      DeskThing.send({ type: 'audio-devices', payload: { devices, defaultId } })
+    })
+  })
+
+  DeskThing.on('get-mic-muted', () => {
+    getBridge('/audio/mic-muted').then((json) => {
+      const muted = json && typeof json.muted === 'boolean' ? json.muted : false
+      DeskThing.send({ type: 'mic-muted', payload: muted })
     })
   })
 

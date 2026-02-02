@@ -11,6 +11,11 @@ function sendVolume(value: number) {
   })
 }
 
+interface AudioDevice {
+  id: string
+  name: string
+}
+
 /**
  * Computer control: mic mute, volume, audio source, miniDSP.
  * Sends commands to Mac bridge (Hammerspoon or HTTP server).
@@ -18,6 +23,8 @@ function sendVolume(value: number) {
 export const ControlTab: React.FC = () => {
   const [micMuted, setMicMuted] = React.useState(false)
   const [volume, setVolume] = React.useState(50)
+  const [devices, setDevices] = React.useState<AudioDevice[]>([])
+  const [selectedDeviceId, setSelectedDeviceId] = React.useState<string | null>(null)
 
   const volumeLastSent = React.useRef<number>(50)
   const volumeThrottleTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -36,7 +43,28 @@ export const ControlTab: React.FC = () => {
   }, [])
 
   React.useEffect(() => {
+    const unsub = DeskThing.on('audio-devices', (data: { payload?: { devices?: unknown; defaultId?: string | null } }) => {
+      const p = data.payload
+      if (p && Array.isArray(p.devices)) {
+        setDevices(p.devices as AudioDevice[])
+        if (typeof p.defaultId === 'string') setSelectedDeviceId(p.defaultId)
+      }
+    })
+    return () => (typeof unsub === 'function' ? unsub() : undefined)
+  }, [])
+
+  React.useEffect(() => {
+    const unsub = DeskThing.on('mic-muted', (data: { payload?: unknown }) => {
+      const m = data.payload
+      if (typeof m === 'boolean') setMicMuted(m)
+    })
+    return () => (typeof unsub === 'function' ? unsub() : undefined)
+  }, [])
+
+  React.useEffect(() => {
     DeskThing.send({ type: 'get-volume' })
+    DeskThing.send({ type: 'get-audio-devices' })
+    DeskThing.send({ type: 'get-mic-muted' })
   }, [])
 
   const handleMicToggle = (checked: boolean) => {
@@ -108,9 +136,35 @@ export const ControlTab: React.FC = () => {
         />
         <span className="text-sm text-dt-text-muted w-8 shrink-0">{volume}%</span>
       </div>
-      <Card placeholder>
-        <p className="text-xs text-dt-text-muted">Audio source — coming soon</p>
-      </Card>
+      <div className="space-y-dt-2">
+        <p className="text-xs text-dt-text-muted">Output device</p>
+        {devices.length === 0 ? (
+          <p className="text-sm text-dt-text-muted py-dt-2">No devices</p>
+        ) : (
+          <div className="flex flex-col gap-dt-2">
+            {devices.map((d) => (
+              <button
+                key={d.id}
+                type="button"
+                onClick={() => {
+                  setSelectedDeviceId(d.id)
+                  DeskThing.send({
+                    type: 'control',
+                    payload: { action: 'output-device', value: d.id },
+                  })
+                }}
+                className={`min-h-touch px-dt-3 py-dt-2 rounded-lg text-left text-sm font-medium transition-colors ${
+                  selectedDeviceId === d.id
+                    ? 'bg-dt-accent text-white'
+                    : 'bg-dt-elevated text-dt-text-primary hover:bg-dt-subtle'
+                }`}
+              >
+                {d.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       <Card placeholder>
         <p className="text-xs text-dt-text-muted">miniDSP presets — coming soon</p>
       </Card>

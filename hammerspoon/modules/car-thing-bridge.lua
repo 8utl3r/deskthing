@@ -15,6 +15,36 @@ local function handleRequest(method, path, headers, body)
         return '{"ok":true}', 200, { ["Content-Type"] = "application/json" }
     end
 
+    -- GET /audio/devices - list output devices { id, name } and defaultId
+    if method == "GET" and path == "/audio/devices" then
+        local devices = {}
+        local defaultId = nil
+        local okDef, defDev = pcall(function() return hs.audiodevice.defaultOutputDevice() end)
+        if okDef and defDev then defaultId = defDev:uid() end
+        local ok, devs = pcall(function() return hs.audiodevice.allOutputDevices() end)
+        if ok and devs then
+            for _, d in ipairs(devs) do
+                local uid = d:uid()
+                local name = d:name()
+                if uid and name then
+                    table.insert(devices, { id = uid, name = name })
+                end
+            end
+        end
+        return hs.json.encode({ devices = devices, defaultId = defaultId }), 200, { ["Content-Type"] = "application/json" }
+    end
+
+    -- GET /audio/mic-muted - current input mute state
+    if method == "GET" and path == "/audio/mic-muted" then
+        local muted = false
+        local ok, dev = pcall(function() return hs.audiodevice.defaultInputDevice() end)
+        if ok and dev then
+            local m = dev:inputMuted()
+            if type(m) == "boolean" then muted = m end
+        end
+        return string.format('{"muted":%s}', tostring(muted)), 200, { ["Content-Type"] = "application/json" }
+    end
+
     -- GET /audio/volume - current system output volume (0-100), native API (no osascript)
     if method == "GET" and path == "/audio/volume" then
         local vol = 0
@@ -115,6 +145,22 @@ local function handleRequest(method, path, headers, body)
                     return '{"ok":false,"error":"no output device"}', 500, { ["Content-Type"] = "application/json" }
                 end
                 dev:setVolume(vol)
+            end
+
+            if action == "output-device" and type(value) == "string" and value ~= "" then
+                local dev = hs.audiodevice.findOutputByUID(value)
+                if dev then
+                    local ok = dev:setDefaultOutputDevice()
+                    if ok then
+                        if logger then logger.info("Output device set: %s", value) end
+                    else
+                        if logger then logger.error("setDefaultOutputDevice failed: %s", value) end
+                        return '{"ok":false,"error":"set failed"}', 500, { ["Content-Type"] = "application/json" }
+                    end
+                else
+                    if logger then logger.error("Output device not found: %s", value) end
+                    return '{"ok":false,"error":"device not found"}', 404, { ["Content-Type"] = "application/json" }
+                end
             end
 
             return '{"ok":true}', 200, { ["Content-Type"] = "application/json" }

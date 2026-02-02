@@ -347,7 +347,9 @@ Same pattern for each:
 | GET | `/health` | — | 0 |
 | POST | `/macro` | `{ id }` | 1 |
 | POST | `/control` | `{ action, value }` | 2+ |
+| GET | `/audio/volume` | — | 3 |
 | GET | `/audio/devices` | — | 4 |
+| GET | `/audio/mic-muted` | — | 2 |
 | GET | `/notifications` | — | 6 |
 
 ---

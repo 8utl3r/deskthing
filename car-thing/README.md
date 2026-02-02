@@ -40,6 +40,8 @@ Then on device: LiteClient → Settings → Dev Mode → Developer App → port 
 
 **Connection chain:** See `docs/CONNECTION_CHAIN.md` for how device → server → bridge → Mac connect, and where failures occur.
 
+**DeskThing logs:** Symlinked to `car-thing/deskthing-logs/`. View: `tail -f car-thing/deskthing-logs/application.log.json`. See `docs/DESKTHING_LOG_ISSUES.md` for common issues.
+
 **Hardware mapping:** See `docs/HARDWARE_MAPPING.md` for mapping wheel and buttons to our app in DeskThing Desktop (action IDs, two-way sync).
 
 **Bridge: Hammerspoon vs Python:** See `docs/BRIDGE_HAMMERSPOON_VS_PYTHON.md` for why we use Hammerspoon, what we’d gain/lose by switching, and why volume is faster with `hs.audiodevice`.
