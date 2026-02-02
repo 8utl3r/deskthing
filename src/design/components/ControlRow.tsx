@@ -14,12 +14,12 @@ export const ControlRow: React.FC<ControlRowProps> = ({
 }) => (
   <div
     className={`
-      flex items-center justify-between min-h-touch p-dt-3
+      flex items-center justify-between min-h-touch p-dt-4
       bg-dt-elevated rounded-lg
       ${className}
     `.trim()}
   >
-    <span className="text-sm text-dt-text-primary">{label}</span>
+    <span className="text-dt-touch text-dt-text-primary">{label}</span>
     <div className="shrink-0">{children}</div>
   </div>
 )

@@ -25,7 +25,7 @@ export const Switch: React.FC<SwitchProps> = ({
       onCheckedChange={onCheckedChange}
       disabled={disabled}
       className={`
-        w-11 h-6 rounded-full relative
+        min-w-[72px] min-h-touch rounded-full relative
         bg-dt-subtle ${trackClass}
         data-[disabled]:opacity-50
         transition-colors
@@ -33,9 +33,9 @@ export const Switch: React.FC<SwitchProps> = ({
     >
       <RadixSwitch.Thumb
         className="
-          block w-5 h-5 bg-white rounded-full
+          block min-w-[52px] min-h-touch bg-white rounded-full
           transition-transform translate-x-0.5
-          data-[state=checked]:translate-x-6
+          data-[state=checked]:translate-x-5
         "
       />
     </RadixSwitch.Root>
