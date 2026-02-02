@@ -11,6 +11,8 @@ brew "fd"
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
+# CLI for Headscale (self-hosted Tailscale control server)
+brew "headscale-cli"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
 # User-friendly cURL replacement (command-line HTTP client)

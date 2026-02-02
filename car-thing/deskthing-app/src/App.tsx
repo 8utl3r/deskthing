@@ -23,8 +23,8 @@ const App: React.FC = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-dt-base p-dt-4 overflow-auto text-dt-text-primary flex flex-col">
-      <h1 className="text-xl font-bold mb-dt-4 shrink-0">Dotfiles Car Thing</h1>
+    <div className="min-h-screen bg-dt-base pl-dt-4 pr-dt-wheel pt-dt-4 pb-dt-4 overflow-auto text-dt-text-primary flex flex-col">
+      <h1 className="text-xl font-bold mb-dt-4 shrink-0">Deskthing Dashboard</h1>
       <TabBar tabs={TABS} value={activeTab} onValueChange={setActiveTab}>
       <TabContent
         value="control"

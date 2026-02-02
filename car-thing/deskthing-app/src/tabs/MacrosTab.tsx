@@ -3,6 +3,7 @@ import { DeskThing } from '@deskthing/client'
 import { MacroButton, SectionHeader } from '@/design/components'
 
 const MACROS = [
+  { id: 'test', label: 'Test', icon: '✓' },
   { id: 'mute-teams', label: 'Mute Teams', icon: '🎤' },
   { id: 'focus-mode', label: 'Focus mode', icon: '🎯' },
   { id: 'add-inbox', label: 'Add to inbox', icon: '📥' },

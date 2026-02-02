@@ -1,5 +1,20 @@
 # Car Thing config
 
+## Macros (`macros.json`)
+
+Macros run on your Mac when you tap a macro button on the Car Thing. **First time:** `cp macros.example.json macros.json`. Then edit `macros.json` to add or change macros.
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique ID (must match MacrosTab; add new IDs there too) |
+| `label` | Display name |
+| `type` | `applescript` or `shortcut` |
+| `payload` | AppleScript string, or Shortcuts name for `shortcuts run` |
+
+**Test macro:** `id: "test"` runs `display dialog "Hello from Car Thing"` — use it to verify the bridge.
+
+---
+
 ## Direct-edit mapping: all hardware → our app
 
 **`deskthing-default-mapping.json`** is a full Default profile that assigns **every** Car Thing hardware control to one of our app’s actions so we get events from everything.

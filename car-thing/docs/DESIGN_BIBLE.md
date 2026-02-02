@@ -22,6 +22,7 @@ Design system for the Dotfiles Car Thing app. Optimized for a 480×800 portrait 
 **Implications:**
 - Min touch target: **44×44 px** (Apple HIG)
 - Safe area: avoid notch/edge; keep critical controls in thumb zone (lower 60%)
+- **Wheel side:** The physical dial is on the **right** of the 4" screen. Use `pr-dt-wheel` (36px) on the main layout so content isn’t cramped against the wheel; left/top/bottom use normal padding (`p-dt-4` / `pl-dt-4 pt-dt-4 pb-dt-4`).
 - Max ~8–10 list items visible without scroll
 - Dial scrolls; buttons map to presets or context actions
 
@@ -72,6 +73,7 @@ Design system for the Dotfiles Car Thing app. Optimized for a 480×800 portrait 
 | `space-4` | 16px | Card padding, gaps |
 | `space-5` | 20px | Section margins |
 | `space-6` | 24px | Page padding |
+| `space-wheel` | 36px | Right (wheel) side safe area; use for `pr-dt-wheel` on main container |
 
 ---
 

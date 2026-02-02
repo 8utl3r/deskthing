@@ -51,7 +51,7 @@ else
   check fail "POST /control → code=$CONTROL_CODE body=$CONTROL_BODY"
 fi
 
-# 4. Boot log (did bridge init run? cat /tmp/car-thing-bridge.log)
+# 4. Boot log (optional; our bridge uses lib.logger, may not write /tmp/car-thing-bridge.log)
 if [[ -f /tmp/car-thing-bridge.log ]]; then
   LAST=$(tail -1 /tmp/car-thing-bridge.log)
   if [[ "$LAST" == *"listening on 8765"* ]]; then
@@ -62,7 +62,7 @@ if [[ -f /tmp/car-thing-bridge.log ]]; then
     check ok "Bridge boot log (init ran): $LAST"
   fi
 else
-  check fail "Bridge boot log missing (init never ran? Reload Hammerspoon and check Console for errors)"
+  echo "  (skip) Bridge boot log not present (bridge uses Hammerspoon logger)"
 fi
 
 # 5. Bridge file exists and is not a self-symlink (if we're in dotfiles; repo root is 2 levels up from car-thing/scripts)
