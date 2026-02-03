@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Button, SimpleGrid, Text } from '@mantine/core'
+import { Box, SimpleGrid, Text, UnstyledButton } from '@mantine/core'
+import { Tile } from '@/design'
 import { DeskThing } from '@deskthing/client'
 
 const MACROS = [
@@ -15,27 +16,25 @@ export const MacrosTab: React.FC = () => {
   }
 
   return (
-    <Box style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <Text size="xl" fw={600} c="dimmed">Macros</Text>
-      <Text size="md" c="dimmed" mt={4}>
-        Run AppleScript or Shortcuts. Edit config to add more.
-      </Text>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <SimpleGrid cols={2} spacing="md">
         {MACROS.map((m) => (
-          <Button
-            key={m.id}
-            variant="light"
-            size="xl"
-            onClick={() => runMacro(m.id)}
-            style={{
-              minHeight: 64,
-              justifyContent: 'flex-start',
-              fontSize: 20,
-            }}
-            leftSection={<span>{m.icon}</span>}
-          >
-            {m.label}
-          </Button>
+          <Tile key={m.id}>
+            <UnstyledButton
+              style={{
+                width: '100%',
+                minHeight: 48,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                justifyContent: 'flex-start',
+              }}
+              onClick={() => runMacro(m.id)}
+            >
+              <Text size="xl" aria-hidden>{m.icon}</Text>
+              <Text size="lg" fw={500}>{m.label}</Text>
+            </UnstyledButton>
+          </Tile>
         ))}
       </SimpleGrid>
     </Box>

@@ -45,9 +45,19 @@ const App: React.FC = () => {
         variant="pills"
         style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
       >
-        <Tabs.List grow style={{ marginBottom: 12, flexShrink: 0 }}>
+        <Tabs.List grow style={{ marginBottom: 12, flexShrink: 0, gap: 8 }}>
           {TABS.map((tab) => (
-            <Tabs.Tab key={tab.value} value={tab.value} style={{ fontSize: 22, fontWeight: 600, minHeight: 64 }}>
+            <Tabs.Tab
+              key={tab.value}
+              value={tab.value}
+              style={{
+                fontSize: 22,
+                fontWeight: 600,
+                minHeight: 64,
+                borderRadius: 8,
+                border: '1px solid var(--mantine-color-dark-4)',
+              }}
+            >
               {tab.label}
             </Tabs.Tab>
           ))}
