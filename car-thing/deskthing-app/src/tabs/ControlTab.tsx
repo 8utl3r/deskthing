@@ -131,15 +131,17 @@ export const ControlTab: React.FC = () => {
           padding: 0,
           background: 'none',
           border: 'none',
+          alignSelf: 'stretch',
+          display: 'flex',
+          minHeight: 0,
         }}
       >
         <Tile
           span={2}
           backgroundColor={micMuted ? MIC_MUTED_COLOR : MIC_UNMUTED_COLOR}
           style={{
-            width: '100%',
-            height: '100%',
-            minHeight: 64,
+            flex: 1,
+            minHeight: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
