@@ -12,7 +12,7 @@ interface TileProps {
   style?: React.CSSProperties
 }
 
-/** Touch-friendly tile. Use inside Grid; span controls width (12-col grid). */
+/** Floating tile for controls. Use inside Grid; span controls width (12-col grid). */
 export const Tile: React.FC<TileProps> = ({
   children,
   span = 6,
@@ -22,6 +22,7 @@ export const Tile: React.FC<TileProps> = ({
   <Paper
     p="md"
     radius="md"
+    shadow="md"
     withBorder
     style={{
       minHeight: TILE_MIN_HEIGHT,
