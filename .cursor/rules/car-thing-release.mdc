@@ -1,0 +1,23 @@
+---
+description: MANDATORY: Build and push car-thing to GitHub after every change
+globs: car-thing/**/*, hammerspoon/modules/car-thing-bridge.lua
+alwaysApply: false
+---
+
+# Car Thing Release Rule
+
+**MANDATORY:** Every time you make changes to car-thing as a result of a user prompt, you MUST build and push to GitHub. Every single time. No exceptions.
+
+```bash
+./car-thing/scripts/commit-and-release.sh [optional-commit-message]
+```
+
+Run this script immediately after completing car-thing edits. Do not wait for the user to ask. Do not skip it.
+
+The script:
+1. Commits car-thing and bridge changes
+2. Pushes to origin (dotfiles)
+3. Subtree-pushes app to deskthing (8utl3r/deskthing)
+4. Builds and creates a GitHub release
+
+If no car-thing changes exist, the script exits without error. You may omit the message; it will use version + date.
