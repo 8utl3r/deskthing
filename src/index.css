@@ -1,4 +1,4 @@
-@import './design/tokens.css';
+@import '@mantine/core/styles.css';
 
 button {
   background: transparent;
@@ -15,7 +15,3 @@ button:active {
   outline: none;
   border: none;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;

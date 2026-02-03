@@ -1,6 +1,6 @@
 import React from 'react'
+import { Box, Card, ScrollArea, Stack, Text } from '@mantine/core'
 import { DeskThing } from '@deskthing/client'
-import { Card, EmptyState, SectionHeader } from '@/design/components'
 
 const SCROLL_AMOUNT = 120
 
@@ -13,11 +13,6 @@ interface FeedItem {
   timestamp?: string
 }
 
-/**
- * Feed: RSS and other sources aggregated by the Mac bridge.
- * Configure URLs in car-thing/config/feed.json (copy from feed.example.json).
- * Wheel scrolls when on this tab.
- */
 export const FeedTab: React.FC = () => {
   const [items, setItems] = React.useState<FeedItem[]>([])
   const [loading, setLoading] = React.useState(true)
@@ -49,48 +44,62 @@ export const FeedTab: React.FC = () => {
   }, [])
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
-      <SectionHeader
-        title="Feed"
-        hint="RSS and other sources — configure URLs in feed.json on Mac."
-      />
+    <Box style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+      <Text size="xl" fw={600} c="dimmed">Feed</Text>
+      <Text size="md" c="dimmed" mt={4}>
+        RSS and other sources — configure URLs in feed.json on Mac.
+      </Text>
       {loading ? (
-        <div className="py-dt-6 text-center text-dt-feed text-dt-text-muted">Loading…</div>
+        <Text py="xl" ta="center" c="dimmed" size="lg">Loading…</Text>
       ) : items.length === 0 ? (
-        <EmptyState
-          icon="📰"
-          message="No feed items."
-          hint="Copy feed.example.json to feed.json and add RSS URLs."
-        />
+        <Card p="xl" radius="md" withBorder style={{ borderStyle: 'dashed', marginTop: 8 }}>
+          <Stack align="center" gap="md">
+            <Text size="2rem" aria-hidden>📰</Text>
+            <Text size="xl" c="dimmed" ta="center">No feed items.</Text>
+            <Text size="md" c="dimmed" ta="center">
+              Copy feed.example.json to feed.json and add RSS URLs.
+            </Text>
+          </Stack>
+        </Card>
       ) : (
-        <div
-          ref={scrollRef}
-          className="flex flex-col gap-dt-3 flex-1 min-h-0 overflow-y-auto overflow-x-hidden mt-dt-2"
+        <ScrollArea
+          viewportRef={scrollRef}
+          style={{ flex: 1, minHeight: 0, marginTop: 8 }}
+          scrollbarSize="md"
         >
-          {items.map((item) => (
-            <Card key={item.id}>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-dt-accent rounded-lg -m-dt-4 p-dt-4"
-              >
-                <p className="text-dt-feed font-medium text-dt-text-primary line-clamp-2">
-                  {item.title}
-                </p>
-                {item.summary && (
-                  <p className="text-dt-body text-dt-text-muted mt-dt-1 line-clamp-2">
-                    {item.summary}
-                  </p>
-                )}
-                {item.source && (
-                  <p className="text-dt-touch text-dt-text-muted mt-dt-1">{item.source}</p>
-                )}
-              </a>
-            </Card>
-          ))}
-        </div>
+          <Stack gap="md">
+            {items.map((item) => (
+              <Card key={item.id} p="md" radius="md" withBorder>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'block',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    outline: 'none',
+                  }}
+                >
+                  <Text size="xl" fw={500} lineClamp={2}>
+                    {item.title}
+                  </Text>
+                  {item.summary && (
+                    <Text size="md" c="dimmed" mt={4} lineClamp={2}>
+                      {item.summary}
+                    </Text>
+                  )}
+                  {item.source && (
+                    <Text size="md" c="dimmed" mt={4}>
+                      {item.source}
+                    </Text>
+                  )}
+                </a>
+              </Card>
+            ))}
+          </Stack>
+        </ScrollArea>
       )}
-    </div>
+    </Box>
   )
 }

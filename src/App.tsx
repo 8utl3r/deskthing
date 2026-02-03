@@ -1,6 +1,6 @@
 import React from 'react'
+import { Box, Tabs } from '@mantine/core'
 import { DeskThing } from '@deskthing/client'
-import { TabBar, TabContent } from '@/design/components'
 import { ControlTab } from './tabs/ControlTab'
 import { MacrosTab } from './tabs/MacrosTab'
 import { FeedTab } from './tabs/FeedTab'
@@ -22,34 +22,48 @@ const App: React.FC = () => {
     return () => (typeof unsub === 'function' ? unsub() : undefined)
   }, [])
 
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab)
-    DeskThing.send({ type: 'tab-changed', payload: tab })
+  const handleTabChange = (value: string | null) => {
+    if (value) {
+      setActiveTab(value)
+      DeskThing.send({ type: 'tab-changed', payload: value })
+    }
   }
 
   return (
-    <div className="min-h-screen bg-dt-base pl-dt-4 pr-dt-wheel pt-dt-4 pb-dt-4 overflow-auto text-dt-text-primary flex flex-col">
-      <TabBar tabs={TABS} value={activeTab} onValueChange={handleTabChange}>
-      <TabContent
-        value="control"
-        className="mt-dt-3 flex-1 min-h-0 data-[state=active]:flex data-[state=active]:flex-col"
+    <Box
+      style={{
+        minHeight: '100vh',
+        padding: '16px 36px 16px 16px',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'auto',
+      }}
+    >
+      <Tabs
+        value={activeTab}
+        onChange={handleTabChange}
+        variant="pills"
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
       >
-        <ControlTab />
-      </TabContent>
-      <TabContent
-        value="macros"
-        className="mt-dt-3 flex-1 min-h-0 data-[state=active]:flex data-[state=active]:flex-col"
-      >
-        <MacrosTab />
-      </TabContent>
-      <TabContent
-        value="feed"
-        className="mt-dt-3 flex-1 min-h-0 data-[state=active]:flex data-[state=active]:flex-col"
-      >
-        <FeedTab />
-      </TabContent>
-      </TabBar>
-    </div>
+        <Tabs.List grow style={{ marginBottom: 12, flexShrink: 0 }}>
+          {TABS.map((tab) => (
+            <Tabs.Tab key={tab.value} value={tab.value} style={{ fontSize: 22, fontWeight: 600, minHeight: 64 }}>
+              {tab.label}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+
+        <Tabs.Panel value="control" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <ControlTab />
+        </Tabs.Panel>
+        <Tabs.Panel value="macros" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <MacrosTab />
+        </Tabs.Panel>
+        <Tabs.Panel value="feed" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <FeedTab />
+        </Tabs.Panel>
+      </Tabs>
+    </Box>
   )
 }
 
