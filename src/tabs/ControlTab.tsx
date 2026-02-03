@@ -114,7 +114,7 @@ export const ControlTab: React.FC = () => {
   }
 
   return (
-    <Grid variant="control" style={{ minHeight: 280 }}>
+    <Grid variant="control" style={{ minHeight: 240 }}>
       <VolumeTile
         value={volume}
         min={0}
@@ -126,8 +126,8 @@ export const ControlTab: React.FC = () => {
       <UnstyledButton
         onClick={handleMicToggle}
         style={{
-          gridColumn: '1 / -1',
-          gridRow: '2',
+          gridColumn: '3 / 5',
+          gridRow: '1 / 3',
           padding: 0,
           background: 'none',
           border: 'none',
@@ -138,7 +138,8 @@ export const ControlTab: React.FC = () => {
           backgroundColor={micMuted ? MIC_MUTED_COLOR : MIC_UNMUTED_COLOR}
           style={{
             width: '100%',
-            minHeight: 80,
+            height: '100%',
+            minHeight: 64,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -150,7 +151,7 @@ export const ControlTab: React.FC = () => {
         </Tile>
       </UnstyledButton>
 
-      <Tile span={12} style={{ gridColumn: '1 / -1', gridRow: '3' }}>
+      <Tile span={2} rowSpan={2} style={{ gridColumn: '1 / 3', gridRow: '3 / 5' }}>
         <Select
           label="Output device"
           placeholder="No devices"
@@ -173,7 +174,7 @@ export const ControlTab: React.FC = () => {
         />
       </Tile>
 
-      <Tile span={12} placeholder style={{ gridColumn: '1 / -1', gridRow: '4' }}>
+      <Tile span={2} rowSpan={2} placeholder style={{ gridColumn: '3 / 5', gridRow: '3 / 5' }}>
         <Text size="lg" c="dimmed">miniDSP presets — coming soon</Text>
       </Tile>
     </Grid>
