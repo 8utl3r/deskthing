@@ -1,8 +1,11 @@
 import React from 'react'
-import { Switch, Select, Text } from '@mantine/core'
+import { UnstyledButton, Select, Text } from '@mantine/core'
 import { Grid, Tile } from '@/design'
-import { VerticalSlider } from '@/components/VerticalSlider'
+import { VolumeTile } from '@/components/VolumeTile'
 import { DeskThing } from '@deskthing/client'
+
+const MIC_MUTED_COLOR = 'var(--mantine-color-red-6)'
+const MIC_UNMUTED_COLOR = 'var(--mantine-color-green-6)'
 
 const VOLUME_SEND_THROTTLE_MS = 50
 
@@ -65,12 +68,12 @@ export const ControlTab: React.FC = () => {
     DeskThing.send({ type: 'get-mic-muted' })
   }, [])
 
-  const handleMicToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.currentTarget.checked
-    setMicMuted(checked)
+  const handleMicToggle = () => {
+    const next = !micMuted
+    setMicMuted(next)
     DeskThing.send({
       type: 'control',
-      payload: { action: 'mic-mute', value: checked },
+      payload: { action: 'mic-mute', value: next },
     })
   }
 
@@ -111,35 +114,43 @@ export const ControlTab: React.FC = () => {
   }
 
   return (
-    <Grid>
-      <Tile span={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text size="lg" fw={500}>Mic mute</Text>
-        <Switch
-          size="lg"
-          checked={micMuted}
-          onChange={handleMicToggle}
-          color="red"
-          styles={{
-            track: { minWidth: 72, minHeight: 64 },
-            thumb: { minWidth: 52, minHeight: 64 },
+    <Grid variant="control" style={{ minHeight: 280 }}>
+      <VolumeTile
+        value={volume}
+        min={0}
+        max={100}
+        onChange={handleVolumeChange}
+        onPointerUp={handleVolumePointerUp}
+      />
+
+      <UnstyledButton
+        onClick={handleMicToggle}
+        style={{
+          gridColumn: '1 / -1',
+          gridRow: '2',
+          padding: 0,
+          background: 'none',
+          border: 'none',
+        }}
+      >
+        <Tile
+          span={2}
+          backgroundColor={micMuted ? MIC_MUTED_COLOR : MIC_UNMUTED_COLOR}
+          style={{
+            width: '100%',
+            minHeight: 80,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        />
-      </Tile>
+        >
+          <Text size="lg" fw={600} c="white">
+            Mic {micMuted ? 'Muted' : 'On'}
+          </Text>
+        </Tile>
+      </UnstyledButton>
 
-      <Tile span={6} style={{ display: 'flex', flexDirection: 'column', minHeight: 180 }}>
-        <Text size="lg" fw={500} style={{ flexShrink: 0 }}>Volume</Text>
-        <VerticalSlider
-          value={volume}
-          min={0}
-          max={100}
-          onChange={handleVolumeChange}
-          onPointerUp={handleVolumePointerUp}
-          style={{ flex: 1 }}
-        />
-        <Text size="sm" c="dimmed" style={{ flexShrink: 0 }}>{volume}%</Text>
-      </Tile>
-
-      <Tile span={12}>
+      <Tile span={12} style={{ gridColumn: '1 / -1', gridRow: '3' }}>
         <Select
           label="Output device"
           placeholder="No devices"
@@ -162,7 +173,7 @@ export const ControlTab: React.FC = () => {
         />
       </Tile>
 
-      <Tile span={12} placeholder>
+      <Tile span={12} placeholder style={{ gridColumn: '1 / -1', gridRow: '4' }}>
         <Text size="lg" c="dimmed">miniDSP presets — coming soon</Text>
       </Tile>
     </Grid>
