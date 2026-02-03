@@ -2,21 +2,20 @@ import React from 'react'
 import { Paper } from '@mantine/core'
 
 const TILE_MIN_HEIGHT = 64
-const TILE_PADDING = 16
 
 interface TileProps {
   children: React.ReactNode
-  /** Span full width in 2-col grid */
-  fullWidth?: boolean
+  /** Span 1–12 columns in the 12-col grid. 6 = half, 4 = third, 12 = full. */
+  span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   /** Dashed border for placeholder state */
   placeholder?: boolean
   style?: React.CSSProperties
 }
 
-/** Touch-friendly tile for grid layouts. Min 64px height per Design Bible. */
+/** Touch-friendly tile. Use inside Grid; span controls width (12-col grid). */
 export const Tile: React.FC<TileProps> = ({
   children,
-  fullWidth = false,
+  span = 6,
   placeholder = false,
   style = {},
 }) => (
@@ -26,7 +25,7 @@ export const Tile: React.FC<TileProps> = ({
     withBorder
     style={{
       minHeight: TILE_MIN_HEIGHT,
-      gridColumn: fullWidth ? '1 / -1' : undefined,
+      gridColumn: `span ${span}`,
       borderStyle: placeholder ? 'dashed' : undefined,
       opacity: placeholder ? 0.7 : 1,
       ...style,

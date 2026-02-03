@@ -1,6 +1,6 @@
 import React from 'react'
-import { Box, SimpleGrid, Slider, Switch, Select, Text } from '@mantine/core'
-import { Tile } from '@/design'
+import { Box, Slider, Switch, Select, Text } from '@mantine/core'
+import { Grid, Tile } from '@/design'
 import { DeskThing } from '@deskthing/client'
 
 const VOLUME_SEND_THROTTLE_MS = 50
@@ -106,70 +106,68 @@ export const ControlTab: React.FC = () => {
   }
 
   return (
-    <Box style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <SimpleGrid cols={2} spacing="md">
-        <Tile style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text size="lg" fw={500}>Mic mute</Text>
-          <Switch
-            size="lg"
-            checked={micMuted}
-            onChange={handleMicToggle}
-            color="red"
-            styles={{
-              track: { minWidth: 72, minHeight: 64 },
-              thumb: { minWidth: 52, minHeight: 64 },
-            }}
-          />
-        </Tile>
+    <Grid>
+      <Tile span={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text size="lg" fw={500}>Mic mute</Text>
+        <Switch
+          size="lg"
+          checked={micMuted}
+          onChange={handleMicToggle}
+          color="red"
+          styles={{
+            track: { minWidth: 72, minHeight: 64 },
+            thumb: { minWidth: 52, minHeight: 64 },
+          }}
+        />
+      </Tile>
 
-        <Tile style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          <Text size="lg" fw={500}>Volume</Text>
-          <Box style={{ height: 160, width: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Slider
-              value={volume}
-              onChange={handleVolumeChange}
-              onChangeEnd={(val) => flushVolume(val)}
-              min={0}
-              max={100}
-              orientation="vertical"
-              size="lg"
-              styles={{
-                root: { height: 160 },
-                track: { width: 24 },
-                thumb: { width: 32, height: 32 },
-              }}
-            />
-          </Box>
-          <Text size="sm" c="dimmed">{volume}%</Text>
-        </Tile>
-
-        <Tile fullWidth>
-          <Select
-            label="Output device"
-            placeholder="No devices"
-            data={devices.map((d) => ({ value: d.id, label: d.name }))}
-            value={selectedDeviceId}
-            onChange={(id) => {
-              if (id) {
-                setSelectedDeviceId(id)
-                DeskThing.send({
-                  type: 'control',
-                  payload: { action: 'output-device', value: id },
-                })
-              }
-            }}
-            disabled={devices.length === 0}
+      <Tile span={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <Text size="lg" fw={500}>Volume</Text>
+        <Box style={{ height: 160, width: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Slider
+            value={volume}
+            onChange={handleVolumeChange}
+            onChangeEnd={(val) => flushVolume(val)}
+            min={0}
+            max={100}
+            orientation="vertical"
             size="lg"
             styles={{
-              input: { minHeight: 64, fontSize: 20 },
+              root: { height: 160 },
+              track: { width: 24 },
+              thumb: { width: 32, height: 32 },
             }}
           />
-        </Tile>
+        </Box>
+        <Text size="sm" c="dimmed">{volume}%</Text>
+      </Tile>
 
-        <Tile fullWidth placeholder>
-          <Text size="lg" c="dimmed">miniDSP presets — coming soon</Text>
-        </Tile>
-      </SimpleGrid>
-    </Box>
+      <Tile span={12}>
+        <Select
+          label="Output device"
+          placeholder="No devices"
+          data={devices.map((d) => ({ value: d.id, label: d.name }))}
+          value={selectedDeviceId}
+          onChange={(id) => {
+            if (id) {
+              setSelectedDeviceId(id)
+              DeskThing.send({
+                type: 'control',
+                payload: { action: 'output-device', value: id },
+              })
+            }
+          }}
+          disabled={devices.length === 0}
+          size="lg"
+          styles={{
+            input: { minHeight: 64, fontSize: 20 },
+          }}
+        />
+      </Tile>
+
+      <Tile span={12} placeholder>
+        <Text size="lg" c="dimmed">miniDSP presets — coming soon</Text>
+      </Tile>
+    </Grid>
   )
 }
