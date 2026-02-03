@@ -1,6 +1,6 @@
 import React from 'react'
+import { Box, Button, SimpleGrid, Text } from '@mantine/core'
 import { DeskThing } from '@deskthing/client'
-import { MacroButton, SectionHeader } from '@/design/components'
 
 const MACROS = [
   { id: 'test', label: 'Test', icon: '✓' },
@@ -15,22 +15,29 @@ export const MacrosTab: React.FC = () => {
   }
 
   return (
-    <div className="space-y-dt-4">
-      <SectionHeader
-        title="Macros"
-        hint="Run AppleScript or Shortcuts. Edit config to add more."
-      />
-      <div className="grid grid-cols-2 gap-dt-2">
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <Text size="xl" fw={600} c="dimmed">Macros</Text>
+      <Text size="md" c="dimmed" mt={4}>
+        Run AppleScript or Shortcuts. Edit config to add more.
+      </Text>
+      <SimpleGrid cols={2} spacing="md">
         {MACROS.map((m) => (
-          <MacroButton
+          <Button
             key={m.id}
-            id={m.id}
-            label={m.label}
-            icon={m.icon}
+            variant="light"
+            size="xl"
             onClick={() => runMacro(m.id)}
-          />
+            style={{
+              minHeight: 64,
+              justifyContent: 'flex-start',
+              fontSize: 20,
+            }}
+            leftSection={<span>{m.icon}</span>}
+          >
+            {m.label}
+          </Button>
         ))}
-      </div>
-    </div>
+      </SimpleGrid>
+    </Box>
   )
 }

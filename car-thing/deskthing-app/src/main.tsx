@@ -1,6 +1,8 @@
 import './globalThis'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { MantineProvider } from '@mantine/core'
+import { theme } from './theme'
 import './index.css'
 
 function showLoadError(message: string) {
@@ -38,7 +40,6 @@ if (!rootEl) {
     </StrictMode>,
   )
 
-  // Load app (and @deskthing/client) in a separate chunk so load errors are caught
   const loadTimeout = setTimeout(() => {
     showLoadError(
       'Load timed out. The app chunk may have failed to load or execute on this device. Try Wi‑Fi and re-upload, or check DeskThing Discord.',
@@ -50,9 +51,11 @@ if (!rootEl) {
       clearTimeout(loadTimeout)
       root.render(
         <StrictMode>
-          <ErrorBoundary>
-            <App />
-          </ErrorBoundary>
+          <MantineProvider theme={theme} defaultColorScheme="dark">
+            <ErrorBoundary>
+              <App />
+            </ErrorBoundary>
+          </MantineProvider>
         </StrictMode>,
       )
     })

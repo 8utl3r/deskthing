@@ -1,8 +1,8 @@
 import React from 'react'
+import { Box, Paper, SimpleGrid, Slider, Switch, Select, Text } from '@mantine/core'
 import { DeskThing } from '@deskthing/client'
-import { Dropdown, SectionHeader, Switch, Tile } from '@/design/components'
 
-const VOLUME_SEND_THROTTLE_MS = 50 // ~20 updates/sec during drag to avoid flooding the pipe
+const VOLUME_SEND_THROTTLE_MS = 50
 
 function sendVolume(value: number) {
   DeskThing.send({
@@ -16,10 +16,6 @@ interface AudioDevice {
   name: string
 }
 
-/**
- * Computer control: mic mute, volume, audio source, miniDSP.
- * Sends commands to Mac bridge (Hammerspoon or HTTP server).
- */
 export const ControlTab: React.FC = () => {
   const [micMuted, setMicMuted] = React.useState(false)
   const [volume, setVolume] = React.useState(50)
@@ -67,7 +63,8 @@ export const ControlTab: React.FC = () => {
     DeskThing.send({ type: 'get-mic-muted' })
   }, [])
 
-  const handleMicToggle = (checked: boolean) => {
+  const handleMicToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.currentTarget.checked
     setMicMuted(checked)
     DeskThing.send({
       type: 'control',
@@ -87,8 +84,7 @@ export const ControlTab: React.FC = () => {
     }
   }, [])
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseInt(e.target.value, 10)
+  const handleVolumeChange = (val: number) => {
     setVolume(val)
     volumePending.current = val
 
@@ -108,86 +104,82 @@ export const ControlTab: React.FC = () => {
     }
   }
 
-  const handleVolumePointerUp = () => {
-    flushVolume(volumePending.current ?? volume)
-  }
-
   return (
-    <div className="space-y-dt-4">
-      <SectionHeader title="Audio" />
-      <div className="grid grid-cols-2 gap-dt-3">
-        <Tile className="flex-row justify-between items-center">
-          <span className="text-dt-touch text-dt-text-primary">Mic mute</span>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <Text size="xl" fw={600} c="dimmed">Audio</Text>
+      <SimpleGrid cols={2} spacing="md">
+        <Paper p="md" radius="md" withBorder style={{ minHeight: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text size="lg" fw={500}>Mic mute</Text>
           <Switch
+            size="lg"
             checked={micMuted}
-            onCheckedChange={handleMicToggle}
-            variant="danger"
-          />
-        </Tile>
-        <Tile className="items-center">
-          <div className="flex flex-col items-center gap-dt-2 w-full">
-            <span className="text-dt-touch text-dt-text-primary font-medium">Volume</span>
-            <div
-              className="flex justify-center items-center min-h-[160px] shrink-0"
-              style={{ width: 'var(--slider-thumb-width)' }}
-            >
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={volume}
-                onChange={handleVolumeChange}
-                onPointerUp={handleVolumePointerUp}
-                onPointerCancel={handleVolumePointerUp}
-                className="
-                  bg-dt-subtle rounded-full
-                  appearance-none cursor-pointer accent-dt-accent
-                  [&::-webkit-slider-thumb]:appearance-none
-                  [&::-webkit-slider-thumb]:w-6
-                  [&::-webkit-slider-thumb]:h-slider-thumb
-                  [&::-webkit-slider-thumb]:rounded-lg
-                  [&::-webkit-slider-thumb]:bg-dt-accent
-                  [&::-webkit-slider-thumb]:cursor-pointer
-                  [&::-webkit-slider-thumb]:shadow-md
-                  [&::-moz-range-thumb]:w-6
-                  [&::-moz-range-thumb]:h-slider-thumb
-                  [&::-moz-range-thumb]:rounded-lg
-                  [&::-moz-range-thumb]:bg-dt-accent
-                  [&::-moz-range-thumb]:cursor-pointer
-                  [&::-moz-range-thumb]:border-0
-                "
-                style={{
-                  transform: 'rotate(90deg)',
-                  width: 160,
-                  height: 'var(--slider-thumb-width)',
-                  minWidth: 160,
-                  minHeight: 'var(--slider-thumb-width)',
-                } as React.CSSProperties}
-              />
-            </div>
-            <span className="text-dt-touch text-dt-text-muted">{volume}%</span>
-          </div>
-        </Tile>
-        <Tile fullWidth>
-          <Dropdown
-            label="Output device"
-            options={devices.map((d) => ({ id: d.id, label: d.name }))}
-            value={selectedDeviceId}
-            onSelect={(id) => {
-              setSelectedDeviceId(id)
-              DeskThing.send({
-                type: 'control',
-                payload: { action: 'output-device', value: id },
-              })
+            onChange={handleMicToggle}
+            color="red"
+            styles={{
+              track: { minWidth: 72, minHeight: 64 },
+              thumb: { minWidth: 52, minHeight: 64 },
             }}
-            placeholder="No devices"
-            disabled={devices.length === 0}
           />
-        </Tile>
-        <Tile fullWidth className="border border-dashed border-dt-subtle bg-dt-elevated/50">
-          <p className="text-dt-touch text-dt-text-muted">miniDSP presets — coming soon</p>
-        </Tile>
-      </div>
-    </div>
+        </Paper>
+
+        <Paper p="md" radius="md" withBorder style={{ minHeight: 64, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <Text size="lg" fw={500}>Volume</Text>
+          <Box style={{ height: 160, width: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Slider
+              value={volume}
+              onChange={handleVolumeChange}
+              onChangeEnd={(val) => flushVolume(val)}
+              min={0}
+              max={100}
+              orientation="vertical"
+              size="lg"
+              styles={{
+                root: { height: 160 },
+                track: { width: 24 },
+                thumb: { width: 32, height: 32 },
+              }}
+            />
+          </Box>
+          <Text size="sm" c="dimmed">{volume}%</Text>
+        </Paper>
+
+        <Paper p="md" radius="md" withBorder style={{ minHeight: 64, gridColumn: '1 / -1' }}>
+          <Select
+            label="Output device"
+            placeholder="No devices"
+            data={devices.map((d) => ({ value: d.id, label: d.name }))}
+            value={selectedDeviceId}
+            onChange={(id) => {
+              if (id) {
+                setSelectedDeviceId(id)
+                DeskThing.send({
+                  type: 'control',
+                  payload: { action: 'output-device', value: id },
+                })
+              }
+            }}
+            disabled={devices.length === 0}
+            size="lg"
+            styles={{
+              input: { minHeight: 64, fontSize: 20 },
+            }}
+          />
+        </Paper>
+
+        <Paper
+          p="md"
+          radius="md"
+          withBorder
+          style={{
+            minHeight: 64,
+            gridColumn: '1 / -1',
+            borderStyle: 'dashed',
+            opacity: 0.7,
+          }}
+        >
+          <Text size="lg" c="dimmed">miniDSP presets — coming soon</Text>
+        </Paper>
+      </SimpleGrid>
+    </Box>
   )
 }
