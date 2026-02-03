@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Paper, SimpleGrid, Slider, Switch, Select, Text } from '@mantine/core'
+import { Box, SimpleGrid, Slider, Switch, Select, Text } from '@mantine/core'
+import { Tile } from '@/design'
 import { DeskThing } from '@deskthing/client'
 
 const VOLUME_SEND_THROTTLE_MS = 50
@@ -105,10 +106,9 @@ export const ControlTab: React.FC = () => {
   }
 
   return (
-    <Box style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <Text size="xl" fw={600} c="dimmed">Audio</Text>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <SimpleGrid cols={2} spacing="md">
-        <Paper p="md" radius="md" withBorder style={{ minHeight: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Tile style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Text size="lg" fw={500}>Mic mute</Text>
           <Switch
             size="lg"
@@ -120,9 +120,9 @@ export const ControlTab: React.FC = () => {
               thumb: { minWidth: 52, minHeight: 64 },
             }}
           />
-        </Paper>
+        </Tile>
 
-        <Paper p="md" radius="md" withBorder style={{ minHeight: 64, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <Tile style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
           <Text size="lg" fw={500}>Volume</Text>
           <Box style={{ height: 160, width: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Slider
@@ -141,9 +141,9 @@ export const ControlTab: React.FC = () => {
             />
           </Box>
           <Text size="sm" c="dimmed">{volume}%</Text>
-        </Paper>
+        </Tile>
 
-        <Paper p="md" radius="md" withBorder style={{ minHeight: 64, gridColumn: '1 / -1' }}>
+        <Tile fullWidth>
           <Select
             label="Output device"
             placeholder="No devices"
@@ -164,21 +164,11 @@ export const ControlTab: React.FC = () => {
               input: { minHeight: 64, fontSize: 20 },
             }}
           />
-        </Paper>
+        </Tile>
 
-        <Paper
-          p="md"
-          radius="md"
-          withBorder
-          style={{
-            minHeight: 64,
-            gridColumn: '1 / -1',
-            borderStyle: 'dashed',
-            opacity: 0.7,
-          }}
-        >
+        <Tile fullWidth placeholder>
           <Text size="lg" c="dimmed">miniDSP presets — coming soon</Text>
-        </Paper>
+        </Tile>
       </SimpleGrid>
     </Box>
   )

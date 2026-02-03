@@ -4,6 +4,24 @@ Our app registers **actions** with DeskThing. You map those actions to the Car T
 
 ---
 
+## Buttons and wheel do nothing?
+
+**Most likely cause:** The hardware mapping is not installed. Our app does not control the device directly—DeskThing Desktop routes hardware events to our app based on the mapping.
+
+**Fix (direct file install):**
+
+1. **Quit DeskThing** completely (Cmd+Q).
+2. From repo root, run:
+   ```bash
+   ./car-thing/scripts/install-deskthing-mapping.sh
+   ```
+3. **Start DeskThing** and ensure our app is running on the Car Thing.
+4. The Default profile should now have Digit1–4 and Scroll mapped to our actions.
+
+**Alternative (manual mapping):** Use the Walkthrough below to map each control in DeskThing Desktop → Settings → Mappings. If our actions don't appear in the list, restart DeskThing after installing/updating our app.
+
+---
+
 ## Actions We Register
 
 | Action ID | Name | Intended hardware |

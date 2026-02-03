@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Card, ScrollArea, Stack, Text } from '@mantine/core'
+import { Box, ScrollArea, Stack, Text } from '@mantine/core'
+import { Tile } from '@/design'
 import { DeskThing } from '@deskthing/client'
 
 const SCROLL_AMOUNT = 120
@@ -45,14 +46,12 @@ export const FeedTab: React.FC = () => {
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-      <Text size="xl" fw={600} c="dimmed">Feed</Text>
-      <Text size="md" c="dimmed" mt={4}>
-        RSS and other sources — configure URLs in feed.json on Mac.
-      </Text>
       {loading ? (
-        <Text py="xl" ta="center" c="dimmed" size="lg">Loading…</Text>
+        <Tile fullWidth>
+          <Text size="lg" c="dimmed" ta="center">Loading…</Text>
+        </Tile>
       ) : items.length === 0 ? (
-        <Card p="xl" radius="md" withBorder style={{ borderStyle: 'dashed', marginTop: 8 }}>
+        <Tile fullWidth placeholder>
           <Stack align="center" gap="md">
             <Text size="2rem" aria-hidden>📰</Text>
             <Text size="xl" c="dimmed" ta="center">No feed items.</Text>
@@ -60,16 +59,16 @@ export const FeedTab: React.FC = () => {
               Copy feed.example.json to feed.json and add RSS URLs.
             </Text>
           </Stack>
-        </Card>
+        </Tile>
       ) : (
         <ScrollArea
           viewportRef={scrollRef}
-          style={{ flex: 1, minHeight: 0, marginTop: 8 }}
+          style={{ flex: 1, minHeight: 0, marginTop: 0 }}
           scrollbarSize="md"
         >
-          <Stack gap="md">
+          <Stack gap="md" mt="md">
             {items.map((item) => (
-              <Card key={item.id} p="md" radius="md" withBorder>
+              <Tile key={item.id}>
                 <a
                   href={item.url}
                   target="_blank"
@@ -79,6 +78,8 @@ export const FeedTab: React.FC = () => {
                     textDecoration: 'none',
                     color: 'inherit',
                     outline: 'none',
+                    margin: -16,
+                    padding: 16,
                   }}
                 >
                   <Text size="xl" fw={500} lineClamp={2}>
@@ -95,7 +96,7 @@ export const FeedTab: React.FC = () => {
                     </Text>
                   )}
                 </a>
-              </Card>
+              </Tile>
             ))}
           </Stack>
         </ScrollArea>

@@ -42,7 +42,9 @@ Then on device: LiteClient → Settings → Dev Mode → Developer App → port 
 
 **DeskThing logs:** Symlinked to `car-thing/deskthing-logs/`. View: `tail -f car-thing/deskthing-logs/application.log.json`. See `docs/DESKTHING_LOG_ISSUES.md` for common issues.
 
-**Hardware mapping:** See `docs/HARDWARE_MAPPING.md` for mapping wheel and buttons to our app in DeskThing Desktop (action IDs, two-way sync).
+**Hardware mapping:** See `docs/HARDWARE_MAPPING.md` for mapping wheel and buttons to our app in DeskThing Desktop (action IDs, two-way sync). If buttons/wheel do nothing, run `./car-thing/scripts/install-deskthing-mapping.sh` (quit DeskThing first).
+
+**Display settings:** See `docs/DISPLAY_SETTINGS.md` for screen brightness (device config, not app-controlled).
 
 **Bridge: Hammerspoon vs Python:** See `docs/BRIDGE_HAMMERSPOON_VS_PYTHON.md` for why we use Hammerspoon, what we’d gain/lose by switching, and why volume is faster with `hs.audiodevice`.
 
