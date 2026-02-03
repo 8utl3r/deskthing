@@ -1,11 +1,11 @@
 # Car Thing Display Settings
 
-## Screen brightness
+## Screen brightness (keeps changing / auto-adjusting)
 
-The Car Thing screen brightness is controlled by the **device/LiteClient**, not by our app. To prevent the screen from constantly changing brightness (e.g. auto-adjust):
+The Car Thing screen brightness is controlled by the **device/LiteClient**, not by our app. If brightness keeps changing (e.g. auto-adjust based on content or ambient light):
 
-1. **During device setup:** When connecting the Car Thing to DeskThing, choose **Edit Config** (instead of Skip Setup) and look for brightness or display options. DeskThing docs note "More Description of config options coming soon."
-2. **Device settings:** Check DeskThing Desktop → Settings → Device for any display/brightness options.
-3. **Community:** Ask on [DeskThing Discord](https://discord.gg/uNS3dhj46D) for the current way to set fixed brightness on Car Thing.
+1. **Edit Config during setup:** When connecting the Car Thing to DeskThing, choose **Edit Config** (instead of Skip Setup). Look for brightness, display, or auto-brightness options. You may need to disconnect and re-run setup to access Edit Config.
+2. **DeskThing Desktop:** Settings → Device — check for display/brightness toggles.
+3. **LiteClient config:** The device runs LiteClient; its config may have brightness keys. Ask on [DeskThing Discord](https://discord.gg/uNS3dhj46D) for the exact config option to disable auto-brightness or set a fixed level.
 
-Our app cannot set the device brightness from JavaScript—it runs inside a webview and has no access to device display APIs.
+Our app cannot set device brightness from JavaScript—it runs in a webview with no display API access.
