@@ -10,7 +10,7 @@ interface VolumeTileProps {
   onPointerUp?: () => void
 }
 
-/** Entire tile is the volume slider. 2x5 layout. */
+/** Entire tile is the volume slider. 2x2 cell. */
 export const VolumeTile: React.FC<VolumeTileProps> = ({
   value,
   min = 0,
@@ -87,8 +87,8 @@ export const VolumeTile: React.FC<VolumeTileProps> = ({
         }
       }}
       style={{
-        gridColumn: '1 / -1',
-        gridRow: '1',
+        gridColumn: '1 / 3',
+        gridRow: '1 / 3',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
