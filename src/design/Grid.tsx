@@ -5,13 +5,13 @@ interface GridProps {
   children: React.ReactNode
   /** Gap between tiles (default 12) */
   gap?: number
-  /** 4x4 grid, each tile 2x2. For ControlTab. */
+  /** 12-col + 4 rows for ControlTab. Each tile 2 cols x 2 rows. */
   variant?: 'default' | 'control'
   style?: React.CSSProperties
 }
 
 /**
- * Grid for tiles. Default: 12-column. Control variant: 4x4, each cell 2x2.
+ * Grid for tiles. Always 12 columns. Control variant adds 4 rows for 2x2 tiles.
  */
 export const Grid: React.FC<GridProps> = ({
   children,
@@ -24,7 +24,7 @@ export const Grid: React.FC<GridProps> = ({
     <Box
       style={{
         display: 'grid',
-        gridTemplateColumns: isControl ? 'repeat(4, 1fr)' : 'repeat(12, 1fr)',
+        gridTemplateColumns: 'repeat(12, 1fr)',
         gridTemplateRows: isControl ? 'repeat(4, 1fr)' : undefined,
         gap,
         ...style,
