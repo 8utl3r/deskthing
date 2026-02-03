@@ -1,14 +1,17 @@
 import React from 'react'
 import { Box, Tabs } from '@mantine/core'
 import { DeskThing } from '@deskthing/client'
+import { PaletteProvider } from './PaletteContext'
 import { ControlTab } from './tabs/ControlTab'
 import { MacrosTab } from './tabs/MacrosTab'
 import { FeedTab } from './tabs/FeedTab'
+import { SettingsTab } from './tabs/SettingsTab'
 
 const TABS = [
   { value: 'control', label: 'Audio' },
   { value: 'macros', label: 'Macros' },
   { value: 'feed', label: 'Feed' },
+  { value: 'settings', label: 'Settings' },
 ]
 
 const App: React.FC = () => {
@@ -30,6 +33,7 @@ const App: React.FC = () => {
   }
 
   return (
+    <PaletteProvider>
     <Box
       style={{
         minHeight: '100vh',
@@ -72,8 +76,12 @@ const App: React.FC = () => {
         <Tabs.Panel value="feed" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           <FeedTab />
         </Tabs.Panel>
+        <Tabs.Panel value="settings" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <SettingsTab />
+        </Tabs.Panel>
       </Tabs>
     </Box>
+    </PaletteProvider>
   )
 }
 

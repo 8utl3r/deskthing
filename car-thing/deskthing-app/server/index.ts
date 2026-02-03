@@ -187,7 +187,7 @@ const start = async () => {
 
   DeskThing.on('tab-changed', (data: { payload?: string }) => {
     const tab = data.payload
-    if (tab && ['control', 'macros', 'feed'].includes(tab)) activeTab = tab
+    if (tab && ['control', 'macros', 'feed', 'settings'].includes(tab)) activeTab = tab
   })
 
   DeskThing.on('input', (data: { payload?: Record<string, unknown> }) => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Paper } from '@mantine/core'
+import { usePalette } from '@/PaletteContext'
 
 const TILE_MIN_HEIGHT = 64
 
@@ -18,20 +19,25 @@ export const Tile: React.FC<TileProps> = ({
   span = 6,
   placeholder = false,
   style = {},
-}) => (
-  <Paper
-    p="md"
-    radius="md"
-    shadow="md"
-    withBorder
-    style={{
-      minHeight: TILE_MIN_HEIGHT,
-      gridColumn: `span ${span}`,
-      borderStyle: placeholder ? 'dashed' : undefined,
-      opacity: placeholder ? 0.7 : 1,
-      ...style,
-    }}
-  >
-    {children}
-  </Paper>
-)
+}) => {
+  const { palette } = usePalette()
+  return (
+    <Paper
+      p="md"
+      radius="md"
+      shadow="md"
+      withBorder
+      style={{
+        minHeight: TILE_MIN_HEIGHT,
+        gridColumn: `span ${span}`,
+        backgroundColor: palette.tileBg,
+        borderColor: palette.tileBorder,
+        borderStyle: placeholder ? 'dashed' : undefined,
+        opacity: placeholder ? 0.7 : 1,
+        ...style,
+      }}
+    >
+      {children}
+    </Paper>
+  )
+}
