@@ -1,6 +1,6 @@
 import React from 'react'
-import { Box, SimpleGrid, Text, UnstyledButton } from '@mantine/core'
-import { Tile } from '@/design'
+import { Text, UnstyledButton } from '@mantine/core'
+import { Grid, Tile } from '@/design'
 import { DeskThing } from '@deskthing/client'
 
 const MACROS = [
@@ -16,27 +16,25 @@ export const MacrosTab: React.FC = () => {
   }
 
   return (
-    <Box style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <SimpleGrid cols={2} spacing="md">
-        {MACROS.map((m) => (
-          <Tile key={m.id}>
-            <UnstyledButton
-              style={{
-                width: '100%',
-                minHeight: 48,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                justifyContent: 'flex-start',
-              }}
-              onClick={() => runMacro(m.id)}
-            >
-              <Text size="xl" aria-hidden>{m.icon}</Text>
-              <Text size="lg" fw={500}>{m.label}</Text>
-            </UnstyledButton>
-          </Tile>
-        ))}
-      </SimpleGrid>
-    </Box>
+    <Grid>
+      {MACROS.map((m) => (
+        <Tile key={m.id} span={6}>
+          <UnstyledButton
+            style={{
+              width: '100%',
+              minHeight: 48,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              justifyContent: 'flex-start',
+            }}
+            onClick={() => runMacro(m.id)}
+          >
+            <Text size="xl" aria-hidden>{m.icon}</Text>
+            <Text size="lg" fw={500}>{m.label}</Text>
+          </UnstyledButton>
+        </Tile>
+      ))}
+    </Grid>
   )
 }

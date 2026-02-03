@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, ScrollArea, Stack, Text } from '@mantine/core'
-import { Tile } from '@/design'
+import { Grid, Tile } from '@/design'
 import { DeskThing } from '@deskthing/client'
 
 const SCROLL_AMOUNT = 120
@@ -44,14 +44,23 @@ export const FeedTab: React.FC = () => {
     DeskThing.send({ type: 'get-feed' })
   }, [])
 
-  return (
-    <Box style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-      {loading ? (
-        <Tile fullWidth>
+  if (loading) {
+    return (
+      <Box style={{ flex: 1, minHeight: 0 }}>
+      <Grid>
+        <Tile span={12}>
           <Text size="lg" c="dimmed" ta="center">Loading…</Text>
         </Tile>
-      ) : items.length === 0 ? (
-        <Tile fullWidth placeholder>
+      </Grid>
+      </Box>
+    )
+  }
+
+  if (items.length === 0) {
+    return (
+      <Box style={{ flex: 1, minHeight: 0 }}>
+      <Grid>
+        <Tile span={12} placeholder>
           <Stack align="center" gap="md">
             <Text size="2rem" aria-hidden>📰</Text>
             <Text size="xl" c="dimmed" ta="center">No feed items.</Text>
@@ -60,47 +69,52 @@ export const FeedTab: React.FC = () => {
             </Text>
           </Stack>
         </Tile>
-      ) : (
-        <ScrollArea
-          viewportRef={scrollRef}
-          style={{ flex: 1, minHeight: 0, marginTop: 0 }}
-          scrollbarSize="md"
-        >
-          <Stack gap="md" mt="md">
-            {items.map((item) => (
-              <Tile key={item.id}>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'block',
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    outline: 'none',
-                    margin: -16,
-                    padding: 16,
-                  }}
-                >
-                  <Text size="xl" fw={500} lineClamp={2}>
-                    {item.title}
-                  </Text>
-                  {item.summary && (
-                    <Text size="md" c="dimmed" mt={4} lineClamp={2}>
-                      {item.summary}
-                    </Text>
-                  )}
-                  {item.source && (
-                    <Text size="md" c="dimmed" mt={4}>
-                      {item.source}
-                    </Text>
-                  )}
-                </a>
-              </Tile>
-            ))}
-          </Stack>
-        </ScrollArea>
-      )}
+      </Grid>
+      </Box>
+    )
+  }
+
+  return (
+    <Box style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+    <ScrollArea
+      viewportRef={scrollRef}
+      style={{ flex: 1, minHeight: 0 }}
+      scrollbarSize="md"
+    >
+      <Grid style={{ marginTop: 12 }}>
+        {items.map((item) => (
+          <Tile key={item.id} span={12}>
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                textDecoration: 'none',
+                color: 'inherit',
+                outline: 'none',
+                margin: -16,
+                padding: 16,
+              }}
+            >
+              <Text size="xl" fw={500} lineClamp={2}>
+                {item.title}
+              </Text>
+              {item.summary && (
+                <Text size="md" c="dimmed" mt={4} lineClamp={2}>
+                  {item.summary}
+                </Text>
+              )}
+              {item.source && (
+                <Text size="md" c="dimmed" mt={4}>
+                  {item.source}
+                </Text>
+              )}
+            </a>
+          </Tile>
+        ))}
+      </Grid>
+    </ScrollArea>
     </Box>
   )
 }
