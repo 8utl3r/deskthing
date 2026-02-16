@@ -1,0 +1,86 @@
+# Authelia configuration.yml for sso.xcvr.link (Caddy forward_auth).
+# Compatible with Authelia 4.38+ and TrueNAS catalog app.
+#
+# IMPORTANT: Users go in users_database.yml ONLY (in data/ subdir so it is not merged as config).
+# When config path is a directory, Authelia merges ALL .yml files in it; users_database.yml
+# must live in a subdirectory (e.g. data/) so only configuration.yml is loaded.
+# Do not add server.host/server.port/server.path (app sets server.address).
+# Do not add top-level session.domain when using session.cookies.
+#
+# 1. Deploy with: ./scripts/truenas/authelia-deploy-config.sh (generates HMAC and OIDC key).
+# 2. Put your user(s) and Argon2 hash in data/users_database.yml (deploy script does this).
+# 3. Restart the Authelia app.
+
+# Server: only endpoints; address is set by the TrueNAS app (tcp://:30133/).
+server:
+  endpoints:
+    authz:
+      forward-auth:
+        implementation: ForwardAuth
+
+log:
+  level: info
+
+authentication_backend:
+  file:
+    path: /config/data/users_database.yml
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: sso.xcvr.link
+      policy: one_factor
+    - domain: "*.xcvr.link"
+      policy: one_factor
+
+# Session: use cookies only (no top-level domain). default_redirection_url must differ from authelia_url.
+session:
+  name: authelia_session
+  expiration: 1h
+  inactivity: 15m
+  cookies:
+    - name: authelia_session
+      domain: xcvr.link
+      authelia_url: https://sso.xcvr.link
+      default_redirection_url: https://jellyfin.xcvr.link
+
+# Storage: use only one. TrueNAS catalog app may inject postgres; if so, omit this block.
+# If the app does not set storage, uncomment below for local SQLite.
+# storage:
+#   local:
+#     path: /config/database.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt
+
+# OIDC: required in 4.38+. REPLACE_HMAC_SECRET and REPLACE_ISSUER_PRIVATE_KEY are replaced by the deploy script.
+# OIDC client secrets: replace REPLACE_* placeholders with real secrets (openssl rand -base64 32) before deploy,
+# or edit configuration.yml on the NAS after deploy. See docs/networking/SSO_SERVICE_MATRIX.md.
+identity_providers:
+  oidc:
+    hmac_secret: REPLACE_HMAC_SECRET
+    issuer_private_key: REPLACE_ISSUER_PRIVATE_KEY
+    clients:
+      - client_id: immich
+        client_name: Immich
+        client_secret: REPLACE_IMMICH_CLIENT_SECRET
+        public: false
+        authorization_policy: one_factor
+        redirect_uris:
+          - https://immich.xcvr.link/auth/login
+          - https://immich.xcvr.link/user-settings
+      - client_id: headscale
+        client_name: Headscale
+        client_secret: REPLACE_HEADSCALE_CLIENT_SECRET
+        public: false
+        authorization_policy: one_factor
+        redirect_uris:
+          - https://headscale.xcvr.link/oidc/callback
+      - client_id: jellyfin
+        client_name: Jellyfin SSO Plugin
+        client_secret: REPLACE_JELLYFIN_CLIENT_SECRET
+        public: false
+        authorization_policy: one_factor
+        redirect_uris:
+          - https://jellyfin.xcvr.link/sso/OID/redirect/authelia
