@@ -43,6 +43,8 @@ cask "alfred"
 cask "android-platform-tools"
 # Desktop password and login vault
 cask "bitwarden"
+# Bitwarden CLI for headless credential access (passwords in Keychain or .env)
+brew "bitwarden-cli"
 # Advanced Finder replacement with multi-pane layouts and enhanced file management
 cask "bloom"
 # Shortcut viewer - shows keyboard shortcuts when holding Command key
