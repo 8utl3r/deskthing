@@ -1,0 +1,95 @@
+# Caddyfile for xcvr.link — all proxy hosts (replaces NPM+)
+# Deploy to Pi 5 at /var/lib/caddy/config/Caddyfile; Caddy runs in Docker.
+# Backends: TrueNAS 192.168.0.158 (sso, nas, headscale, rules, immich, n8n, syncthing);
+#           Pi 5 host 192.168.0.136 (jellyfin, music, listen, watch, read).
+# Use host IP for Pi 5 services so Caddy container can reach host-published ports.
+#
+# SSO: All hosts except sso.xcvr.link use forward_auth to Authelia (192.168.0.158:30133).
+# Immich, Headscale, Jellyfin use OIDC (no forward_auth); configure OIDC in each app before deploying.
+# See docs/networking/SSO_CADDY_AUTHELIA_CHECKLIST.md and docs/networking/SSO_SERVICE_MATRIX.md.
+
+# So Authelia sees correct X-Forwarded-* from Cloudflare Tunnel and LAN clients.
+# Use Let's Encrypt production (not staging) so browsers trust certs.
+# When behind Cloudflare, TLS-ALPN-01 fails; HTTP-01 must reach Caddy (no 530 on /.well-known/acme-challenge).
+# trusted_proxies: if needed for client IP behind Cloudflare/Tunnel, use reverse_proxy { trusted_proxies private_ranges } per block or see Caddy docs.
+{
+	acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+
+# Authelia (SSO portal) — no forward_auth; this is the login page.
+# Explicit X-Forwarded-* so Authelia sees the public URL and can resolve "current user state".
+sso.xcvr.link {
+	reverse_proxy 192.168.0.158:30133 {
+		header_up X-Forwarded-Host {http.request.host}
+		header_up X-Forwarded-Proto https
+	}
+}
+
+# TrueNAS UI (behind SSO; remove forward_auth block if you want direct access)
+nas.xcvr.link {
+	forward_auth 192.168.0.158:30133 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 192.168.0.158:81
+}
+
+# Headscale (Tailscale-compatible control server) — OIDC; no forward_auth
+headscale.xcvr.link {
+	reverse_proxy 192.168.0.158:30210
+}
+
+# Static rules docs
+rules.xcvr.link {
+	forward_auth 192.168.0.158:30133 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 192.168.0.158:30081
+}
+
+# Immich (photos) — OIDC; no forward_auth
+immich.xcvr.link {
+	reverse_proxy 192.168.0.158:30041
+}
+
+# n8n (workflows)
+n8n.xcvr.link {
+	forward_auth 192.168.0.158:30133 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 192.168.0.158:30109
+}
+
+# Syncthing
+syncthing.xcvr.link {
+	forward_auth 192.168.0.158:30133 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 192.168.0.158:8334
+}
+
+# Jellyfin (video) — Pi 5 host; OIDC via SSO plugin; no forward_auth
+jellyfin.xcvr.link {
+	reverse_proxy 192.168.0.136:8096
+}
+
+# Navidrome (music) — Pi 5 host
+music.xcvr.link {
+	forward_auth 192.168.0.158:30133 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 192.168.0.136:4533
+}
+
+# listen / watch / read — Jellyfin on Pi 5 host
+listen.xcvr.link, watch.xcvr.link, read.xcvr.link {
+	forward_auth 192.168.0.158:30133 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 192.168.0.136:8096
+}
