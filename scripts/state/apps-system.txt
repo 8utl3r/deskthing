@@ -1,15 +1,20 @@
+8BitDo Firmware Updater.app
 ActiveDock 2.app
 AeroSpace.app
 Alfred 5.app
 Antinote.app
 Bitwarden.app
 Bloom.app
+Claude.app
+Corsair iCUE5 Software
 CrossOver.app
 Cursor.app
+DeskThing.app
 DiracLive.app
 DiracLiveProcessor.app
 Discord.app
 Docker.app
+Domotz Pro Desktop App.app
 FlexiNet.app
 FreeTube.app
 Godot.app
@@ -42,14 +47,16 @@ Tailscale.app
 Telegram.app
 Termius.app
 TestFlight.app
-Typinator.app
 UTM.app
 Utilities
+Wacom Tablet.localized
 WezTerm.app
+WiFiman Desktop.app
 WiiM Home.app
 Xcode.app
 Zen.app
 iStatistica Pro.app
 iStatistica Sensors.app
 kindaVim.app
+krita.app
 logioptionsplus.app

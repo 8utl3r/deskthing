@@ -1,6 +1,8 @@
 tap "nikitabobko/tap"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# GNU core utilities (gtimeout, gdate, etc.); used by scripts/truenas/authelia-deploy-config.sh
+brew "coreutils"
 # Load/unload environment variables based on $PWD
 brew "direnv"
 # Modern, maintained replacement for ls
@@ -25,6 +27,8 @@ brew "mise"
 brew "ollama"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Open source continuous file synchronization tool
+brew "syncthing"
 # Cross-shell prompt for astronauts
 brew "starship"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
@@ -75,6 +79,8 @@ cask "logi-options+"
 cask "netspot"
 # Desktop GUI for Ollama (local LLM management)
 cask "ollama-app"
+# HTTP(S) debugging proxy for inspecting and rewriting traffic
+cask "proxyman"
 # Imaging utility to install operating systems to a microSD card
 cask "raspberry-pi-imager"
 # Replacement for the volume, brightness and keyboard backlight HUDs
