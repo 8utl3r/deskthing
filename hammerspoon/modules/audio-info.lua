@@ -495,10 +495,6 @@ function audioInfo.init()
         end
     end)
     
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, audioInfo.cleanup)
-    
     -- Audio info module initialized
 end
 

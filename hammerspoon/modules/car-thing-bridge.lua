@@ -256,13 +256,13 @@ function bridge.init()
         return
     end
     logger.info("Initializing Car Thing bridge")
+    local errorHandler = require("lib.error-handler")
     local ok, err = pcall(function()
         server = hs.httpserver.new()
         server:setPort(8765)
         server:setInterface("loopback")
         server:setCallback(handleRequest)
         server:start()
-        table.insert(hs.cleanup, bridge.cleanup)
         -- Watch this file so touch triggers reload (for reload-hammerspoon.sh)
         local bridgePath = hs.configdir .. "/modules/car-thing-bridge.lua"
         watcher = hs.pathwatcher.new(bridgePath, function()
@@ -275,6 +275,7 @@ function bridge.init()
     end)
     if not ok then
         logger.error("Car Thing bridge failed to start: " .. tostring(err))
+        errorHandler.capture("car-thing-bridge", tostring(err), { functionName = "init" })
         hs.notify.new({ title = "Car Thing bridge", informativeText = "Failed: " .. tostring(err) }):send()
     end
 end

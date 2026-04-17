@@ -39,5 +39,9 @@
   "workbench.editorAssociations": {
     "*.md": "default"
   },
-  "workbench.editor.enablePreview": false
+  "workbench.editor.enablePreview": false,
+  "cursor.cpp.enablePartialAccepts": true,
+  "sqltools.useNodeRuntime": true,
+  "explorer.confirmDragAndDrop": false,
+  "cursor.general.emailPrivacyEnabled": true
 }

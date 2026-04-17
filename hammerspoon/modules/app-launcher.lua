@@ -52,10 +52,6 @@ end
 function appLauncher.init()
     logger.info("Initializing app launcher module")
     appLauncher.setupHotkeys()
-    
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, appLauncher.cleanup)
 end
 
 return appLauncher

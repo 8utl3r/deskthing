@@ -85,6 +85,11 @@ music.xcvr.link {
 	reverse_proxy 192.168.0.136:4533
 }
 
+# Politics — static site served from TrueNAS (Caddy-static container on :8765)
+politics.xcvr.link {
+	reverse_proxy 192.168.0.158:8765
+}
+
 # listen / watch / read — Jellyfin on Pi 5 host
 listen.xcvr.link, watch.xcvr.link, read.xcvr.link {
 	forward_auth 192.168.0.158:30133 {

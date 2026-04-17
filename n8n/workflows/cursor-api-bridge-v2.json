@@ -26,6 +26,32 @@
                   {
                     "value1": "={{ $json.body.operation }}",
                     "operation": "equals",
+                    "value2": "ping"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "ping"
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{ $json.body.operation }}",
+                    "operation": "equals",
+                    "value2": "list"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "list"
+            },
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{ $json.body.operation }}",
+                    "operation": "equals",
                     "value2": "create"
                   }
                 ]
@@ -72,14 +98,45 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=http://localhost:5678/api/v1/workflows",
+        "method": "GET",
+        "url": "=http://192.168.0.158:30109/api/v1/workflows",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "X-N8N-API-KEY",
-              "value": "YOUR_API_KEY_HERE"
+              "value": "=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MzFiMGE1OS01NTU1LTQyOTAtOTJjOC0zM2E1MWIyOTg1NTAiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiNGMzOWU1NTEtMGY1ZS00MGQ2LWJmNzUtNDg5NDg3NTFkYjcyIiwiaWF0IjoxNzY5NDY0MTNzfQ.URWtGNi42brs8s8Z3CkmWLFXGbJNLiphujaVl0h1oPA"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "http-list",
+      "name": "HTTP List Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [650, 100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://192.168.0.158:30109/api/v1/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MzFiMGE1OS01NTU1LTQyOTAtOTJjOC0zM2E1MWIyOTg1NTAiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiNGMzOWU1NTEtMGY1ZS00MGQ2LWJmNzUtNDg5NDg3NTFkYjcyIiwiaWF0IjoxNzY5NDY0MTMzfQ.URWtGNi42brs8s8Z3CkmWLFXGbJNLiphujaVl0h1oPA"
             },
             {
               "name": "Content-Type",
@@ -91,7 +148,14 @@
         "contentType": "json",
         "specifyBody": "json",
         "jsonBody": "={{ {\n  \"name\": $json.body.name,\n  \"nodes\": $json.body.nodes,\n  \"connections\": $json.body.connections,\n  \"settings\": $json.body.settings || {}\n} }}",
-        "options": {}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "allowUnauthorizedCerts": false
+        }
       },
       "id": "http-create",
       "name": "HTTP Create Workflow",
@@ -102,13 +166,13 @@
     {
       "parameters": {
         "method": "PUT",
-        "url": "=http://localhost:5678/api/v1/workflows/{{ $json.body.workflowId }}",
+        "url": "=http://192.168.0.158:30109/api/v1/workflows/{{ $json.body.workflowId }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "X-N8N-API-KEY",
-              "value": "YOUR_API_KEY_HERE"
+              "value": "=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MzFiMGE1OS01NTU1LTQyOTAtOTJjOC0zM2E1MWIyOTg1NTAiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiNGMzOWU1NTEtMGY1ZS00MGQ2LWJmNzUtNDg5NDg3NTFkYjcyIiwiaWF0IjoxNzY5NDY0MTMzfQ.URWtGNi42brs8s8Z3CkmWLFXGbJNLiphujaVl0h1oPA"
             },
             {
               "name": "Content-Type",
@@ -119,8 +183,14 @@
         "sendBody": true,
         "contentType": "json",
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  \"name\": $json.body.name,\n  \"nodes\": $json.body.nodes,\n  \"connections\": $json.body.connections,\n  \"settings\": $json.body.settings || {},\n  \"active\": $json.body.active\n} }}",
-        "options": {}
+        "jsonBody": "={{ {\n  \"name\": $json.body.name,\n  \"nodes\": $json.body.nodes,\n  \"connections\": $json.body.connections,\n  \"settings\": $json.body.settings || {}\n} }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "id": "http-update",
       "name": "HTTP Update Workflow",
@@ -131,17 +201,23 @@
     {
       "parameters": {
         "method": "DELETE",
-        "url": "=http://localhost:5678/api/v1/workflows/{{ $json.body.workflowId }}",
+        "url": "=http://192.168.0.158:30109/api/v1/workflows/{{ $json.body.workflowId }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "X-N8N-API-KEY",
-              "value": "YOUR_API_KEY_HERE"
+              "value": "=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MzFiMGE1OS01NTU1LTQyOTAtOTJjOC0zM2E1MWIyOTg1NTAiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiNGMzOWU1NTEtMGY1ZS00MGQ2LWJmNzUtNDg5NDg3NTFkYjcyIiwiaWF0IjoxNzY5NDY0MTMzfQ.URWtGNi42brs8s8Z3CkmWLFXGbJNLiphujaVl0h1oPA"
             }
           ]
         },
-        "options": {}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "id": "http-delete",
       "name": "HTTP Delete Workflow",
@@ -164,7 +240,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"success\": false, \"error\": \"Invalid operation. Must be 'create', 'update', or 'delete'.\" } }}",
+        "responseBody": "={{ { \"success\": false, \"error\": \"Invalid operation. Must be 'ping', 'list', 'create', 'update', or 'delete'.\" } }}",
         "options": {}
       },
       "id": "respond-invalid-operation",
@@ -176,7 +252,18 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"success\": false, \"error\": $json.error || $json.message || \"Unknown error\" } }}",
+        "responseBody": "={{ { \"success\": true, \"pong\": true } }}"
+      },
+      "id": "respond-ping",
+      "name": "Respond Ping",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 50]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"error\": $json.error || $json.message || $json.body?.message || \"Unknown error\" } }}",
         "options": {}
       },
       "id": "respond-error",
@@ -202,6 +289,20 @@
       "main": [
         [
           {
+            "node": "Respond Ping",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP List Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "HTTP Create Workflow",
             "type": "main",
             "index": 0
@@ -224,6 +325,26 @@
         [
           {
             "node": "Respond Invalid Operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP List Workflows": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Respond Error",
             "type": "main",
             "index": 0
           }

@@ -487,10 +487,6 @@ function shortcutOverlay.init()
             informativeText = errorMsg
         }):send()
     end
-    
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, shortcutOverlay.cleanup)
 end
 
 return shortcutOverlay

@@ -161,3 +161,26 @@ class Config:
         """Log retention period in days."""
         return self._get_value("log_retention_days", 30)
 
+    @property
+    def qdrant_url(self) -> Optional[str]:
+        """Qdrant API URL (e.g., http://192.168.0.158:6333).
+        
+        If None, RAG features are disabled.
+        """
+        return self._get_value("qdrant_url", None)
+
+    @property
+    def qdrant_collection(self) -> str:
+        """Qdrant collection name for storing vectors."""
+        return self._get_value("qdrant_collection", "atlas_conversations")
+
+    @property
+    def embedding_model(self) -> str:
+        """Ollama embedding model name."""
+        return self._get_value("embedding_model", "nomic-embed-text")
+
+    @property
+    def rag_enabled(self) -> bool:
+        """Whether RAG is enabled (requires qdrant_url to be set)."""
+        return self.qdrant_url is not None
+

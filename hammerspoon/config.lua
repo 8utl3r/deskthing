@@ -35,10 +35,23 @@ config.shortcutOverlay = {
 config.lgMonitor = {
     serverScript = utils.resolvePath("scripts/archive/lg-server"),
     debugScript = utils.resolvePath("scripts/archive/lg-debug"),
+    directScript = utils.resolvePath("scripts/lg-c5/lg-monitor"),
     monitorIP = "192.168.0.39",
     statusFile = "/tmp/lg-server-status.json",
     commandFile = "/tmp/lg-server-command.json",
     updateInterval = 2,  -- Update status every 2 seconds
+    -- Use direct lg-monitor CLI instead of lg-server (more reliable when TV resets persistent connections)
+    useDirectMode = true,
+}
+
+-- MiniDSP DDRC-24 (via minidsp-rs daemon)
+config.minidsp = {
+    host = "127.0.0.1",
+    port = 5380,
+    deviceIndex = 0,       -- First device
+    pollInterval = 5,      -- Seconds between status polls
+    pollEnabled = true,    -- Start polling on init
+    -- onStatus = function(status) end,  -- Optional callback when status updates
 }
 
 -- Home Assistant configuration
@@ -87,27 +100,23 @@ function config.validate()
     return true, nil
 end
 
+-- Map of config.get() keys to config table keys
+local getKeys = {
+    hyper = "hyper",
+    apps = "apps",
+    window = "window",
+    shortcutOverlay = "shortcutOverlay",
+    lgMonitor = "lgMonitor",
+    minidsp = "minidsp",
+    homeAssistant = "homeAssistant",
+    logging = "logging",
+    debug = "debug",
+}
+
 -- Get configuration for a specific module
 function config.get(moduleName)
-    if moduleName == "hyper" then
-        return config.hyper
-    elseif moduleName == "apps" then
-        return config.apps
-    elseif moduleName == "window" then
-        return config.window
-    elseif moduleName == "shortcutOverlay" then
-        return config.shortcutOverlay
-    elseif moduleName == "lgMonitor" then
-        return config.lgMonitor
-    elseif moduleName == "homeAssistant" then
-        return config.homeAssistant
-    elseif moduleName == "logging" then
-        return config.logging
-    elseif moduleName == "debug" then
-        return config.debug
-    end
-    
-    return nil
+    local key = getKeys[moduleName]
+    return key and config[key] or nil
 end
 
 -- Validate on load

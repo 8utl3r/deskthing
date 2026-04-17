@@ -53,9 +53,87 @@ local function readServerStatus()
     end
 end
 
--- Send command to server
+-- Map lg-server command names to lg-monitor CLI command + optional value
+local commandToDirect = {
+    power_on = {cmd = "on"},
+    power_off = {cmd = "off"},
+    volume_up = {cmd = "volumeup"},
+    volume_down = {cmd = "volumedown"},
+    mute = {cmd = "mute"},
+    input_hdmi1 = {cmd = "input", value = "hdmi1"},
+    input_hdmi2 = {cmd = "input", value = "hdmi2"},
+    input_hdmi3 = {cmd = "input", value = "hdmi3"},
+    input_hdmi4 = {cmd = "input", value = "hdmi4"},
+}
+
+-- Send command via direct lg-monitor CLI (connects, sends, disconnects per command)
+-- Uses explicit PATH so python3 is found when Hammerspoon (GUI app) has minimal env
+local function sendDirectCommand(command)
+    local mapped = commandToDirect[command]
+    if not mapped then
+        logger.warning("Direct mode: unknown command " .. tostring(command))
+        return false
+    end
+    
+    local scriptPath = monitorConfig.directScript
+    if not scriptPath or not utils.fileExists(scriptPath) then
+        logger.error("Direct script not found: " .. tostring(scriptPath))
+        return false
+    end
+    
+    local args = {monitorConfig.monitorIP, mapped.cmd}
+    if mapped.value then
+        table.insert(args, "--value")
+        table.insert(args, mapped.value)
+    end
+    table.insert(args, "--no-dock-check")
+    
+    local argStr = ""
+    for _, a in ipairs(args) do
+        argStr = argStr .. " " .. "'" .. tostring(a):gsub("'", "'\\''") .. "'"
+    end
+    
+    -- Invoke via python3 directly - Hammerspoon GUI has minimal PATH, shebang may fail
+    -- Canonical: Mise 3.12 (see docs/PYTHON_SETUP_ANALYSIS.md)
+    local python3 = nil
+    local home = os.getenv("HOME") or ""
+    for _, p in ipairs({
+        home .. "/.local/share/mise/installs/python/3.12.11/bin/python3",
+        "/opt/homebrew/bin/python3",
+        "/usr/local/bin/python3",
+        "/usr/bin/python3",
+    }) do
+        if p and utils.fileExists(p) then
+            python3 = p
+            break
+        end
+    end
+    python3 = python3 or "python3"
+    
+    local cmd = string.format("%s %s%s 2>&1", python3, scriptPath, argStr)
+    
+    local ok, result = pcall(function()
+        return hs.execute(cmd, true)
+    end)
+    
+    if ok and result and result:match("successfully") then
+        logger.info("Direct command succeeded: " .. command)
+        return true
+    end
+    logger.warning("Direct command failed: " .. command .. " - " .. tostring(result))
+    return false
+end
+
+-- Send command to server (writes to command file for lg-server to pick up)
 local function sendServerCommand(command)
     debug.callStart("lg-monitor", "sendServerCommand", {command = command})
+    
+    -- Use direct mode when configured (more reliable when TV resets persistent connections)
+    if monitorConfig.useDirectMode == true then
+        local ok = sendDirectCommand(command)
+        debug.callEnd("lg-monitor", "sendServerCommand", ok)
+        return ok
+    end
     
     local cmdData = {
         command = command,
@@ -173,8 +251,9 @@ local function updateMenuBar()
     local status = readServerStatus()
     if not status then
         if menuBarItem then
-            menuBarItem:setTitle("📺 LG: No Status")
-            menuBarItem:setTooltip("LG C5 Server - No status available")
+            local title = (monitorConfig.useDirectMode == true) and "📺 LG: Direct" or "📺 LG: No Status"
+            menuBarItem:setTitle(title)
+            menuBarItem:setTooltip((monitorConfig.useDirectMode == true) and "LG C5 - Direct mode (lg-monitor CLI)" or "LG C5 Server - No status available")
         end
         return
     end
@@ -436,23 +515,16 @@ local function setupHotkeys()
     end)
     table.insert(resources.hotkeys, muteHotkey)
     
-    -- Input switching
-    for i = 1, 4 do
-        local inputHotkey = hs.hotkey.bind(hyper, tostring(i), function()
-            logger.debug("Input HDMI" .. i .. " requested")
-            sendServerCommand("input_hdmi" .. i)
-        end)
-        table.insert(resources.hotkeys, inputHotkey)
-    end
-    
-    -- Debug/test hotkey
-    local testHotkey = hs.hotkey.bind(hyper, "T", function()
-        logger.debug("Connection test requested")
-        hs.execute(monitorConfig.debugScript .. " test --ip " .. monitorConfig.monitorIP, true)
-    end)
-    table.insert(resources.hotkeys, testHotkey)
+    -- Input switching: Hyper+1-4 removed to avoid conflict with desktop-management
+    -- (space switching). Use Hammerflow F18+l+i+1/2/3/4 or menu bar for HDMI input.
+    -- Test: available via menu bar "Open Debug Monitor" / "Show Status"
     
     logger.info("LG Monitor hotkeys configured")
+end
+
+-- Send command (used by Hammerflow and menu)
+function lgMonitor.sendServerCommand(command)
+    return sendServerCommand(command)
 end
 
 -- Health check function
@@ -573,7 +645,11 @@ function lgMonitor.init()
     
     createMenuBar()
     setupHotkeys()
-    startServer()
+    if monitorConfig.useDirectMode ~= true then
+        startServer()
+    else
+        logger.info("Direct mode enabled - using lg-monitor CLI for commands (no persistent server)")
+    end
     
     -- Run initial health check
     lgMonitor.healthCheck()
@@ -588,10 +664,6 @@ function lgMonitor.init()
     hs.timer.doAfter(1, updateMenuBar)
     
     logger.info("LG Monitor module initialized")
-    
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, lgMonitor.cleanup)
 end
 
 return lgMonitor

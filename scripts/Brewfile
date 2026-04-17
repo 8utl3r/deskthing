@@ -1,42 +1,70 @@
 tap "nikitabobko/tap"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew "poppler"
+# Portable file server
+brew "copyparty"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
 # Load/unload environment variables based on $PWD
 brew "direnv"
 # Modern, maintained replacement for ls
 brew "eza"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# CLI for headscale, an open-source implementation of the Tailscale control server
+brew "headscale-cli"
 # User-friendly cURL replacement (command-line HTTP client)
 brew "httpie"
+# Command-line interface for self-hosted photo manager Immich
+brew "immich-cli"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Command-line client for Mega.co.nz
+brew "megatools"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
 # Create, run, and share large language models (LLMs)
-brew "ollama", restart_service: :changed
-# PDF rendering library (based on the xpdf-3.0 code base)
-brew "poppler"
+brew "ollama"
+# 7-Zip (high compression file archiver) implementation
+brew "p7zip"
+# Cross-platform library for audio I/O
+brew "portaudio"
 # Object-relational database system
 brew "postgresql@16", restart_service: :changed
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Enhanced, multi-threaded syslogd
+brew "rsyslog", restart_service: :changed
+# SOund eXchange: universal sound sample translator
+brew "sox"
+# Non-interactive SSH password auth
+brew "sshpass"
 # Cross-shell prompt for astronauts
 brew "starship"
+# Open source continuous file synchronization application
+brew "syncthing"
 # OCR (Optical Character Recognition) engine
 brew "tesseract"
+# Extremely fast Python package installer and resolver, written in Rust
+brew "uv"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# Feature-rich command-line audio/video downloader
+brew "yt-dlp"
 # Customizable dock, application launcher, dock replacement
 cask "activedock"
 # AeroSpace is an i3-like tiling window manager for macOS
-cask "aerospace"
+cask "nikitabobko/tap/aerospace"
 # Application launcher and productivity software
 cask "alfred"
 # Android SDK component
@@ -45,6 +73,8 @@ cask "android-platform-tools"
 cask "bitwarden"
 # File manager
 cask "bloom"
+# Anthropic's official Claude AI desktop app
+cask "claude"
 # Tool to run Windows software
 cask "crossover"
 # Voice and text chat software
@@ -52,7 +82,7 @@ cask "discord"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
 cask "font-jetbrains-mono-nerd-font"
-# Game development engine
+# 2D and 3D game engine
 cask "godot"
 # Desktop automation application
 cask "hammerspoon"
@@ -64,6 +94,8 @@ cask "iina"
 cask "itsycal"
 # Keyboard customiser
 cask "karabiner-elements"
+# Free and open-source painting and sketching program
+cask "krita"
 # Discover, download, and run local LLMs
 cask "lm-studio"
 # Software for Logitech devices
@@ -72,6 +104,8 @@ cask "logi-options+"
 cask "netspot"
 # Get up and running with large language models locally
 cask "ollama-app"
+# HTTP debugging proxy
+cask "proxyman"
 # Imaging utility to install operating systems to a microSD card
 cask "raspberry-pi-imager"
 # Replacement for the volume, brightness and keyboard backlight HUDs
@@ -94,10 +128,16 @@ cask "termius"
 cask "utm"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
+# Network monitoring and troubleshooting tool
+cask "wifiman"
 vscode "anysphere.cursorpyright"
+vscode "asadbek.sheetjs-demo"
+vscode "bierner.markdown-mermaid"
 vscode "davidanson.vscode-markdownlint"
 vscode "ms-azuretools.vscode-docker"
 vscode "ms-python.debugpy"
 vscode "ms-python.python"
+vscode "mtxr.sqltools"
+vscode "mtxr.sqltools-driver-sqlite"
 vscode "vscodevim.vim"
 vscode "zaaack.markdown-editor"

@@ -7,17 +7,16 @@ This step tests that your Cursor API Bridge workflow is working correctly by cre
 ### Prerequisites
 
 1. **Cursor API Bridge workflow is active**:
-   - Open n8n at `http://localhost:5678`
+   - Open n8n at `http://192.168.0.158:30109` (TrueNAS NAS instance)
    - Find the "Cursor API Bridge v1" workflow
    - Make sure it's toggled to "Active" (top right)
-   - Note the webhook URL from the Webhook node (e.g., `http://localhost:5678/webhook/cursor-workflow-api`)
+   - Note the webhook URL from the Webhook node (e.g., `http://192.168.0.158:30109/webhook/cursor-workflow-api`)
 
 2. **API key is configured**:
    - Make sure you've replaced `YOUR_API_KEY_HERE` with your actual API key in all three HTTP Request nodes
 
-3. **Basic auth credentials** (if using basic auth):
-   - Check your `.env` file in `~/dotfiles/n8n/` for `N8N_BASIC_AUTH_USER` and `N8N_BASIC_AUTH_PASSWORD`
-   - Or set them as environment variables
+3. **Authentication**:
+   - Use your n8n login credentials configured during NAS installation
 
 ### Method 1: Using the Helper Script (Recommended)
 
@@ -31,11 +30,9 @@ This step tests that your Cursor API Bridge workflow is working correctly by cre
    chmod +x cursor-api-helper.sh
    ```
 
-3. **Set your basic auth password** (if using basic auth):
-   ```bash
-   export N8N_BASIC_AUTH_PASSWORD="your_password_here"
-   ```
-   Or check your `~/dotfiles/n8n/.env` file for the password.
+3. **Set your n8n credentials** (if required by helper script):
+   - Use your n8n login credentials configured during NAS installation
+   - Update `cursor-api-helper.sh` to use NAS URL: `http://192.168.0.158:30109`
 
 4. **Run the test**:
    ```bash
@@ -65,16 +62,14 @@ This step tests that your Cursor API Bridge workflow is working correctly by cre
 
 If you prefer to use curl directly:
 
-1. **Get your webhook URL** from the n8n workflow (e.g., `http://localhost:5678/webhook/cursor-workflow-api`)
+1. **Get your webhook URL** from the n8n workflow (e.g., `http://192.168.0.158:30109/webhook/cursor-workflow-api`)
 
-2. **Get your basic auth credentials** from `~/dotfiles/n8n/.env`:
-   - `N8N_BASIC_AUTH_USER` (usually `admin`)
-   - `N8N_BASIC_AUTH_PASSWORD`
+2. **Use your n8n login credentials** configured during NAS installation
 
 3. **Run the curl command**:
    ```bash
-   curl -X POST http://localhost:5678/webhook/cursor-workflow-api \
-     -u "admin:your_password_here" \
+   curl -X POST http://192.168.0.158:30109/webhook/cursor-workflow-api \
+     -u "your_username:your_password" \
      -H "Content-Type: application/json" \
      -d @example-simple-workflow-v1.json | jq .
    ```
@@ -86,8 +81,8 @@ If you prefer to use curl directly:
 - For test mode, click "Execute workflow" first, then immediately run the test
 
 **Error: "unauthorized" or 401**
-- Check your basic auth credentials match your `.env` file
-- Make sure you're using the correct username and password
+- Check your n8n login credentials
+- Make sure you're using the correct username and password configured during NAS installation
 
 **Error: "Bad request" or 400**
 - Check that your API key is correctly set in the HTTP Request nodes

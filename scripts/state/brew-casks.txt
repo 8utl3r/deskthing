@@ -4,6 +4,7 @@ alfred
 android-platform-tools
 bitwarden
 bloom
+claude
 crossover
 discord
 docker-desktop
@@ -14,10 +15,12 @@ home-assistant
 iina
 itsycal
 karabiner-elements
+krita
 lm-studio
 logi-options+
 netspot
 ollama-app
+proxyman
 raspberry-pi-imager
 slimhud
 sony-ps-remote-play
@@ -29,3 +32,4 @@ telegram
 termius
 utm
 wezterm
+wifiman

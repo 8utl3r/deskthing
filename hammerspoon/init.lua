@@ -8,6 +8,12 @@
 -- To reduce console clutter: minimize the console window or ignore these messages.
 hs.logger.setGlobalLogLevel("error")
 
+-- Enable hs CLI for programmatic reload (e.g. car-thing/scripts/reload-hammerspoon.sh)
+local ok, _ = pcall(require, "hs.ipc")
+if not ok then
+  -- hs.ipc may be unavailable in some builds; reload script will use touch fallback
+end
+
 -- Load configuration first
 local config = require("config")
 local logger = require("lib.logger")
@@ -33,13 +39,15 @@ logger.setDefaultLogLevel(logLevel)
 
 
 -- Initialize error handler first (before other modules)
-local errorHandler = require("lib.error-handler")
-
--- Initialize diagnostics module
-local diagnostics = require("modules.diagnostics")
-
--- Initialize error handler with diagnostics
-errorHandler.init(diagnostics)
+local errorHandler, diagnostics
+local okEH, errEH = pcall(function()
+    errorHandler = require("lib.error-handler")
+    diagnostics = require("modules.diagnostics")
+    errorHandler.init(diagnostics)
+end)
+if not okEH then
+    errorHandler, diagnostics = nil, nil
+end
 
 -- Initialize debug system
 if config.get("debug").enabled then
@@ -48,7 +56,9 @@ if config.get("debug").enabled then
 end
 
 -- Initialize debug system with diagnostics and error handler
-debug.initWithDiagnostics(diagnostics, errorHandler)
+if diagnostics and errorHandler then
+    debug.initWithDiagnostics(diagnostics, errorHandler)
+end
 
 -- Initialize cleanup handler as a table before modules load
 -- Store original cleanup if it was a function
@@ -72,6 +82,9 @@ local modules = {
     "modules.shortcut-overlay",
     "modules.lg-monitor",
     "modules.home-assistant",
+    "modules.desktop-management",
+    "modules.car-thing-bridge",
+    "modules.minidsp",
 }
 
 -- Load and initialize modules
@@ -124,24 +137,31 @@ table.insert(hs.cleanup, function()
     -- Call all module cleanup functions
     for moduleName, module in pairs(loadedModules) do
         if module.cleanup then
-    local success, err = pcall(function()
+            local success, err = pcall(function()
                 module.cleanup()
-    end)
-    if not success then
+            end)
+            if not success then
                 mainLogger.error("Cleanup error in " .. moduleName .. ": " .. tostring(err))
+            end
+        end
     end
-end
+
+    -- Diagnostics (not in loadedModules)
+    if diagnostics and diagnostics.cleanup then
+        pcall(function()
+            diagnostics.cleanup()
+        end)
     end
-    
+
     -- Close debug trace file
     debug.close()
     
     -- Call original cleanup function if it existed
     if originalCleanupFunc then
-local success, err = pcall(function()
+        local success, err = pcall(function()
             originalCleanupFunc()
-end)
-if not success then
+        end)
+        if not success then
             mainLogger.error("Error in original cleanup: " .. tostring(err))
         end
     end
@@ -192,16 +212,21 @@ local hammerflowSuccess, hammerflowErr = pcall(function()
                 ["showDashboard"] = function()
                     statusDashboard.show()
                 end,
-                -- Helper function to send LG monitor commands
+                -- Helper function to send LG monitor commands (uses lg-monitor module)
                 ["sendLGCommand"] = function(command)
-                    local file = io.open("/tmp/lg-server-command.json", "w")
-                    if file then
-                        file:write(hs.json.encode({
-                            command = command,
-                            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
-                            source = "hammerflow"
-                        }))
-                        file:close()
+                    local lg = loadedModules["modules.lg-monitor"]
+                    if lg and lg.sendServerCommand then
+                        lg.sendServerCommand(command)
+                    else
+                        local file = io.open("/tmp/lg-server-command.json", "w")
+                        if file then
+                            file:write(hs.json.encode({
+                                command = command,
+                                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                                source = "hammerflow"
+                            }))
+                            file:close()
+                        end
                     end
                 end,
                 -- Diagnostic function

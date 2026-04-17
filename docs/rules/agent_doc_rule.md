@@ -27,7 +27,7 @@ Applies to all project documentation, session records, and rule compliance track
 - **Compliance**: Mandatory adherence to all documented rules
 
 ## Standards
-- Keep files ≤200 lines (split if exceeded)
+- Prefer concise, focused files; split when readability or maintenance clearly improves
 - Use lowercase filenames with underscores
 - Maintain single source of truth principle
 - Update in place rather than creating duplicates

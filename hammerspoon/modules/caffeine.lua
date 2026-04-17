@@ -70,10 +70,6 @@ end
 function caffeine.init()
     logger.info("Initializing caffeine module")
     caffeine.setupMenuBar()
-    
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, caffeine.cleanup)
 end
 
 return caffeine

@@ -460,11 +460,7 @@ function homeAssistant.init()
     
     hs.alert.show("✅ Home Assistant TV Control Active")
     logger.info("Home Assistant module initialized")
-    
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, homeAssistant.cleanup)
-    
+
     return true
 end
 

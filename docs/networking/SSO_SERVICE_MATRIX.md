@@ -29,7 +29,7 @@ OIDC clients are defined in `docs/truenas/authelia-configuration-yml-full-exampl
 | headscale | `https://headscale.xcvr.link/oidc/callback` | `REPLACE_HEADSCALE_CLIENT_SECRET` |
 | jellyfin | `https://jellyfin.xcvr.link/sso/OID/redirect/authelia` | `REPLACE_JELLYFIN_CLIENT_SECRET` |
 
-**Generate secrets:** `openssl rand -base64 32`
+**Generate and deploy:** `./scripts/truenas/authelia-set-oidc-secrets.sh` — generates secrets, prints them for copying into each app, and deploys config.
 
 **Immich mobile:** If using the mobile app, add `app.immich:///oauth-callback` to Immich redirect_uris in Authelia, or use Immich's Mobile Redirect URI Override with an HTTPS alternative.
 

@@ -12,6 +12,12 @@ if command -v brew >/dev/null 2>&1; then
   eval "$(brew shellenv)"
 fi
 
+# Homebrew `dotnet`: global tool apphosts (ilspycmd) resolve the runtime via DOTNET_ROOT,
+# not PATH — without this they only probe /usr/local/share/dotnet and fail.
+if [ -n "${HOMEBREW_PREFIX:-}" ] && [ -x "${HOMEBREW_PREFIX}/opt/dotnet/libexec/dotnet" ]; then
+  export DOTNET_ROOT="${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+fi
+
 # mise (rtx) runtimes
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
@@ -86,4 +92,26 @@ if [ -f "$HOME/Library/LaunchAgents/homebrew.mxcl.atlas-proxy.plist" ]; then
   alias atlas-proxy-restart="atlas-proxy-stop && sleep 1 && atlas-proxy-start"
   alias atlas-proxy-status="launchctl list | grep atlas-proxy || echo 'Atlas proxy not running'"
   alias atlas-proxy-logs="tail -f /opt/homebrew/var/log/atlas-proxy.log"
+fi
+export PATH="$HOME/.local/bin:$PATH"
+# .NET global tools (e.g. ilspycmd from `dotnet tool install -g`)
+export PATH="$PATH:$HOME/.dotnet/tools"
+# ilspycmd targets .NET 8; Homebrew `dotnet` is .NET 10 — roll forward is supported
+export DOTNET_ROLL_FORWARD=LatestMajor
+# Factorio agent CLI (fa); controller has static DHCP lease
+[ -d "$HOME/dotfiles/factorio/agent_scripts" ] && export PATH="$HOME/dotfiles/factorio/agent_scripts:$PATH"
+export CONTROLLER_URL="${CONTROLLER_URL:-http://192.168.0.158:8080}"
+
+# Headscale CLI (remote control of Headscale on TrueNAS)
+# See ~/dotfiles/docs/networking/headscale-cli-setup.md
+if command -v headscale >/dev/null 2>&1; then
+  HEADSCALE_ENV="$HOME/dotfiles/headscale/.env"
+  if [ -f "$HEADSCALE_ENV" ]; then
+    set -a
+    source "$HEADSCALE_ENV"
+    set +a
+  fi
+  alias headscale-users="headscale users list"
+  alias headscale-nodes="headscale nodes list"
+  alias headscale-routes="headscale nodes list-routes"
 fi

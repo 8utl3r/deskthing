@@ -67,6 +67,7 @@ identity_providers:
         client_secret: REPLACE_IMMICH_CLIENT_SECRET
         public: false
         authorization_policy: one_factor
+        token_endpoint_auth_method: client_secret_post
         redirect_uris:
           - https://immich.xcvr.link/auth/login
           - https://immich.xcvr.link/user-settings
@@ -82,5 +83,6 @@ identity_providers:
         client_secret: REPLACE_JELLYFIN_CLIENT_SECRET
         public: false
         authorization_policy: one_factor
+        token_endpoint_auth_method: client_secret_post
         redirect_uris:
           - https://jellyfin.xcvr.link/sso/OID/redirect/authelia

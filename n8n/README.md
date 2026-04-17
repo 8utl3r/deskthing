@@ -1,123 +1,45 @@
-# n8n Configuration
+# n8n on TrueNAS Scale
 
-n8n is an open-source workflow automation tool that allows you to connect different services and automate tasks.
+n8n workflow automation tool running on TrueNAS Scale NAS.
 
-## Installation
+## Instance Details
 
-n8n runs in Docker using Docker Compose. Docker Desktop must be installed and running.
+- **URL**: `http://192.168.0.158:30109`
+- **Location**: TrueNAS Scale 25.04.2.6 on Ugreen DXP2800 NAS
+- **Storage**: Host Path mounts on `/mnt/tank/apps/n8n`
+- **Database**: PostgreSQL (internal to n8n app)
+- **Status**: ✅ Running
 
-**Status**: ✅ Ready to use
+## Access
 
-## Quick Start
+1. Open `http://192.168.0.158:30109` in your browser
+2. Log in with your credentials (configured during installation)
 
-1. **Create environment file**:
-   ```bash
-   cd ~/dotfiles/n8n
-   cp .env.example .env
-   # Edit .env and set a secure password
-   ```
+## Workflows
 
-2. **Start n8n**:
-   ```bash
-   docker-compose up -d
-   ```
+Workflow definitions are stored in `workflows/` directory. Import them into the NAS instance:
 
-3. **Access n8n**:
-   Open `http://localhost:5678` in your browser
-   - Username: `admin` (or value from `.env`)
-   - Password: (value from `.env`)
+1. Open n8n at `http://192.168.0.158:30109`
+2. Go to Workflows → Click "Add workflow" → "Import from File"
+3. Select a workflow JSON file from `workflows/` directory
 
-## Service Management
+See `workflows/README.md` for workflow documentation.
 
-**Start n8n**:
-```bash
-cd ~/dotfiles/n8n
-docker-compose up -d
-```
+## Backup
 
-**Stop n8n**:
-```bash
-cd ~/dotfiles/n8n
-docker-compose down
-```
+Workflows and data are stored on the NAS at:
+- **n8n data**: `/mnt/tank/apps/n8n`
+- **PostgreSQL data**: `/mnt/tank/apps/n8n-postgres`
 
-**View logs**:
-```bash
-docker-compose logs -f
-```
+Backup these directories via TrueNAS snapshots or manual backup.
 
-**Restart n8n**:
-```bash
-docker-compose restart
-```
+## Setup Documentation
 
-**Update n8n**:
-```bash
-docker-compose pull
-docker-compose up -d
-```
-
-## Configuration
-
-### Environment Variables
-
-Edit `.env` file to configure n8n:
-
-- `N8N_BASIC_AUTH_ACTIVE`: Enable basic authentication (default: `true`)
-- `N8N_BASIC_AUTH_USER`: Username for web interface (default: `admin`)
-- `N8N_BASIC_AUTH_PASSWORD`: Password for web interface (**required**)
-- `N8N_HOST`: Hostname (default: `localhost`)
-- `N8N_PROTOCOL`: `http` or `https` (default: `http`)
-- `N8N_METRICS`: Enable metrics collection (default: `false`)
-- `N8N_LOG_LEVEL`: Logging level - `debug`, `info`, `warn`, `error` (default: `info`)
-
-### Data Persistence
-
-Workflow data is stored in `~/.n8n/` directory, which is mounted as a Docker volume. This ensures:
-- Workflows persist across container restarts
-- Credentials are saved
-- Execution history is maintained
-
-**Backup**:
-```bash
-tar czf n8n-backup-$(date +%F).tar.gz ~/.n8n
-```
-
-**Restore**:
-```bash
-tar xzf n8n-backup-YYYY-MM-DD.tar.gz -C ~/
-```
-
-## Security
-
-- Basic authentication is enabled by default
-- Change the default password in `.env` file
-- For production use, consider:
-  - Setting up HTTPS with reverse proxy (Nginx, Traefik, Caddy)
-  - Restricting port 5678 to localhost only
-  - Using VPN/Tailscale for remote access
-
-## Use Cases
-
-Common automation scenarios:
-- **API Integrations**: Connect different services
-- **Data Synchronization**: Sync data between platforms
-- **Notifications**: Send alerts based on triggers
-- **File Processing**: Automate file operations
-- **Webhooks**: Receive and process webhook events
-- **Scheduled Tasks**: Run workflows on schedule
-
-## Resources
-
-- [n8n Official Documentation](https://docs.n8n.io)
-- [n8n Community Forum](https://community.n8n.io)
-- [n8n GitHub Repository](https://github.com/n8n-io/n8n)
-- [Setup Research Document](../docs/n8n-setup-research.md)
+For installation and configuration details, see:
+- `/Users/pete/dotfiles/docs/truenas-n8n-*.md` - Setup and configuration guides
 
 ## Notes
 
-- Data directory `~/.n8n/` is not symlinked (contains runtime data)
-- Configuration files (`docker-compose.yml`, `.env.example`) are version-controlled
-- `.env` file is git-ignored (contains secrets)
-- Container automatically restarts on system reboot
-
+- This is the production instance (local MacBook setup has been removed)
+- All workflows should be imported to this instance
+- Data persists on NAS storage

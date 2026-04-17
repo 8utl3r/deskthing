@@ -49,6 +49,7 @@ class LGServer:
         self.command_queue = Queue()
         self.status_file = "/tmp/lg-server-status.json"
         self.log_file = "/tmp/lg-server.log"
+        self.command_file = "/tmp/lg-server-command.json"
         
         # Savant profile timing requirements
         self.command_delays = {
@@ -271,10 +272,12 @@ class LGServer:
                 
     def _monitor_worker(self):
         """Background worker for periodic monitoring"""
+        # Wait before first query - TV may need time after connect before accepting commands
+        time.sleep(3)
         while self.running:
             try:
                 if self.connected:
-                    # Query current state periodically
+                    # Query current state periodically (skip if connection just established)
                     self.queue_command("query_volume", delay=0.1)
                     time.sleep(30)  # Query every 30 seconds
                 else:
@@ -288,7 +291,40 @@ class LGServer:
             except Exception as e:
                 self.log(f"Monitor worker error: {e}", "ERROR")
                 time.sleep(5)
-                
+
+    def _command_file_worker(self):
+        """Poll command file from Hammerspoon/menu and queue commands"""
+        last_mtime = 0.0
+        while self.running:
+            try:
+                if os.path.exists(self.command_file):
+                    mtime = os.path.getmtime(self.command_file)
+                    if mtime > last_mtime:
+                        try:
+                            with open(self.command_file, "r") as f:
+                                data = json.load(f)
+                            cmd = data.get("command") if isinstance(data, dict) else None
+                            if cmd and isinstance(cmd, str) and cmd.strip():
+                                cmd = cmd.strip()
+                                if cmd in self.commands:
+                                    self.queue_command(cmd)
+                                    self.log(f"Queued command from file: {cmd}")
+                                else:
+                                    self.log(f"Unknown command in file: {cmd}", "WARNING")
+                        except (json.JSONDecodeError, IOError) as e:
+                            self.log(f"Command file read error: {e}", "WARNING")
+                        finally:
+                            last_mtime = mtime
+                            try:
+                                with open(self.command_file, "w") as f:
+                                    json.dump({"command": None, "processed": True}, f)
+                            except Exception:
+                                pass
+                time.sleep(0.5)
+            except Exception as e:
+                self.log(f"Command file worker error: {e}", "ERROR")
+                time.sleep(2)
+
     def start(self):
         """Start the server"""
         self.log("Starting LG C5 Control Server")
@@ -301,9 +337,11 @@ class LGServer:
         # Start background workers
         command_thread = threading.Thread(target=self._command_worker, daemon=True)
         monitor_thread = threading.Thread(target=self._monitor_worker, daemon=True)
-        
+        command_file_thread = threading.Thread(target=self._command_file_worker, daemon=True)
+
         command_thread.start()
         monitor_thread.start()
+        command_file_thread.start()
         
         self.log("Server started successfully")
         
@@ -334,12 +372,14 @@ def main():
     parser.add_argument("--keycode", default="QDF6T3HV", help="Network IP Control keycode")
     parser.add_argument("--status-file", default="/tmp/lg-server-status.json", help="Status file path")
     parser.add_argument("--log-file", default="/tmp/lg-server.log", help="Log file path")
+    parser.add_argument("--command-file", default="/tmp/lg-server-command.json", help="Command file from Hammerspoon")
     
     args = parser.parse_args()
     
     server = LGServer(args.ip, args.port, args.keycode)
     server.status_file = args.status_file
     server.log_file = args.log_file
+    server.command_file = args.command_file
     
     try:
         server.start()

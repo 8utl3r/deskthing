@@ -51,6 +51,8 @@ cask "bitwarden"
 cask "bloom"
 # Shortcut viewer - shows keyboard shortcuts when holding Command key
 cask "cheatsheet"
+# Cross-platform text expander (FOSS Typinator replacement)
+cask "espanso"
 # Tool to run Windows software
 cask "crossover"
 # Voice and text chat software

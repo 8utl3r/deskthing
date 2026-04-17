@@ -4,23 +4,29 @@
 
 set -e
 
-N8N_WEBHOOK_URL="${N8N_WEBHOOK_URL:-http://localhost:5678/webhook/cursor-workflow-api}"
-N8N_USER="${N8N_BASIC_AUTH_USER:-admin}"
-N8N_PASS="${N8N_BASIC_AUTH_PASSWORD:-changeme_secure_password_here}"
+N8N_WEBHOOK_URL="${N8N_WEBHOOK_URL:-http://192.168.0.158:30109/webhook/cursor-workflow-api}"
+N8N_USER="${N8N_BASIC_AUTH_USER:-}"
+N8N_PASS="${N8N_BASIC_AUTH_PASSWORD:-}"
 
 OPERATION="${1:-help}"
 
 case "$OPERATION" in
+  list)
+    curl -s -X POST "$N8N_WEBHOOK_URL" \
+      ${N8N_USER:+ -u "$N8N_USER:$N8N_PASS"} \
+      -H "Content-Type: application/json" \
+      -d '{"operation":"list"}' | jq .
+    ;;
   create)
     if [ -z "$2" ]; then
       echo "Usage: $0 create <workflow-json-file>"
       exit 1
     fi
-    WORKFLOW_JSON=$(cat "$2")
+    PAYLOAD=$(jq -n --slurpfile w "$2" '{ operation: "create", name: ($w[0].name), nodes: ($w[0].nodes), connections: ($w[0].connections), settings: ($w[0].settings // {}) }')
     curl -s -X POST "$N8N_WEBHOOK_URL" \
-      -u "$N8N_USER:$N8N_PASS" \
+      ${N8N_USER:+ -u "$N8N_USER:$N8N_PASS"} \
       -H "Content-Type: application/json" \
-      -d "$WORKFLOW_JSON" | jq .
+      -d "$PAYLOAD" | jq .
     ;;
   update)
     if [ -z "$2" ] || [ -z "$3" ]; then
@@ -28,11 +34,9 @@ case "$OPERATION" in
       exit 1
     fi
     WORKFLOW_ID="$2"
-    WORKFLOW_JSON=$(cat "$3")
-    # Inject workflowId into the JSON
-    UPDATED_JSON=$(echo "$WORKFLOW_JSON" | jq --arg id "$WORKFLOW_ID" '.workflowId = $id | .operation = "update"')
+    UPDATED_JSON=$(jq -n --arg id "$WORKFLOW_ID" --slurpfile w "$3" '{ operation: "update", workflowId: $id, name: ($w[0].name), nodes: ($w[0].nodes), connections: ($w[0].connections), settings: ($w[0].settings // {}) }')
     curl -s -X POST "$N8N_WEBHOOK_URL" \
-      -u "$N8N_USER:$N8N_PASS" \
+      ${N8N_USER:+ -u "$N8N_USER:$N8N_PASS"} \
       -H "Content-Type: application/json" \
       -d "$UPDATED_JSON" | jq .
     ;;
@@ -43,7 +47,7 @@ case "$OPERATION" in
     fi
     WORKFLOW_ID="$2"
     curl -s -X POST "$N8N_WEBHOOK_URL" \
-      -u "$N8N_USER:$N8N_PASS" \
+      ${N8N_USER:+ -u "$N8N_USER:$N8N_PASS"} \
       -H "Content-Type: application/json" \
       -d "{\"operation\":\"delete\",\"workflowId\":\"$WORKFLOW_ID\"}" | jq .
     ;;
@@ -53,12 +57,13 @@ case "$OPERATION" in
     echo "Usage: $0 <operation> [options]"
     echo ""
     echo "Operations:"
+    echo "  list                         - List workflows (success + data)"
     echo "  create <workflow-json-file>  - Create a new workflow"
     echo "  update <id> <workflow-json>  - Update an existing workflow"
     echo "  delete <id>                  - Delete a workflow"
     echo ""
     echo "Environment variables:"
-    echo "  N8N_WEBHOOK_URL              - Webhook URL (default: http://localhost:5678/webhook/cursor-workflow-api)"
+    echo "  N8N_WEBHOOK_URL              - Webhook URL (default: http://192.168.0.158:30109/webhook/cursor-workflow-api)"
     echo "  N8N_BASIC_AUTH_USER          - Basic auth username (default: admin)"
     echo "  N8N_BASIC_AUTH_PASSWORD      - Basic auth password"
     ;;

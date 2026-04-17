@@ -88,10 +88,6 @@ end
 function windowManagement.init()
     logger.info("Initializing window management module")
     windowManagement.setupHotkeys()
-    
-    -- Register cleanup
-    hs.cleanup = hs.cleanup or {}
-    table.insert(hs.cleanup, windowManagement.cleanup)
 end
 
 return windowManagement

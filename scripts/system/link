@@ -40,6 +40,9 @@ LINK_PAIRS=(
   "hammerspoon/lg-c5|$HOME/.hammerspoon/lg-c5"
   "hammerspoon/home-assistant|$HOME/.hammerspoon/home-assistant"
   "hammerspoon/Spoons/Hammerflow.spoon|$HOME/.hammerspoon/Spoons/Hammerflow.spoon"
+  # Do NOT link individual files under hammerspoon/modules/ if $HOME/.hammerspoon/modules
+  # is already a symlink to dotfiles/hammerspoon/modules (ln would overwrite real file with
+  # self-referential symlink). Add new modules in dotfiles only; they appear automatically.
   "gh/config.yml|$HOME/.config/gh/config.yml"
   "alfred/Alfred.alfredpreferences|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences"
   "activedock/com.sergey-gerasimenko.ActiveDock-2|$HOME/Library/Application Support/com.sergey-gerasimenko.ActiveDock-2"
@@ -49,11 +52,15 @@ LINK_PAIRS=(
   "cheatsheet/com.mediaatelier.CheatSheet.plist|$HOME/Library/Preferences/com.mediaatelier.CheatSheet.plist"
   "flexinet/com.macplus-software.FlexiNet.plist|$HOME/Library/Preferences/com.macplus-software.FlexiNet.plist"
   "ice/com.jordanbaird.Ice.plist|$HOME/Library/Preferences/com.jordanbaird.Ice.plist"
+  "espanso|$HOME/Library/Application Support/espanso"
+  "proxyman/com.proxyman.NSProxy.plist|$HOME/Library/Preferences/com.proxyman.NSProxy.plist"
   # Docker config files - DO NOT SYMLINK (Docker Desktop needs to write to these)
   # "docker/config.json|$HOME/.docker/config.json"
   # "docker/daemon.json|$HOME/.docker/daemon.json"
   # "docker/persisted-state.json|$HOME/Library/Application Support/Docker Desktop/persisted-state.json"
   # "docker/window-management.json|$HOME/Library/Application Support/Docker Desktop/window-management.json"
+  "car-thing/deskthing-logs|$HOME/Library/Application Support/deskthing/logs"
+  "minidsp/config.toml|$HOME/.config/minidsp/config.toml"
   "homeassistant/configuration.yaml|$HOME/.homeassistant/configuration.yaml"
   "homeassistant/automations.yaml|$HOME/.homeassistant/automations.yaml"
   "homeassistant/scripts.yaml|$HOME/.homeassistant/scripts.yaml"

@@ -156,9 +156,9 @@ end
 -- Wrap function with error handling
 function errorHandler.wrap(module, functionName, fn)
     return function(...)
-        local success, result = pcall(function()
+        local success, result = pcall(function(...)
             return fn(...)
-        end)
+        end, ...)
         
         if not success then
             errorHandler.capture(module, result, {

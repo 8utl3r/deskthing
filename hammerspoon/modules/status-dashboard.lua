@@ -4,6 +4,7 @@
 local statusDashboard = {}
 local config = require("config")
 local logger = require("lib.logger").get("status-dashboard")
+local utils = require("lib.utils")
 local diagnostics = nil  -- Will be set during init
 
 -- Get module references (will be set during init)
@@ -158,7 +159,7 @@ local function detectDockHardware()
     local dockName = nil
     
     -- Try using the existing dock detector script first
-    local scriptPath = os.getenv("HOME") .. "/dotfiles/scripts/lg-c5/dock-detector-simple"
+    local scriptPath = utils.resolvePath("scripts/lg-c5/dock-detector-simple")
     local file = io.open(scriptPath, "r")
     if file then
         file:close()
@@ -215,26 +216,19 @@ end
 
 -- Get system status
 local function getSystemStatus()
-    -- Use print for immediate visibility (bypasses all log level settings)
-    print("=== STATUS DASHBOARD: Getting system status ===")
-    
-    -- First, try to detect dock hardware
     local dockHardwareDetected, dockName = detectDockHardware()
-    print("Dock hardware detected: " .. tostring(dockHardwareDetected) .. (dockName and (" (" .. dockName .. ")") or ""))
+    logger.debug("Dock hardware detected: " .. tostring(dockHardwareDetected) .. (dockName and (" (" .. dockName .. ")") or ""))
     
     local success, screens = pcall(function()
         return hs.screen.allScreens()
     end)
     
     if not success or not screens then
-        print("ERROR: Failed to get screens: " .. tostring(screens))
+        logger.debug("Failed to get screens: " .. tostring(screens))
         screens = {}
-    else
-        print("SUCCESS: Got screens table, type: " .. type(screens))
     end
     
     local screenCount = #screens
-    print("Screen count (using #): " .. screenCount)
     
     -- Also try counting manually and check for external displays
     local manualCount = 0
@@ -261,7 +255,7 @@ local function getSystemStatus()
                 screenID = tostring(id)
             end
             
-            print("Screen " .. i .. ": " .. screenName .. " (ID: " .. screenID .. ")")
+            logger.debug("Screen " .. i .. ": " .. screenName .. " (ID: " .. screenID .. ")")
             
             -- Check if it's an external display (not built-in)
             -- Built-in displays typically have "Color LCD" or "Built-in" in the name
@@ -274,14 +268,12 @@ local function getSystemStatus()
             end
         end
     end
-    print("Manual count: " .. manualCount)
-    print("Has external display: " .. tostring(hasExternalDisplay))
-    print("Has built-in display: " .. tostring(hasBuiltInDisplay))
+    logger.debug("Screens: " .. manualCount .. ", external: " .. tostring(hasExternalDisplay) .. ", built-in: " .. tostring(hasBuiltInDisplay))
     
     -- Dock detection: Use hardware detection as primary, fallback to display detection
     -- Priority: 1) Dock hardware detected, 2) External display present, 3) Multiple screens
     local docked = dockHardwareDetected or hasExternalDisplay or screenCount > 1
-    print("Docked status: " .. tostring(docked) .. " (hardware: " .. tostring(dockHardwareDetected) .. ", external: " .. tostring(hasExternalDisplay) .. ", screens: " .. screenCount .. ")")
+    logger.debug("Docked: " .. tostring(docked))
     
     -- Store the results
     screenCount = manualCount > 0 and manualCount or screenCount

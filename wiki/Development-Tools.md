@@ -242,6 +242,7 @@ docker-compose logs        # view logs
 - **Tasks**: `cursor/tasks.json` for task configurations
 - **Locale**: `cursor/locale.json` for language settings
 - **Arguments**: `cursor/argv.json` for command-line arguments
+- **MCP servers**: `cursor/mcp.json` — [Cua (computer-use agent)](../docs/services/cua-cursor-setup.md), [Qdrant (vector search)](../docs/services/qdrant-mcp-setup-complete.md)
 
 ### Usage
 

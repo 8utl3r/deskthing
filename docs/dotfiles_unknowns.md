@@ -43,4 +43,3 @@ Record dotfiles repo changes that need guidance before committing or cleaning up
   - `ollama/proxy/components/RAG_VS_KEYWORD_SYSTEM.md`
   - `ollama/setup_open_webui.sh`
 - `shell/.zshrc.bak`: backup file.
-- `temp_smiley.py`: unknown script.

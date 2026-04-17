@@ -14,14 +14,20 @@ A workflow that exposes an HTTP endpoint to manage n8n workflows programmaticall
 
 ### Features
 
+- **List Workflows**: GET workflows from n8n API (returns `{ success, data }` with workflow list)
 - **Create Workflows**: POST workflow definitions to create new workflows
 - **Update Workflows**: Update existing workflows by ID
 - **Delete Workflows**: Delete workflows by ID
 
+### Verification (no script required)
+
+- **PRACTICAL_TESTS.md** – Ping test, **Bridge Self-Test** workflow (import `bridge-self-test.json`, run in UI, inspect output), and execution-history check. Use these to verify the bridge and to see if **TrueNAS/container isolation** is blocking response bodies to your client.
+- **verify_bridge.sh** – From a host that receives webhook bodies: `./verify_bridge.sh`. See **BRIDGE_VERIFICATION.md** for contract and troubleshooting.
+
 ### Setup
 
 1. **Import the workflow**:
-   - Open n8n at `http://localhost:5678`
+   - Open n8n at `http://192.168.0.158:30109` (TrueNAS NAS instance)
    - Go to Workflows → Click "Add workflow" → "Import from File"
    - Select `cursor-api-bridge-v2.json` (recommended) or `cursor-api-bridge-v1.json`
    - The workflow will be imported but not active yet
@@ -38,20 +44,29 @@ A workflow that exposes an HTTP endpoint to manage n8n workflows programmaticall
 3. **Activate the workflow**:
    - Toggle the workflow to "Active" (top right)
    - Click on the Webhook node to see the webhook URL
-   - The URL will be something like: `http://localhost:5678/webhook/cursor-workflow-api`
+   - The URL will be something like: `http://192.168.0.158:30109/webhook/cursor-workflow-api`
    - Copy this URL - you'll need it for the helper script
 
 4. **Test the connection**:
    ```bash
    cd ~/dotfiles/n8n/workflows
+   # Update helper script to use NAS URL: http://192.168.0.158:30109
    ./cursor-api-helper.sh create example-simple-workflow-v1.json
    ```
 
 ### Usage
 
+**List workflows**:
+```bash
+curl -s -X POST http://192.168.0.158:30109/webhook/cursor-workflow-api \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"list"}'
+# or: ./cursor-api-helper.sh list
+```
+
 **Create a workflow**:
 ```bash
-curl -X POST http://localhost:5678/webhook/cursor-workflow-api \
+curl -X POST http://192.168.0.158:30109/webhook/cursor-workflow-api \
   -H "Content-Type: application/json" \
   -d '{
     "operation": "create",
@@ -64,7 +79,7 @@ curl -X POST http://localhost:5678/webhook/cursor-workflow-api \
 
 **Update a workflow**:
 ```bash
-curl -X POST http://localhost:5678/webhook/cursor-workflow-api \
+curl -X POST http://192.168.0.158:30109/webhook/cursor-workflow-api \
   -H "Content-Type: application/json" \
   -d '{
     "operation": "update",
@@ -77,7 +92,7 @@ curl -X POST http://localhost:5678/webhook/cursor-workflow-api \
 
 **Delete a workflow**:
 ```bash
-curl -X POST http://localhost:5678/webhook/cursor-workflow-api \
+curl -X POST http://192.168.0.158:30109/webhook/cursor-workflow-api \
   -H "Content-Type: application/json" \
   -d '{
     "operation": "delete",

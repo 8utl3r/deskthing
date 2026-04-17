@@ -1,3 +1,34 @@
+# TrueNAS resilver status (ephemeral, agent-readable)
+scripts/truenas/output/
+
+# NAS sudo password (do not commit)
+factorio/.env.nas
+
+# Headscale API key (do not commit)
+headscale/.env
+
+# NPM API token (do not commit)
+scripts/npm/.env
+
+# Servarr / Jellyfin API key (do not commit)
+scripts/servarr/.env
+# Audible/Kindle import data (user library exports)
+scripts/servarr/audible-kindle-import/
+scripts/servarr/kindle-library.csv
+
+# UniFi UDM Pro SSH credentials (do not commit)
+unifi/.env
+
+# Cloudflare Tunnel token (do not commit)
+cloudflared/.env
+
+# Windows PC SSH password (do not commit)
+scripts/ugoos/.env
+scripts/windows-pc/.env
+
+# Credential helper env (if used)
+scripts/credentials/.env
+
 # Alfred preferences (exclude non-portable bits if present)
 alfred/Alfred.alfredpreferences/*
 !alfred/Alfred.alfredpreferences/workflows/
@@ -8,3 +39,7 @@ alfred/Alfred.alfredpreferences/*/updates/**
 alfred/Alfred.alfredpreferences/*/usage/**
 alfred/Alfred.alfredpreferences/*/prefs.json
 alfred/Alfred.alfredpreferences/*/license.plist
+
+# DeskThing logs (symlinked here; do not commit)
+car-thing/deskthing-logs/*
+!car-thing/deskthing-logs/.gitkeep

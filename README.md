@@ -53,6 +53,7 @@ brew bundle --file ./Brewfile
 - **Logi Options+** Logitech device management
 - **Home Assistant** smart home automation with LG C5 monitor integration
 - **NetSpot** Wi-Fi analysis
+- **Proxyman** HTTP(S) debugging proxy
 - **PS Remote Play** PlayStation remote play
 - **Raspberry Pi Imager** SD card imaging
 - **Spotify** music streaming
@@ -109,6 +110,7 @@ brew bundle --file ./Brewfile
 - `cursor/argv.json`: Cursor command-line arguments
 - `cursor/locale.json`: Cursor locale settings
 - `cursor/tasks.json`: Cursor task configuration
+- `cursor/mcp.json`: Cursor MCP servers — [Cua setup](docs/services/cua-cursor-setup.md), [Qdrant setup](docs/services/qdrant-mcp-setup-complete.md)
 - `docker/config.json`: Docker CLI configuration
 - `docker/daemon.json`: Docker daemon settings
 - `docker/persisted-state.json`: Docker Desktop UI preferences
@@ -123,6 +125,7 @@ brew bundle --file ./Brewfile
 - `karabiner/karabiner.json`: Karabiner-Elements config
 - `hammerspoon/init.lua`: Hammerspoon automation
 - `alfred/Alfred.alfredpreferences`: Alfred preferences
+- `proxyman/com.proxyman.NSProxy.plist`: Proxyman preferences
 - `.editorconfig`: editor configuration
 
 ## Manual Setup Steps

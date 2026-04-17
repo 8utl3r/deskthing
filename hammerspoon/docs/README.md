@@ -27,6 +27,7 @@ This is a modular, well-structured Hammerspoon configuration with centralized co
 - **Hyper+N** = Move window to next screen
 - **Hyper+Space** = Center window (70%)
 - **Hyper+S** = Screenshot (area selection)
+- **Hyper+1-9** = Switch to space 1-9 (desktop management)
 
 ### Shortcut Overlay
 - Hold **Command (⌘)** key for 0.3 seconds
@@ -53,20 +54,34 @@ hammerspoon/
 ├── hammerflow.toml             # Hammerflow leader key configuration
 ├── lib/
 │   ├── logger.lua              # Structured logging wrapper
-│   ├── debug.lua                # Debugging infrastructure
-│   └── utils.lua                # Shared utilities
+│   ├── utils.lua               # Shared utilities (paths, file ops)
+│   ├── error-handler.lua       # Error capture, DAP export
+│   ├── debug.lua               # Debugging infrastructure
+│   ├── debug-helper.lua        # Debug utilities
+│   ├── audio-format-query      # CoreAudio format query binary
+│   └── debug-adapter/          # DAP adapter for Cursor IDE
 ├── modules/
 │   ├── window-management.lua   # Window management
 │   ├── app-launcher.lua        # App launchers
-│   ├── caffeine.lua            # Sleep prevention
-│   ├── shortcut-overlay.lua    # Shortcut overlay
+│   ├── caffeine.lua           # Sleep prevention
+│   ├── audio-info.lua          # Audio device info in menu bar
+│   ├── shortcut-overlay.lua    # Shortcut overlay (CheatSheet alternative)
 │   ├── lg-monitor.lua          # LG monitor control
-│   └── home-assistant.lua      # Home Assistant integration
+│   ├── home-assistant.lua      # Home Assistant integration
+│   ├── desktop-management.lua # Space renaming, app-to-space assignment
+│   ├── car-thing-bridge.lua    # HTTP bridge for DeskThing app
+│   ├── minidsp.lua            # MiniDSP DDRC-24 control
+│   ├── status-dashboard.lua    # Status overlay for Hammerflow
+│   └── diagnostics.lua        # Health checks, connection tests
 ├── Spoons/
 │   └── Hammerflow.spoon/       # Leader key system
 ├── examples/                   # Example/test scripts
 └── docs/
-    └── README.md               # This file
+    ├── README.md               # This file
+    ├── DESKTOP_MANAGEMENT.md   # Space management guide
+    ├── MINIDSP.md              # MiniDSP API reference
+    ├── CAR_THING_BRIDGE.md     # Car Thing bridge API
+    └── DEBUGGING*.md           # Debug workflow & DAP integration
 ```
 
 ### Module Pattern
@@ -246,6 +261,14 @@ Prevents system sleep with menu bar indicator:
 - Click menu bar icon to toggle
 - Shows "AWAKE" or "SLEEP" status
 
+### Audio Info
+
+Shows audio output device info in menu bar:
+- Sample rate, bit depth, channels, bitrate
+- Volume, mute status
+- Click to open Audio MIDI Setup
+- Uses CoreAudio API or fallback C binary when needed
+
 ### Shortcut Overlay
 
 FOSS alternative to CheatSheet:
@@ -257,10 +280,10 @@ FOSS alternative to CheatSheet:
 ### LG Monitor
 
 Controls LG C5 monitor via server script:
-- Menu bar status display
-- Power, volume, input control
-- Hotkeys for quick control
-- Requires `bin/lg-server` script
+- Menu bar status display with power, volume, mute, input
+- Hotkeys: `Hyper+P` (power), `Hyper+↑/↓` (volume), `Hyper+M` (mute)
+- HDMI input switching: use Hammerflow `F18+l+i+1/2/3/4` or menu bar
+- Requires `scripts/archive/lg-server` script
 
 ### Home Assistant
 
@@ -269,6 +292,42 @@ Controls LG TVs via Home Assistant API:
 - TV power, volume, input control
 - Hotkeys: `Cmd+Alt+T` (toggle), `Cmd+Alt+1/2/3/5` (volume), etc.
 - Requires token file at `~/.homeassistant_token`
+
+### Desktop Management
+
+Space and desktop utilities (see [DESKTOP_MANAGEMENT.md](DESKTOP_MANAGEMENT.md)):
+- `Hyper+1-9`: Switch to space 1-9
+- `Hyper+Shift+R`: Rename current space
+- App-to-space assignment on launch
+- Requires `hs.spaces` module
+
+### Car Thing Bridge
+
+HTTP server for DeskThing app (port 8765):
+- Macros, audio control, notifications, feed
+- See [CAR_THING_BRIDGE.md](CAR_THING_BRIDGE.md) for API reference
+
+### MiniDSP
+
+Controls MiniDSP DDRC-24 via minidsp-rs daemon:
+- Status polling, preset/source/volume control
+- See [MINIDSP.md](MINIDSP.md) for API and config
+
+### Status Dashboard
+
+Shows system status when Hammerflow leader key is pressed:
+- Home Assistant connection, TV state, dock status
+- LG Monitor server and connection status
+- System screens, audio device, volume
+- Access via Hammerflow `F18+s` or `showDashboard` function
+
+### Diagnostics
+
+Health checks and status reporting:
+- Home Assistant and LG Monitor connection tests
+- Config validation, path checks
+- Export to `~/.hammerspoon/debug/diagnostics.json`
+- Run via Hammerflow `F18+d` or `runDiagnostics` function
 
 ### Hammerflow
 
