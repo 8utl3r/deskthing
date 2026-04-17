@@ -1,0 +1,349 @@
+{
+  "name": "Factorio Patrol Square",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "patrol-square",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook",
+      "name": "Patrol Square Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "factorio-patrol-square"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "agent_id",
+              "value": "={{ $json.body.agent_id }}"
+            },
+            {
+              "name": "center_x",
+              "value": "={{ $json.body.params.center_x || 0 }}"
+            },
+            {
+              "name": "center_y",
+              "value": "={{ $json.body.params.center_y || 0 }}"
+            },
+            {
+              "name": "radius",
+              "value": "={{ $json.body.params.radius || 30 }}"
+            }
+          ]
+        }
+      },
+      "id": "setParams",
+      "name": "Set Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "corner1",
+              "name": "corner1",
+              "value": "={{ { \"x\": Number($json.center_x) + Number($json.radius), \"y\": Number($json.center_y) + Number($json.radius), \"agent_id\": $json.agent_id, \"center_x\": Number($json.center_x), \"center_y\": Number($json.center_y), \"radius\": Number($json.radius) } }}",
+              "type": "object"
+            },
+            {
+              "id": "corner2",
+              "name": "corner2",
+              "value": "={{ { \"x\": Number($json.center_x) - Number($json.radius), \"y\": Number($json.center_y) + Number($json.radius), \"agent_id\": $json.agent_id, \"center_x\": Number($json.center_x), \"center_y\": Number($json.center_y), \"radius\": Number($json.radius) } }}",
+              "type": "object"
+            },
+            {
+              "id": "corner3",
+              "name": "corner3",
+              "value": "={{ { \"x\": Number($json.center_x) - Number($json.radius), \"y\": Number($json.center_y) - Number($json.radius), \"agent_id\": $json.agent_id, \"center_x\": Number($json.center_x), \"center_y\": Number($json.center_y), \"radius\": Number($json.radius) } }}",
+              "type": "object"
+            },
+            {
+              "id": "corner4",
+              "name": "corner4",
+              "value": "={{ { \"x\": Number($json.center_x) + Number($json.radius), \"y\": Number($json.center_y) - Number($json.radius), \"agent_id\": $json.agent_id, \"center_x\": Number($json.center_x), \"center_y\": Number($json.center_y), \"radius\": Number($json.radius) } }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "calculateCorners",
+      "name": "Calculate Corners",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "corners",
+              "name": "corners",
+              "value": "={{ [$json.corner1, $json.corner2, $json.corner3, $json.corner4] }}",
+              "type": "array"
+            },
+            {
+              "id": "agent_id",
+              "name": "agent_id",
+              "value": "={{ $json.agent_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "createCornerList",
+      "name": "Create Corner List",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "corners",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "id": "splitCorners",
+      "name": "Split to Items",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "mergeCorners",
+      "name": "Merge After All Corners",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "url": "http://192.168.0.158:30109/webhook/factorio-action-executor",
+        "method": "POST",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"agent_id\": String($json.agent_id || ''),\n  \"action\": \"walk_to\",\n  \"params\": {\n    \"x\": Number($json.x || 0),\n    \"y\": Number($json.y || 0)\n  }\n} }}",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "walkToCorner",
+      "name": "Walk to Corner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "wait",
+      "name": "Wait 2 Seconds",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1650, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "agent_id",
+              "name": "agent_id",
+              "value": "={{ $json[0].agent_id || $json.agent_id }}",
+              "type": "string"
+            },
+            {
+              "id": "center_x",
+              "name": "center_x",
+              "value": "={{ $json[0].center_x || $json.center_x }}",
+              "type": "number"
+            },
+            {
+              "id": "center_y",
+              "name": "center_y",
+              "value": "={{ $json[0].center_y || $json.center_y }}",
+              "type": "number"
+            },
+            {
+              "id": "radius",
+              "name": "radius",
+              "value": "={{ $json[0].radius || $json.radius }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extractParams",
+      "name": "Extract Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "url": "http://192.168.0.158:30109/webhook/patrol-square",
+        "method": "POST",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"agent_id\": String($json.agent_id),\n  \"params\": {\n    \"center_x\": Number($json.center_x),\n    \"center_y\": Number($json.center_y),\n    \"radius\": Number($json.radius)\n  }\n}",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "loopBack",
+      "name": "Loop Back",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1650, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Patrol loop started for agent \" + String($json.agent_id || 'unknown') } }}"
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1050, 200]
+    }
+  ],
+  "connections": {
+    "Patrol Square Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Parameters": {
+      "main": [
+        [
+          {
+            "node": "Calculate Corners",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Corners": {
+      "main": [
+        [
+          {
+            "node": "Create Corner List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Corner List": {
+      "main": [
+        [
+          {
+            "node": "Split to Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split to Items": {
+      "main": [
+        [
+          {
+            "node": "Walk to Corner",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge After All Corners",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Walk to Corner": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 Seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 Seconds": {
+      "main": [
+        [
+          {
+            "node": "Merge After All Corners",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge After All Corners": {
+      "main": [
+        [
+          {
+            "node": "Extract Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Parameters": {
+      "main": [
+        [
+          {
+            "node": "Loop Back",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Back": {
+      "main": []
+    },
+    "Respond": {
+      "main": []
+    }
+  },
+  "settings": {}
+}

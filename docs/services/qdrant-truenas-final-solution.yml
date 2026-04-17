@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - '6333:6333'
+      - '6334:6334'
+    volumes:
+      - /mnt/tank/apps/qdrant:/qdrant/storage
+    # Python-based healthcheck (Qdrant container has Python, not curl/wget)
+    # This is the recommended solution based on community findings
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c 'import http.client; conn = http.client.HTTPConnection(\"localhost\", 6333); conn.request(\"GET\", \"/\"); res = conn.getresponse(); exit(0) if res.status == 200 else exit(1)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

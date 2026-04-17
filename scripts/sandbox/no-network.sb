@@ -1,0 +1,6 @@
+;;; Sandbox profile: allow normal file/process, deny all network.
+;;; Use with: sandbox-exec -f no-network.sb -- <your-command>
+;;; Example: sandbox-exec -f no-network.sb -- python examples/test_model_12hz_base.py
+(version 1)
+(allow default)
+(deny network*)

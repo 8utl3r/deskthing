@@ -1,0 +1,31 @@
+# TrueNAS Custom App - Factorio RCON Controller (image-based, recommended)
+#
+# CORRECT DEPLOYMENT: use a pre-built image. No host file copies.
+# 1. Build and push (see CONTROLLER_DEPLOY.md):
+#      cd factorio && docker build -f Dockerfile.controller -t YOUR_DOCKERHUB_USER/factorio-controller:latest .
+#      docker push YOUR_DOCKERHUB_USER/factorio-controller:latest
+# 2. Set "image" below to that full name (e.g. myuser/factorio-controller:latest).
+# 3. Apps → Discover Apps → ⋮ → Install via YAML; Application Name: controller.
+# 4. Paste this YAML, set RCON_PASSWORD, Deploy.
+#
+# Config is via env vars only (12-factor). n8n reaches http://localhost:8080/execute-action
+
+version: "3.8"
+
+services:
+  controller:
+    image: YOUR_DOCKERHUB_USER/factorio-controller:latest  # REQUIRED: replace with your pushed image
+    container_name: factorio-controller
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - RCON_HOST=192.168.0.158
+      - RCON_PORT=27015
+      - RCON_PASSWORD=Sahb5aevu3neiph
+      - OLLAMA_MODEL=phi3:mini
+      - OLLAMA_HOST=192.168.0.30
+      - OLLAMA_PORT=11434
+    # Optional: persist logs. Create dir on NAS first: sudo mkdir -p /mnt/boot-pool/apps/factorio-controller-logs && sudo chown 568:568 /mnt/boot-pool/apps/factorio-controller-logs
+    # Omit "volumes" section entirely if you don't need persistent logs.
+    volumes:
+      - /mnt/boot-pool/apps/factorio-controller-logs:/app/logs

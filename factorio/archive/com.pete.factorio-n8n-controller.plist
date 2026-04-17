@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.pete.factorio-n8n-controller</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/pete/.local/share/mise/installs/python/3.12.11/bin/python3</string>
+		<string>/Users/pete/dotfiles/factorio/factorio_n8n_controller.py</string>
+	</array>
+	<key>WorkingDirectory</key>
+	<string>/Users/pete/dotfiles/factorio</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>StandardOutPath</key>
+	<string>/Users/pete/dotfiles/factorio/logs/factorio-controller.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/pete/dotfiles/factorio/logs/factorio-controller.error.log</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+	</dict>
+</dict>
+</plist>

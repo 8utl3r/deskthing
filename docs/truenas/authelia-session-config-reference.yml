@@ -1,0 +1,32 @@
+# Reference: Authelia session/cookies and authz for sso.xcvr.link
+# Copy or compare with your configuration.yml on TrueNAS (Authelia app config path).
+# Fixes "There was an issue retrieving the current user state" when URLs or domain don't match.
+#
+# Catalog app: Try "Authelia Configuration" in the app Edit form first. If it doesn't expose
+# session/authelia_url, the Config Storage ixVolume still contains configuration.yml on the
+# host — find that dataset (e.g. Datasets → your pool → ix-applications or the volume name
+# shown in the app), then edit configuration.yml there and restart the app.
+
+# In configuration.yml ensure:
+
+# 1) server.endpoints.authz (required for Caddy forward_auth to protected apps)
+server:
+  endpoints:
+    authz:
+      forward-auth:
+        implementation: ForwardAuth
+
+# 2) session.cookies — must match how you reach the site (https://sso.xcvr.link)
+session:
+  name: authelia_session
+  domain: xcvr.link
+  expiration: 1h
+  inactivity: 15m
+  cookies:
+    - name: authelia_session
+      domain: xcvr.link
+      authelia_url: https://sso.xcvr.link
+      default_redirection_url: https://sso.xcvr.link
+
+# No trailing slash on authelia_url or default_redirection_url unless you use a subpath.
+# After editing, restart the Authelia app: TrueNAS → Apps → Installed → authelia → Stop → Start.

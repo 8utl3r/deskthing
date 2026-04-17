@@ -8,6 +8,7 @@ claude
 crossover
 discord
 docker-desktop
+espanso
 font-jetbrains-mono-nerd-font
 godot
 hammerspoon

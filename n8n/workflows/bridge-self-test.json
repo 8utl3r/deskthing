@@ -1,0 +1,40 @@
+{
+  "name": "Bridge Self-Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.0.158:30109/webhook/cursor-workflow-api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"operation\": \"list\" } }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "call-list",
+      "name": "Call Bridge List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "Call Bridge List", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {}
+}

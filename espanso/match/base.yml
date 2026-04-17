@@ -1,0 +1,5 @@
+# espanso match file — https://espanso.org/docs/
+# Add triggers and replacements under matches:
+matches:
+  - trigger: ":espanso"
+    replace: "Hi there!"

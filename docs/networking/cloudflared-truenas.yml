@@ -1,0 +1,22 @@
+# Cloudflare Tunnel for TrueNAS
+# Token from cloudflared/.env (gitignored). For TrueNAS: create .env on NAS at same path as volume.
+#
+# Setup:
+# 1. cp cloudflared/.env.example cloudflared/.env
+# 2. Add TUNNEL_TOKEN from Cloudflare → Zero Trust → Tunnels → Configure
+# 3. For TrueNAS: create /mnt/tank/apps/cloudflared/.env with TUNNEL_TOKEN=...
+#    Or add TUNNEL_TOKEN in app's Environment Variables when editing
+#
+version: '3.8'
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    env_file:
+      - /mnt/tank/apps/cloudflared/.env
+    command: tunnel --no-autoupdate run
+    volumes:
+      - /mnt/tank/apps/cloudflared:/etc/cloudflared
+    # Healthcheck removed - causes "stuck at deployed" issue in TrueNAS

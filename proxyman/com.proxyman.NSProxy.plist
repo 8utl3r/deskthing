@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AppleReduceDesktopTinting</key>
+	<true/>
+	<key>BreakpointFiles-RuleTree-IsFeatureEnabled</key>
+	<false/>
+	<key>BreakpointFiles-RuleTree-migration</key>
+	<true/>
+	<key>CustomRequestPreviewer_v1</key>
+	<data>
+	W3sic3VtbWFyeSI6e319XQ==
+	</data>
+	<key>DiskStorage-Migration-BlacklistFiles</key>
+	<true/>
+	<key>DiskStorage-Migration-BreakpointFiles</key>
+	<true/>
+	<key>DiskStorage-Migration-BreakpointFiles-RuleTree</key>
+	<true/>
+	<key>DiskStorage-Migration-DNSSpoofingData</key>
+	<true/>
+	<key>DiskStorage-Migration-ExternalProxySetting</key>
+	<true/>
+	<key>DiskStorage-Migration-MapLocalFiles</key>
+	<true/>
+	<key>DiskStorage-Migration-MapLocalFiles-RuleTree</key>
+	<true/>
+	<key>DiskStorage-Migration-MapRemoteService</key>
+	<true/>
+	<key>DiskStorage-Migration-NetworkThrottlingService</key>
+	<true/>
+	<key>DiskStorage-Migration-ReverseProxyService</key>
+	<true/>
+	<key>DiskStorage-Migration-SSLList-87F91B84-4FEE-49AF-9A8D-F4345C1D65E7</key>
+	<true/>
+	<key>DiskStorage-Migration-SavedRequests</key>
+	<true/>
+	<key>DiskStorage-Migration-ScriptService</key>
+	<true/>
+	<key>DiskStorage-Migration-ScriptService-RuleTree</key>
+	<true/>
+	<key>DiskStorage-Migration-SourceList-87F91B84-4FEE-49AF-9A8D-F4345C1D65E7</key>
+	<true/>
+	<key>DiskStorage-Migration-UserFilters</key>
+	<true/>
+	<key>DiskStorage-Migration-WhitelistService</key>
+	<true/>
+	<key>DiskStorage-Migration-WorkspaceList</key>
+	<true/>
+	<key>IsFirstTimeSetContentSplit</key>
+	<true/>
+	<key>IsOpenProxymanFirstTime</key>
+	<false/>
+	<key>IsOverridenMacOSProxy</key>
+	<true/>
+	<key>IsPresentHelperToolInstaller</key>
+	<true/>
+	<key>IsSetWindowsSizeAtFirstLaunch_v1</key>
+	<true/>
+	<key>MapLocalFiles-RuleTree-IsFeatureEnabled</key>
+	<false/>
+	<key>MapLocalFiles-RuleTree-migration</key>
+	<true/>
+	<key>NSAutomaticQuoteSubstitutionEnabled</key>
+	<false/>
+	<key>NSSplitView Subview Frames ContentSplitViewController</key>
+	<array>
+		<string>0.000000, 0.000000, 516.500000, 340.500000, NO, NO</string>
+		<string>517.500000, 0.000000, 516.500000, 340.500000, NO, NO</string>
+	</array>
+	<key>NSSplitView Subview Frames MainSplitViewController</key>
+	<array>
+		<string>0.000000, 0.000000, 226.000000, 791.000000, NO, NO</string>
+		<string>226.000000, 0.000000, 1034.000000, 791.000000, NO, NO</string>
+	</array>
+	<key>NSSplitView Subview Frames VerticalLayoutSplitViewController</key>
+	<array>
+		<string>0.000000, 0.000000, 1034.000000, 377.500000, NO, NO</string>
+		<string>0.000000, 378.500000, 1034.000000, 376.500000, NO, NO</string>
+	</array>
+	<key>NSTableView Columns v3 Proxyman_FlowTable_Autosaves_4.3.0</key>
+	<data>
+	YnBsaXN0MDDUAAEAAgADAAQABQAGAAcAClgkdmVyc2lvblkkYXJjaGl2ZXJUJHRvcFgk
+	b2JqZWN0cxIAAYagXxAPTlNLZXllZEFyY2hpdmVy0QAIAAlVQXJyYXmAAa8QagALAAwA
+	OQBEAEUARgBHAEgASQBKAFAAWgBbAFwAZgBnAGgAcgBzAHQAdQB/AIAAigCLAJUAlgCX
+	AKEAogCjAK0ArgCvALkAugC7AMUAxgDQANEA0gDcAN0A3gDoAOkA6gD0APUA9gEAAQEB
+	CwEMARYBFwEhASIBLAEtAS4BOAE5AUMBRAFFAU8BUAFRAVsBXAFdAWcBaAFyAXMBdAF+
+	AX8BiQGKAZQBlQGfAaABqgGrAbUBtgHAAcEBywHMAdYB1wHhAeIB7AHtAfcB+AICAgMC
+	DQIOVSRudWxs0gANAA4ADwA4Wk5TLm9iamVjdHNWJGNsYXNzrxAoABAAEQASABMAFAAV
+	ABYAFwAYABkAGgAbABwAHQAeAB8AIAAhACIAIwAkACUAJgAnACgAKQAqACsALAAtAC4A
+	LwAwADEAMgAzADQANQA2ADeAAoAKgA2AEIAUgBaAGIAbgB6AIYAkgCaAKYAsgC+AMoA0
+	gDaAOIA6gD2AP4BCgEWASIBKgE2AT4BRgFOAVYBXgFmAW4BdgF+AYYBjgGWAZ4Bp0wA6
+	AA0ADgA7AD8AQ1dOUy5rZXlzowA8AD0APoADgASABaMAQABBAEKABoAHgAiACVpJZGVu
+	dGlmaWVyVVdpZHRoVkhpZGRlblpzdGF0dXNJY29uI0A2AAAAAAAACNIASwBMAE0ATlok
+	Y2xhc3NuYW1lWCRjbGFzc2VzXE5TRGljdGlvbmFyeaIATQBPWE5TT2JqZWN00wA6AA0A
+	DgBRAFUAQ6MAPAA9AD6AA4AEgAWjAFYAVwBCgAuADIAIgAlSaWQjQEQAAAAAAADTADoA
+	DQAOAF0AYQBDowA8AD0APoADgASABaMAYgBjAEKADoAPgAiACVN1cmwjQHgQAAAAAADT
+	ADoADQAOAGkAbQBDowA8AD0APoADgASABaMAbgBvAHCAEYASgBOACVRob3N0I0BiwAAA
+	AAAACdMAOgANAA4AdgB6AEOjADwAPQA+gAOABIAFowB7AG8AcIAVgBKAE4AJVHBhdGjT
+	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
+	DgHNAdEAQ6MAPAA9AD6AA4AEgAWjAdIBKQBwgF6APIATgAlfEBpyZXNwb25zZXx8Q29u
+	dGVudC1FbmNvZGluZ9MAOgANAA4B2AHcAEOjADwAPQA+gAOABIAFowHdASkAcIBggDyA
+	E4AJXxAYcmVzcG9uc2V8fENvbnRlbnQtTGVuZ3Ro0wA6AA0ADgHjAecAQ6MAPAA9AD6A
+	A4AEgAWjAegBKQBwgGKAPIATgAlecmVzcG9uc2V8fEVUYWfTADoADQAOAe4B8gBDowA8
+	AD0APoADgASABaMB8wEpAHCAZIA8gBOACV8QF3Jlc3BvbnNlfHxMYXN0LU1vZGlmaWVk
+	0wA6AA0ADgH5Af0AQ6MAPAA9AD6AA4AEgAWjAf4BKQBwgGaAPIATgAlfEBByZXNwb25z
+	ZXx8U2VydmVy0wA6AA0ADgIEAggAQ6MAPAA9AD6AA4AEgAWjAgkBKQBwgGiAPIATgAle
+	cmVzcG9uc2V8fFZhcnnSAEsATAIPAhBeTlNNdXRhYmxlQXJyYXmjAg8CEQBPV05TQXJy
+	YXkACAAZACIALAAxADoAPwBRAFYAXABeATUBOwFEAU8BVgGpAasBrQGvAbEBswG1AbcB
+	uQG7Ab0BvwHBAcMBxQHHAckBywHNAc8B0QHTAdUB1wHZAdsB3QHfAeEB4wHlAecB6QHr
+	Ae0B7wHxAfMB9QH3AfkB+wIIAhACFwIZAhsCHQIkAiYCKAIqAiwCNwI9AkQCTwJYAlkC
+	YgJtAnYCgwKIApECngKlAqcCqQKrArICtAK2ArgCugK9AsYC0wLaAtwC3gLgAucC6QLr
+	Au0C7wLzAvwDCQMQAxIDFAMWAx0DHwMhAyMDJQMqAzMDNANBA0gDSgNMA04DVQNXA1kD
+	WwNdA2IDbwN2A3gDegN8A4MDhQOHA4kDiwORA54DpQOnA6kDqwOyA7QDtgO4A7oDwQPK
+	A9cD3gPgA+ID5APrA+0D7wPxA/MD+gQDBBAEFwQZBBsEHQQkBCYEKAQqBCwEMwQ8BEkE
+	UARSBFQEVgRdBF8EYQRjBGUEcgR7BIgEjwSRBJMElQScBJ4EoASiBKQEqQS2BL0EvwTB
+	BMMEygTMBM4E0ATSBNcE4ATtBPQE9gT4BPoFAQUDBQUFBwUJBRIFGwUoBS8FMQUzBTUF
+	PAU+BUAFQgVEBVEFWgVnBW4FcAVyBXQFewV9BX8FgQWDBY8FmAWlBawFrgWwBbIFuQW7
+	Bb0FvwXBBc4F2wXiBeQF5gXoBe8F8QXzBfUF9wYDBhAGFwYZBhsGHQYkBiYGKAYqBiwG
+	OQZGBk0GTwZRBlMGWgZcBl4GYAZiBmoGdwZ+BoAGggaEBosGjQaPBpEGkwaqBrMGwAbH
+	BskGywbNBtQG1gbYBtoG3AbyBv8HBgcIBwoHDAcTBxUHFwcZBxsHHwcoBzUHPAc+B0AH
+	QgdJB0sHTQdPB1EHWAdhB24HdQd3B3kHeweCB4QHhgeIB4oHnAelB7IHuQe7B70HvwfG
+	B8gHygfMB84H4QfuB/UH9wf5B/sIAggECAYICAgKCBIIGwgoCC8IMQgzCDUIPAg+CEAI
+	QghECF4IawhyCHQIdgh4CH8IgQiDCIUIhwiVCKIIqQirCK0Irwi2CLgIugi8CL4I2wjo
+	CO8I8QjzCPUI/Aj+CQAJAgkECRwJKQkwCTIJNAk2CT0JPwlBCUMJRQlbCWgJbwlxCXMJ
+	dQl8CX4JgAmCCYQJoAmtCbQJtgm4CboJwQnDCcUJxwnJCeMJ8An3CfkJ+wn9CgQKBgoI
+	CgoKDAojCjAKNwo5CjsKPQpECkYKSApKCkwKaQp2Cn0KfwqBCoMKigqMCo4KkAqSCq0K
+	ugrBCsMKxQrHCs4K0ArSCtQK1grlCvIK+Qr7Cv0K/wsGCwgLCgsMCw4LKAs1CzwLPgtA
+	C0ILSQtLC00LTwtRC2QLcQt4C3oLfAt+C4ULhwuJC4sLjQucC6ULtAu7AAAAAAAAAgIA
+	AAAAAAACEgAAAAAAAAAAAAAAAAAAC8M=
+	</data>
+	<key>NSTableView Columns v3 com.proxyman.jsontreeview</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
+	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVVBcnJheYABrxASCwwUHyAhIiMkJSs1Njc4
+	QkNEVSRudWxs0g0ODxNaTlMub2JqZWN0c1YkY2xhc3OjEBESgAKACoAOgBHTFQ0OFhoe
+	V05TLmtleXOjFxgZgAOABIAFoxscHYAGgAeACIAJWklkZW50aWZpZXJVV2lkdGhWSGlk
+	ZGVuU2tleSNAaOAAAAAAAAjSJicoKVokY2xhc3NuYW1lWCRjbGFzc2VzXE5TRGljdGlv
+	bmFyeaIoKlhOU09iamVjdNMVDQ4sMB6jFxgZgAOABIAFozEyM4ALgAyADYAJVHR5cGUj
+	QFMAAAAAAAAJ0xUNDjk9HqMXGBmAA4AEgAWjPj8dgA+AEIAIgAlVdmFsdWUjQIEIAAAA
+	AADSJidFRl5OU011dGFibGVBcnJheaNFRypXTlNBcnJheQAIABEAGgAkACkAMgA3AEkA
+	TABSAFQAaQBvAHQAfwCGAIoAjACOAJAAkgCZAKEApQCnAKkAqwCvALEAswC1ALcAwgDI
+	AM8A0wDcAN0A4gDtAPYBAwEGAQ8BFgEaARwBHgEgASQBJgEoASoBLAExAToBOwFCAUYB
+	SAFKAUwBUAFSAVQBVgFYAV4BZwFsAXsBfwAAAAAAAAIBAAAAAAAAAEgAAAAAAAAAAAAA
+	AAAAAAGH
+	</data>
+	<key>NSTableView Sort Ordering v2 Proxyman_FlowTable_Autosaves_4.3.0</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
+	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVVBcnJheYABowsMEVUkbnVsbNINDg8QWk5T
+	Lm9iamVjdHNWJGNsYXNzoIAC0hITFBVaJGNsYXNzbmFtZVgkY2xhc3Nlc15OU011dGFi
+	bGVBcnJheaMUFhdXTlNBcnJheVhOU09iamVjdAgRGiQpMjdJTFJUWF5jbnV2eH2IkaCk
+	rAAAAAAAAAEBAAAAAAAAABgAAAAAAAAAAAAAAAAAAAC1
+	</data>
+	<key>NSTableView Sort Ordering v2 com.proxyman.jsontreeview</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
+	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVVBcnJheYABowsMEVUkbnVsbNINDg8QWk5T
+	Lm9iamVjdHNWJGNsYXNzoIAC0hITFBVaJGNsYXNzbmFtZVgkY2xhc3Nlc15OU011dGFi
+	bGVBcnJheaMUFhdXTlNBcnJheVhOU09iamVjdAgRGiQpMjdJTFJUWF5jbnV2eH2IkaCk
+	rAAAAAAAAAEBAAAAAAAAABgAAAAAAAAAAAAAAAAAAAC1
+	</data>
+	<key>NSTableView Supports v2 Proxyman_FlowTable_Autosaves_4.3.0</key>
+	<true/>
+	<key>NSTableView Supports v2 com.proxyman.jsontreeview</key>
+	<true/>
+	<key>NSToolbar Configuration mainToolbar</key>
+	<dict>
+		<key>TB Display Mode</key>
+		<integer>2</integer>
+		<key>TB Icon Size Mode</key>
+		<integer>1</integer>
+		<key>TB Is Shown</key>
+		<true/>
+		<key>TB Size Mode</key>
+		<integer>1</integer>
+	</dict>
+	<key>NSUseAnimatedFocusRing</key>
+	<false/>
+	<key>NSWindow Frame Proxyman.MainWindowController</key>
+	<string>270 254 1260 791 0 0 1800 1130 </string>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>ScriptService-RuleTree-IsFeatureEnabled</key>
+	<false/>
+	<key>ScriptService-RuleTree-migration</key>
+	<true/>
+	<key>SelectedIconAppIndex</key>
+	<integer>0</integer>
+	<key>accessControlModeString</key>
+	<string>allowAll</string>
+	<key>com.proxyman.showSummaryTab</key>
+	<true/>
+	<key>currentThemeSelectionIndex</key>
+	<integer>2</integer>
+	<key>lastScriptImportVersion</key>
+	<string>6.6.0</string>
+	<key>lastSelectedNodeName</key>
+	<string>Apps</string>
+	<key>lastSelectedTabOnRequestPanel</key>
+	<string>Header</string>
+	<key>lastSelectedTabOnResponsePanel</key>
+	<string>Header</string>
+</dict>
+</plist>

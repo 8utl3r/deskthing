@@ -1,0 +1,24 @@
+TrueNAS NAS Application Health Check
+Generated: 2026-02-09 (via midclt call app.query)
+
+APP                    STATE      UPGRADE AVAILABLE   IMAGE UPDATES   NOTES
+--------------------------------------------------------------------------------
+headscale              RUNNING    yes (1.0.24)        no              Main container running; permissions helper exited (normal)
+rules-static           RUNNING    no                  yes             nginx:alpine static site (rules.xcvr.link)
+syncthing              RUNNING    yes (1.2.35)        no              Ports 20978/tcp, 20970/udp, 8334
+cloudflared-xcvr       RUNNING    yes                 yes             Custom app, Cloudflare Tunnel
+authelia               RUNNING    yes (1.0.62)        yes             SSO; authelia, postgres, redis running; upgrade/permissions exited (normal)
+controller             RUNNING    yes                 yes             Custom app (Factorio controller)
+immich                 RUNNING    yes (1.11.15)       yes             server, pgvecto, machine-learning, redis running; upgrade/permissions exited (normal)
+n8n                    RUNNING    yes                 yes             n8n, postgres, redis running; upgrade/permissions exited (normal)
+qdrant                 RUNNING    no                  no              Vector DB; ports 6333, 6334
+nginx-proxy-manager    STOPPED   yes (1.2.28)        no              Not running — start in Apps UI if needed
+
+SUMMARY
+-------
+Running:  9
+Stopped:  1 (nginx-proxy-manager)
+
+Exited helper containers (permissions, postgres_upgrade) are short-lived and expected to show "exited" when not actively running.
+
+ACTION: Start "nginx-proxy-manager" in Apps if you use it for reverse proxy (nas.xcvr.link, etc.).

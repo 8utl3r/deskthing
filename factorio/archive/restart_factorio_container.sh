@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script to restart Factorio container to ensure it uses the password from docker-compose.yml
+
+echo "Restarting Factorio container to ensure correct RCON password..."
+echo ""
+echo "Run these commands on TrueNAS:"
+echo ""
+echo "1. Stop and remove the container:"
+echo "   cd /mnt/boot-pool/apps/factorio"
+echo "   sudo docker compose down"
+echo ""
+echo "2. Start it again (will use password from docker-compose.yml):"
+echo "   sudo docker compose up -d"
+echo ""
+echo "3. Wait a few seconds for it to start, then check logs for RCON password:"
+echo "   sudo docker logs factorio | grep -i 'rcon password'"
+echo ""
+echo "4. Verify the password matches what's in docker-compose.yml:"
+echo "   cat docker-compose.yml | grep FACTORIO_RCON_PASSWORD"
+echo ""

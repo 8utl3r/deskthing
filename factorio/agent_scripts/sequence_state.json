@@ -1,0 +1,16 @@
+{
+  "sequences": {
+    "follow": {
+      "enabled": true,
+      "priority": 1,
+      "variables": {}
+    },
+    "mine_all": {
+      "enabled": true,
+      "priority": 2,
+      "variables": {
+        "resource": "iron-ore"
+      }
+    }
+  }
+}

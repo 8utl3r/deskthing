@@ -16,6 +16,7 @@ cryptography
 dav1d
 deno
 direnv
+dotnet
 eza
 fd
 ffmpeg
@@ -134,6 +135,7 @@ opus
 opusfile
 p11-kit
 p7zip
+pandoc
 pango
 pcre2
 pinentry
@@ -161,6 +163,7 @@ sshpass
 starship
 svt-av1
 syncthing
+tectonic
 tesseract
 unbound
 usage

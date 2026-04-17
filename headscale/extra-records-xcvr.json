@@ -1,0 +1,12 @@
+[
+  {"name": "sso.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "nas.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "headscale.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "rules.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "immich.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "n8n.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "syncthing.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "pi5.xcvr.link", "type": "A", "value": "192.168.0.136"},
+  {"name": "jellyfin.xcvr.link", "type": "A", "value": "192.168.0.158"},
+  {"name": "jet.xcvr.link", "type": "A", "value": "192.168.0.197"}
+]

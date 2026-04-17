@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "8444:443"
+    volumes:
+      - /mnt/tank/apps/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - /mnt/tank/apps/caddy/data:/data
+      - /mnt/tank/apps/caddy/config:/config
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

@@ -1,0 +1,153 @@
+{
+  "name": "Error Logger",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "error-log",
+        "responseMode": "responseNode"
+      },
+      "id": "errorWebhook",
+      "name": "Error Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "error-logger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "workflow_name",
+              "name": "workflow_name",
+              "value": "={{ $json.body.workflow_name || $json.body.workflow || 'unknown' }}",
+              "type": "string"
+            },
+            {
+              "id": "node_name",
+              "name": "node_name",
+              "value": "={{ $json.body.node_name || $json.body.node || 'unknown' }}",
+              "type": "string"
+            },
+            {
+              "id": "error_message",
+              "name": "error_message",
+              "value": "={{ $json.body.error_message || $json.body.error || $json.body.message || 'Unknown error' }}",
+              "type": "string"
+            },
+            {
+              "id": "error_details",
+              "name": "error_details",
+              "value": "={{ $json.body.error_details || $json.body.details || $json.body.data || {} }}",
+              "type": "object"
+            },
+            {
+              "id": "context",
+              "name": "context",
+              "value": "={{ $json.body.context || $json.body.metadata || {} }}",
+              "type": "object"
+            },
+            {
+              "id": "severity",
+              "name": "severity",
+              "value": "={{ $json.body.severity || 'error' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "extractData",
+      "name": "Extract Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "log_id",
+              "name": "log_id",
+              "value": "={{ $json.timestamp + '-' + Math.random().toString(36).substring(7) }}",
+              "type": "string"
+            },
+            {
+              "id": "log_entry",
+              "name": "log_entry",
+              "value": "={{ { \"id\": $json.log_id, \"timestamp\": $json.timestamp, \"severity\": $json.severity, \"workflow\": $json.workflow_name, \"node\": $json.node_name, \"error\": $json.error_message, \"details\": $json.error_details, \"context\": $json.context } }}",
+              "type": "object"
+            },
+            {
+              "id": "log_text",
+              "name": "log_text",
+              "value": "={{ $json.timestamp + ' [' + $json.severity.toUpperCase() + '] ' + $json.workflow_name + '::' + $json.node_name + ' - ' + $json.error_message + (Object.keys($json.error_details || {}).length > 0 ? ' | Details: ' + JSON.stringify($json.error_details) : '') + (Object.keys($json.context || {}).length > 0 ? ' | Context: ' + JSON.stringify($json.context) : '') }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "formatLog",
+      "name": "Format Log Entry",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"logged\": true, \"log_id\": $json.log_id, \"timestamp\": $json.timestamp, \"log_entry\": $json.log_entry, \"log_text\": $json.log_text } }}"
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Error Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Data": {
+      "main": [
+        [
+          {
+            "node": "Format Log Entry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Log Entry": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "availableInMCP": true
+  }
+}

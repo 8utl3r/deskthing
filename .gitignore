@@ -43,3 +43,16 @@ alfred/Alfred.alfredpreferences/*/license.plist
 # DeskThing logs (symlinked here; do not commit)
 car-thing/deskthing-logs/*
 !car-thing/deskthing-logs/.gitkeep
+
+# Factorio controller logs (local runtime, do not commit)
+factorio/logs/*.log
+
+# Large binary download artifacts (OS images, firmware, etc.)
+# GitHub rejects files >100MB. Keep these out of the repo; they belong
+# on local disk or external storage, not in git history.
+*.iso
+*.img
+*.dmg
+downloads/**/*.iso
+downloads/**/*.img
+downloads/**/*.dmg

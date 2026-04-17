@@ -15,6 +15,7 @@ DiracLiveProcessor.app
 Discord.app
 Docker.app
 Domotz Pro Desktop App.app
+Espanso.app
 FlexiNet.app
 FreeTube.app
 Godot.app
@@ -30,6 +31,7 @@ Karabiner-EventViewer.app
 LM Studio.app
 LanScan.app
 Lasso.app
+MOTU Discovery.app
 MiniDSP Device Console.app
 Monarch.app
 NetSpot.app

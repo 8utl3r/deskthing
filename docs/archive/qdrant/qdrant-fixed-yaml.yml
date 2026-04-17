@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - /mnt/tank/apps/qdrant:/qdrant/storage
+    # Note: TrueNAS Scale has limited healthcheck support for custom apps
+    # If healthcheck fails, try removing it or using HTTP probe path: /
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:6333/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Alternative: Use HTTP probe (if TrueNAS supports it)
+    # Remove healthcheck above and configure HTTP probe path: / in TrueNAS UI

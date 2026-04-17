@@ -1,0 +1,23 @@
+# Factorio n8n Controller - production image for TrueNAS
+# 12-factor: all config via env vars (RCON_HOST, RCON_PORT, RCON_PASSWORD, etc.)
+
+FROM python:3.12-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Dependencies first (better layer cache)
+COPY requirements.txt .
+RUN pip install --no-cache-dir --no-warn-script-location -r requirements.txt
+
+# Application code; config from env vars, config.py as fallback
+COPY factorio_n8n_controller.py config.py .
+
+RUN mkdir -p /app/logs
+
+EXPOSE 8080
+
+CMD ["python3", "-u", "factorio_n8n_controller.py"]

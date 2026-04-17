@@ -1,0 +1,24 @@
+# Caddyfile for xcvr.link subdomains → Jellyfin on Pi 5
+# Copy to /etc/caddy/Caddyfile (or your Caddy config path) and restart Caddy.
+# Replace xcvr.link if using a different domain.
+
+# All three subdomains proxy to the same Jellyfin instance.
+# Optional: add redir to open a default library (e.g. watch → movies, listen → music).
+# Jellyfin web client uses hash routes; e.g. /web/index.html#!/movies.html for movies.
+
+listen.xcvr.link, watch.xcvr.link, read.xcvr.link {
+	reverse_proxy localhost:8096
+	# Optional: default view per subdomain (uncomment and adjust if Jellyfin supports; otherwise users choose after login)
+	# handle /web/* {
+	# 	reverse_proxy localhost:8096
+	# }
+	# handle / {
+	# 	redir https://watch.xcvr.link/web/index.html#!/home.html 302
+	# }
+}
+
+# Optional: admin or dashboard subdomain (e.g. servarr.xcvr.link → Sonarr/Radarr)
+# Only enable if you add auth (basicauth, SSO) or use Tailscale for access.
+# servarr.xcvr.link {
+# 	reverse_proxy localhost:8989  # Sonarr; add more handle blocks for Radarr, Prowlarr, etc.
+# }

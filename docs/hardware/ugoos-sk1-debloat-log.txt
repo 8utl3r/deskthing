@@ -1,0 +1,52 @@
+=== Debloat run 2026-02-08T21:14:04-06:00 ===
+Device: 192.168.0.159:5555
+
+OK: com.android.chrome
+OK: com.ghisler.tcplugins.LAN
+OK: com.ghisler.android.TotalCommander
+OK: com.ionitech.airscreen
+OK: com.uapplication.uplayer
+OK: com.google.android.backuptransport
+OK: com.google.android.katniss
+OK: com.google.android.tv.remote.service
+OK: com.android.adservices.api
+OK: com.android.ext.adservices.api
+OK: com.android.ondevicepersonalization.services
+OK: com.android.companiondevicemanager
+FAIL: com.android.devicelockcontroller - Failure [DELETE_FAILED_INTERNAL_ERROR]
+OK: com.android.federatedcompute.services
+OK: com.android.music
+OK: com.android.musicfx
+OK: com.android.dreams.phototable
+OK: com.android.dreams.basic
+OK: com.android.wallpaper.livepicker
+OK: com.android.wallpaperbackup
+OK: com.android.wallpapercropper
+OK: com.android.gallery3d
+OK: com.android.providers.contacts
+OK: com.android.providers.calendar
+OK: com.android.health.connect.backuprestore
+OK: com.android.healthconnect.controller
+OK: com.android.htmlviewer
+OK: com.android.nearby.halfsheet
+OK: com.android.printspooler
+OK: com.android.deskclock
+OK: com.android.camera2
+OK: com.android.cameraextensions
+OK: com.android.virtualmachine.res
+OK: com.android.uwb.resources
+OK: com.android.dynsystem
+OK: com.android.hotspot2.osulogin
+OK: com.android.localtransport
+OK: com.android.sharedstoragebackup
+OK: com.android.statementservice
+OK: com.android.proxyhandler
+OK: com.droidlogic.mediacenter
+OK: com.droidlogic.imageplayer
+OK: com.droidlogic.miracast
+OK: com.droidlogic.FileBrower
+OK: com.ugoos.autotest
+OK: com.ugoos.ugoosfirstrun
+
+Removed: 45 | Failed: 1
+Removed packages saved to: /Users/pete/dotfiles/docs/hardware/ugoos-sk1-debloat-removed.txt

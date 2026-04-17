@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script with multiple methods to find RCON password on TrueNAS
+
+echo "Try these commands on TrueNAS (in order):"
+echo ""
+echo "1. Check docker-compose.yml:"
+echo "   cd /mnt/boot-pool/apps/factorio && cat docker-compose.yml | grep FACTORIO_RCON_PASSWORD"
+echo ""
+echo "2. Check container environment variables:"
+echo "   sudo docker inspect factorio | grep -A 2 FACTORIO_RCON_PASSWORD"
+echo ""
+echo "3. Check server logs (password is printed on startup):"
+echo "   sudo docker logs factorio | grep -i 'rcon password'"
+echo ""
+echo "4. Check all config files in container:"
+echo "   sudo docker exec factorio find /opt/factorio -name '*rcon*' -o -name '*config*' | head -10"
+echo ""
+echo "5. Check if password is in server-settings.json:"
+echo "   sudo docker exec factorio cat /opt/factorio/config/server-settings.json | grep -i rcon"
+echo ""

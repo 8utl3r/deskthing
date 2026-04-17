@@ -1,0 +1,32 @@
+# TrueNAS Custom App - Docker Compose YAML for Factorio
+# Using factoriotools/factorio (more maintained, may have 2.0.73)
+# 
+# Installation Instructions:
+# 1. Go to TrueNAS Web UI → Apps → Installed Apps → factorio
+# 2. Click Edit
+# 3. Replace the image line with: factoriotools/factorio:latest
+# 4. OR: Stop, delete, and redeploy with this YAML
+# 5. Update FACTORIO_RCON_PASSWORD with your secure password
+# 6. Deploy
+
+version: "3.8"
+
+services:
+  factorio:
+    image: factoriotools/factorio:latest
+    # Alternative: Try specific version if latest doesn't have 2.0.73:
+    # image: factoriotools/factorio:2.0.73
+    # Check available tags: https://hub.docker.com/r/factoriotools/factorio/tags
+    container_name: factorio
+    restart: unless-stopped
+    ports:
+      - "27015:27015/tcp"    # RCON
+      - "34197:34197/udp"    # Game
+    environment:
+      - FACTORIO_RCON_PASSWORD=4hyZA96uO9PuWl
+      - FACTORIO_SAVE=save  # Your save file name (without .zip)
+    volumes:
+      - /mnt/boot-pool/apps/factorio:/factorio
+    mem_limit: 2g
+    mem_reservation: 512m
+    cpus: '2'

@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""
+LG C5 Connection Diagnostic
+Run this to check why TV connection might not be working.
+"""
+
+import os
+import sys
+import socket
+import json
+import subprocess
+
+LG_IP = "192.168.0.39"
+LG_PORT = 9761
+STATUS_FILE = "/tmp/lg-server-status.json"
+COMMAND_FILE = "/tmp/lg-server-command.json"
+LOG_FILE = "/tmp/lg-server.log"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def check(label, ok, message):
+    status = "✅" if ok else "❌"
+    print(f"  {status} {label}: {message}")
+    return ok
+
+
+def main():
+    print("📺 LG C5 Connection Diagnostic")
+    print("=" * 50)
+
+    all_ok = True
+
+    # 1. Port connectivity (TV must be ON)
+    print("\n1. Network connectivity")
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        result = sock.connect_ex((LG_IP, LG_PORT))
+        sock.close()
+        all_ok &= check("Port 9761", result == 0,
+            "open" if result == 0 else "closed (TV may be off or Network IP Control disabled)")
+    except Exception as e:
+        all_ok &= check("Port 9761", False, str(e))
+
+    # 2. lg-server process
+    print("\n2. lg-server process")
+    try:
+        r = subprocess.run(["pgrep", "-f", "lg-server"], capture_output=True, text=True)
+        running = r.returncode == 0
+        all_ok &= check("lg-server", running, "running" if running else "not running")
+    except Exception as e:
+        all_ok &= check("lg-server", False, str(e))
+
+    # 3. Status file
+    print("\n3. Status file")
+    if os.path.exists(STATUS_FILE):
+        try:
+            with open(STATUS_FILE) as f:
+                data = json.load(f)
+            state = data.get("state", {})
+            conn = state.get("connection_status", "UNKNOWN")
+            all_ok &= check("Status file", True, f"exists, connection={conn}")
+            if state:
+                print(f"      Power: {state.get('power', '?')} | Volume: {state.get('volume', '?')} | Mute: {state.get('mute', '?')}")
+        except Exception as e:
+            all_ok &= check("Status file", False, str(e))
+    else:
+        all_ok &= check("Status file", False, "not found (server may not have started)")
+
+    # 4. Command file writable
+    print("\n4. Command file")
+    try:
+        with open(COMMAND_FILE, "w") as f:
+            json.dump({"command": None, "test": True}, f)
+        all_ok &= check("Command file", True, "writable (Hammerspoon can send commands)")
+    except Exception as e:
+        all_ok &= check("Command file", False, str(e))
+
+    # 5. Recent log
+    print("\n5. Recent log")
+    if os.path.exists(LOG_FILE):
+        try:
+            with open(LOG_FILE) as f:
+                lines = f.readlines()
+            last = lines[-5:] if len(lines) >= 5 else lines
+            print("      Last log entries:")
+            for line in last:
+                print(f"      {line.rstrip()}")
+        except Exception as e:
+            print(f"      Error: {e}")
+    else:
+        print("      No log file yet")
+
+    print("\n" + "=" * 50)
+    if all_ok:
+        print("✅ All checks passed. Try a Hammerspoon command (menu or hotkey).")
+    else:
+        print("❌ Some checks failed. Common fixes:")
+        print("   - TV must be ON for port 9761 to be open")
+        print("   - Enable Network IP Control in TV hidden menu (8-2-8-8-8)")
+        print("   - Enable SDDP if available in hidden menu")
+        print("   - Restart lg-server: pkill -f lg-server && ~/dotfiles/scripts/archive/lg-start 192.168.0.39")
+    print()
+
+    return 0 if all_ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

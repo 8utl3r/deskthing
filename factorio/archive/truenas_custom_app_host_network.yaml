@@ -1,0 +1,35 @@
+# TrueNAS Custom App - Docker Compose YAML for Factorio
+# Version with host network mode (fixes UDP forwarding issues)
+# 
+# IMPORTANT: Host network mode bypasses Kubernetes networking and uses host ports directly
+# This fixes UDP forwarding issues in TrueNAS Custom Apps
+#
+# Installation Instructions:
+# 1. Go to TrueNAS Web UI → Apps → Installed Apps → factorio
+# 2. Click Edit
+# 3. In the Networking section, enable "Host Network" (if available in UI)
+# 4. OR: Stop the app, delete it, and redeploy with this YAML
+# 5. Update FACTORIO_RCON_PASSWORD with your secure password
+# 6. The volume path is set to /mnt/boot-pool/apps/factorio
+# 7. Deploy
+
+version: "3.8"
+
+services:
+  factorio:
+    image: goofball222/factorio:latest
+    container_name: factorio
+    restart: unless-stopped
+    # Host network mode - bypasses Kubernetes UDP forwarding issues
+    # Note: In TrueNAS UI, you may need to enable "Host Network" in Networking section
+    # instead of using network_mode in YAML
+    network_mode: host
+    # Remove ports section when using host network (uses host ports directly)
+    environment:
+      - FACTORIO_RCON_PASSWORD=CHANGE_THIS_PASSWORD
+      - FACTORIO_SAVE=my-save  # Optional: name of save file (without .zip)
+    volumes:
+      - /mnt/boot-pool/apps/factorio:/factorio
+    mem_limit: 2g
+    mem_reservation: 512m
+    cpus: '2'

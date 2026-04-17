@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - '6333:6333'
+      - '6334:6334'
+    volumes:
+      - /mnt/tank/apps/qdrant:/qdrant/storage
+    healthcheck:
+      # Use wget instead of curl (more commonly available in containers)
+      # Or use CMD-SHELL format for better error handling
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:6333/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s  # Increased from 10s to give Qdrant more time to start

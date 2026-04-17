@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - '6333:6333'
+      - '6334:6334'
+    volumes:
+      - /mnt/tank/apps/qdrant:/qdrant/storage
+    # No healthcheck - Qdrant works perfectly without it
+    # TrueNAS won't show health status, but functionality is unaffected
+    # This is the simplest solution if Python healthcheck doesn't work

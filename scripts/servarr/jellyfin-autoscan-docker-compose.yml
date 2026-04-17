@@ -1,0 +1,16 @@
+# Jellyfin-autoscan: triggers Jellyfin library refresh on webhook
+# Run on Pi: cd /path/to/dotfiles && docker compose -f scripts/servarr/jellyfin-autoscan-docker-compose.yml --env-file scripts/servarr/.env up -d
+# Requires: JELLYFIN_API_KEY in scripts/servarr/.env
+
+services:
+  jellyfin-autoscan:
+    build:
+      context: https://github.com/naakpy/jellyfin-autoscan.git#main
+    container_name: jellyfin-autoscan
+    env_file: .env
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - JELLYFIN_BASE_URL=http://127.0.0.1:8096
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
+      - LOG_LEVEL=INFO

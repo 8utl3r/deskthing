@@ -1,0 +1,22 @@
+# TrueNAS Custom App - Cloudflare Tunnel
+# Version without healthcheck (fixes "stuck at deployed" issue)
+#
+# Installation:
+# 1. Apps → Install via YAML → Name: cloudflared
+# 2. Create /mnt/tank/apps/cloudflared/.env on TrueNAS with: TUNNEL_TOKEN=your_token
+# 3. Deploy
+#
+# Token: Cloudflare → Zero Trust → Tunnels → Configure → Install connector
+
+version: '3.8'
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    env_file:
+      - /mnt/tank/apps/cloudflared/.env
+    command: tunnel --no-autoupdate run
+    volumes:
+      - /mnt/tank/apps/cloudflared:/etc/cloudflared

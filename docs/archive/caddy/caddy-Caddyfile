@@ -1,0 +1,4 @@
+# DEPRECATED: Caddy removed. Cloudflare Tunnel routes directly to each service.
+# See docs/caddy-removal.md and docs/cloudflare-tunnel-setup-guide.md
+#
+# (Kept for reference only – do not use.)

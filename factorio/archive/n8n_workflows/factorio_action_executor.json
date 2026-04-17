@@ -1,0 +1,130 @@
+{
+  "name": "Factorio Action Executor",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "factorio-action-executor",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook",
+      "name": "Action Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "factorio-action-executor"
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{ ($json.body || $json).action }}",
+                    "operation": "equals",
+                    "value2": "walk_to"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "walk_to"
+            }
+          ]
+        },
+        "fallbackOutput": "fallback",
+        "options": {}
+      },
+      "id": "switch",
+      "name": "Action Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8080/execute-action",
+        "method": "POST",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"agent_id\": String(($json.body || $json).agent_id || ''), \"action\": String(($json.body || $json).action || ''), \"params\": ($json.body || $json).params || {} } }}",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "httpRequest",
+      "name": "Execute RCON Action",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json && typeof $json === 'object' ? { success: $json.success !== false, message: $json.message || 'OK', result: $json } : { success: false, message: 'No response from controller' } }}"
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"message\": \"Unsupported action; use walk_to or add a route\" } }}"
+      },
+      "id": "respondUnsupported",
+      "name": "Respond Unsupported",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [650, 400]
+    }
+  ],
+  "connections": {
+    "Action Webhook": {
+      "main": [
+        [
+          {
+            "node": "Action Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Action Type": {
+      "main": [
+        [
+          {
+            "node": "Execute RCON Action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Unsupported",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute RCON Action": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

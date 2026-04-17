@@ -1,0 +1,4 @@
+# For Audible + Kindle → LazyLibrarian import
+# pip install -r scripts/servarr/requirements.txt
+audible-cli>=0.3.3
+rich>=13.0.0

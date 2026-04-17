@@ -1,0 +1,215 @@
+{
+  "name": "Factorio Gather Resource",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "gather-resource",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook",
+      "name": "Gather Resource Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "factorio-gather-resource"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "agent_id",
+              "value": "={{ $json.body.agent_id }}"
+            },
+            {
+              "name": "resource_name",
+              "value": "={{ $json.body.params.resource_name }}"
+            }
+          ]
+        }
+      },
+      "id": "setParams",
+      "name": "Set Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "=http://localhost:8080/get-reachable?agent_id={{ $json.agent_id }}",
+        "method": "GET",
+        "authentication": "none",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "getReachable",
+      "name": "Get Reachable Entities",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "resource-found",
+              "leftValue": "={{ $json.body.resources }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "checkResource",
+      "name": "Resource Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://192.168.0.158:30109/webhook/factorio-action-executor",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"agent_id\": \"{{ $json.agent_id }}\",\n  \"action\": \"walk_to\",\n  \"params\": {\n    \"x\": {{ $json.body.resources[0].position.x }},\n    \"y\": {{ $json.body.resources[0].position.y }}\n  }\n}",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "walkToResource",
+      "name": "Walk to Resource",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "url": "http://192.168.0.158:30109/webhook/factorio-action-executor",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"agent_id\": \"{{ $json.agent_id }}\",\n  \"action\": \"mine_resource\",\n  \"params\": {\n    \"resource\": \"{{ $json.resource_name }}\"\n  }\n}",
+        "options": {
+          "continueOnFail": true
+        }
+      },
+      "id": "mineResource",
+      "name": "Mine Resource",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Gathered {{ $json.resource_name }}\" } }}"
+      },
+      "id": "respondSuccess",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"message\": \"Resource {{ $json.resource_name }} not found\" } }}"
+      },
+      "id": "respondError",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1050, 400]
+    }
+  ],
+  "connections": {
+    "Gather Resource Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Parameters": {
+      "main": [
+        [
+          {
+            "node": "Get Reachable Entities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Reachable Entities": {
+      "main": [
+        [
+          {
+            "node": "Resource Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resource Found?": {
+      "main": [
+        [
+          {
+            "node": "Walk to Resource",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Walk to Resource": {
+      "main": [
+        [
+          {
+            "node": "Mine Resource",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mine Resource": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "active": false
+}

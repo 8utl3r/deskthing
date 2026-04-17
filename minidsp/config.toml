@@ -1,0 +1,16 @@
+# MiniDSP DDRC-24 minidsp-rs daemon config
+# Used by minidspd. Docs: https://minidsp-rs.pages.dev/daemon/
+
+# HTTP API for Hammerspoon / automation (bind to loopback)
+[http_server]
+bind_address = "127.0.0.1:5380"
+
+# TCP server on :5333 is intentionally disabled.
+# The official MiniDSP Device Console treats anything on 127.0.0.1:5333
+# as "another miniDSP app" and self-quits on startup ("Another Instance
+# Running" dialog). The Device Console uses USB directly and does not
+# need this bridge. Re-enable only if you run a non-USB plugin app that
+# depends on minidspd's TCP proxy, and be prepared to stop minidspd
+# before launching the Device Console.
+# [[tcp_server]]
+# bind_address = "127.0.0.1:5333"

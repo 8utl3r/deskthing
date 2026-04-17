@@ -1,0 +1,11 @@
+# Authelia users_database.yml — put this in config/data/ (e.g. config/data/users_database.yml) so Authelia does not merge it as main config. Deploy script does this.
+# Replace "your_username" and the password hash with your own.
+#
+# Generate Argon2 hash (run on Mac or in a container):
+#   docker run --rm -it authelia/authelia:latest authelia crypto hash generate argon2 --password 'YOUR_PASSWORD'
+# Paste the full $argon2id$... line below.
+
+users:
+  your_username:
+    displayname: "Your Name"
+    password: "$argon2id$v=19$m=65536,t=3,p=4$..."
